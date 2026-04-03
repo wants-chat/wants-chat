@@ -1,0 +1,226 @@
+import { Blueprint } from './blueprint.interface';
+
+/**
+ * Equestrian Blueprint
+ */
+export const equestrianBlueprint: Blueprint = {
+  appType: 'equestrian',
+  description: 'Equestrian center app with horses, lessons, boarding, and events',
+
+  coreEntities: ['horse', 'lesson', 'boarding', 'event', 'trainer', 'customer'],
+
+  commonFields: { timestamps: true, softDelete: true, userOwnership: true },
+
+  pages: [
+    { path: '/', name: 'Dashboard', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar', props: { links: [
+        { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
+        { label: 'Horses', path: '/horses', icon: 'Circle' },
+        { label: 'Lessons', path: '/lessons', icon: 'GraduationCap' },
+        { label: 'Boarding', path: '/boarding', icon: 'Home' },
+        { label: 'Events', path: '/events', icon: 'Calendar' },
+        { label: 'Trainers', path: '/trainers', icon: 'UserCheck' },
+        { label: 'Customers', path: '/customers', icon: 'Users' },
+      ]}},
+      { id: 'stats', component: 'stats-cards', position: 'main' },
+      { id: 'upcoming-lessons', component: 'appointment-list', entity: 'lesson', position: 'main' },
+    ]},
+    { path: '/horses', name: 'Horses', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'filters', component: 'filter-form', entity: 'horse', position: 'main' },
+      { id: 'horse-grid', component: 'product-grid', entity: 'horse', position: 'main' },
+    ]},
+    { path: '/lessons', name: 'Lessons', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'lesson-calendar', component: 'appointment-calendar', entity: 'lesson', position: 'main' },
+    ]},
+    { path: '/boarding', name: 'Boarding', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'boarding-table', component: 'data-table', entity: 'boarding', position: 'main' },
+    ]},
+    { path: '/events', name: 'Events', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'event-calendar', component: 'appointment-calendar', entity: 'event', position: 'main' },
+    ]},
+    { path: '/trainers', name: 'Trainers', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'trainer-grid', component: 'staff-grid', entity: 'trainer', position: 'main' },
+    ]},
+    { path: '/customers', name: 'Customers', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'customer-table', component: 'data-table', entity: 'customer', position: 'main' },
+    ]},
+    { path: '/programs', name: 'Riding Programs', layout: 'single-column', requiresAuth: false, sections: [
+      { id: 'programs-grid', component: 'plan-grid', entity: 'lesson', position: 'main' },
+    ]},
+    { path: '/book-lesson', name: 'Book a Lesson', layout: 'single-column', requiresAuth: false, sections: [
+      { id: 'booking-form', component: 'booking-wizard', entity: 'lesson', position: 'main' },
+    ]},
+  ],
+
+  endpoints: [
+    { method: 'GET', path: '/horses', entity: 'horse', operation: 'list', requiresAuth: true },
+    { method: 'POST', path: '/horses', entity: 'horse', operation: 'create', requiresAuth: true },
+    { method: 'GET', path: '/lessons', entity: 'lesson', operation: 'list' },
+    { method: 'POST', path: '/lessons', entity: 'lesson', operation: 'create', requiresAuth: true },
+    { method: 'GET', path: '/boarding', entity: 'boarding', operation: 'list', requiresAuth: true },
+    { method: 'POST', path: '/boarding', entity: 'boarding', operation: 'create', requiresAuth: true },
+    { method: 'GET', path: '/events', entity: 'event', operation: 'list' },
+    { method: 'POST', path: '/events', entity: 'event', operation: 'create', requiresAuth: true },
+    { method: 'GET', path: '/trainers', entity: 'trainer', operation: 'list' },
+    { method: 'GET', path: '/customers', entity: 'customer', operation: 'list', requiresAuth: true },
+  ],
+
+  entityConfig: {
+    horse: {
+      defaultFields: [
+        { name: 'horse_name', type: 'string', required: true },
+        { name: 'barn_name', type: 'string' },
+        { name: 'breed', type: 'string', required: true },
+        { name: 'color', type: 'string' },
+        { name: 'gender', type: 'enum', required: true },
+        { name: 'date_of_birth', type: 'date' },
+        { name: 'height_hands', type: 'decimal' },
+        { name: 'weight_lbs', type: 'decimal' },
+        { name: 'registration_number', type: 'string' },
+        { name: 'discipline', type: 'json' },
+        { name: 'skill_level', type: 'enum' },
+        { name: 'temperament', type: 'text' },
+        { name: 'owner_type', type: 'enum', required: true },
+        { name: 'stall_number', type: 'string' },
+        { name: 'feed_schedule', type: 'json' },
+        { name: 'special_needs', type: 'text' },
+        { name: 'veterinarian', type: 'json' },
+        { name: 'farrier', type: 'json' },
+        { name: 'vaccinations', type: 'json' },
+        { name: 'coggins_date', type: 'date' },
+        { name: 'photos', type: 'json' },
+        { name: 'status', type: 'enum', required: true },
+      ],
+      relationships: [
+        { type: 'hasMany', target: 'lesson' },
+        { type: 'hasOne', target: 'boarding' },
+      ],
+    },
+    lesson: {
+      defaultFields: [
+        { name: 'lesson_type', type: 'enum', required: true },
+        { name: 'lesson_date', type: 'date', required: true },
+        { name: 'start_time', type: 'datetime', required: true },
+        { name: 'end_time', type: 'datetime' },
+        { name: 'duration_minutes', type: 'integer', required: true },
+        { name: 'discipline', type: 'enum' },
+        { name: 'skill_level', type: 'enum' },
+        { name: 'arena', type: 'string' },
+        { name: 'max_students', type: 'integer' },
+        { name: 'enrolled_students', type: 'integer' },
+        { name: 'student_names', type: 'json' },
+        { name: 'price', type: 'decimal', required: true },
+        { name: 'notes', type: 'text' },
+        { name: 'status', type: 'enum', required: true },
+      ],
+      relationships: [
+        { type: 'belongsTo', target: 'trainer' },
+        { type: 'belongsTo', target: 'horse' },
+        { type: 'belongsTo', target: 'customer' },
+      ],
+    },
+    boarding: {
+      defaultFields: [
+        { name: 'boarding_type', type: 'enum', required: true },
+        { name: 'stall_number', type: 'string', required: true },
+        { name: 'start_date', type: 'date', required: true },
+        { name: 'end_date', type: 'date' },
+        { name: 'monthly_rate', type: 'decimal', required: true },
+        { name: 'services_included', type: 'json' },
+        { name: 'additional_services', type: 'json' },
+        { name: 'feed_requirements', type: 'json' },
+        { name: 'turnout_schedule', type: 'json' },
+        { name: 'special_instructions', type: 'text' },
+        { name: 'emergency_contact', type: 'json' },
+        { name: 'vet_info', type: 'json' },
+        { name: 'farrier_info', type: 'json' },
+        { name: 'payment_status', type: 'enum' },
+        { name: 'contract_signed', type: 'boolean' },
+        { name: 'notes', type: 'text' },
+        { name: 'status', type: 'enum', required: true },
+      ],
+      relationships: [
+        { type: 'belongsTo', target: 'horse' },
+        { type: 'belongsTo', target: 'customer' },
+      ],
+    },
+    event: {
+      defaultFields: [
+        { name: 'event_name', type: 'string', required: true },
+        { name: 'event_type', type: 'enum', required: true },
+        { name: 'event_date', type: 'date', required: true },
+        { name: 'start_time', type: 'datetime', required: true },
+        { name: 'end_time', type: 'datetime' },
+        { name: 'location', type: 'string' },
+        { name: 'discipline', type: 'json' },
+        { name: 'description', type: 'text' },
+        { name: 'entry_fee', type: 'decimal' },
+        { name: 'registration_deadline', type: 'date' },
+        { name: 'max_entries', type: 'integer' },
+        { name: 'current_entries', type: 'integer' },
+        { name: 'judge', type: 'string' },
+        { name: 'prizes', type: 'json' },
+        { name: 'sponsors', type: 'json' },
+        { name: 'image_url', type: 'image' },
+        { name: 'status', type: 'enum', required: true },
+      ],
+      relationships: [],
+    },
+    trainer: {
+      defaultFields: [
+        { name: 'first_name', type: 'string', required: true },
+        { name: 'last_name', type: 'string', required: true },
+        { name: 'email', type: 'email' },
+        { name: 'phone', type: 'phone' },
+        { name: 'specialties', type: 'json' },
+        { name: 'disciplines', type: 'json' },
+        { name: 'certifications', type: 'json' },
+        { name: 'years_experience', type: 'integer' },
+        { name: 'bio', type: 'text' },
+        { name: 'photo_url', type: 'image' },
+        { name: 'hourly_rate', type: 'decimal' },
+        { name: 'availability', type: 'json' },
+        { name: 'hire_date', type: 'date' },
+        { name: 'emergency_contact', type: 'json' },
+        { name: 'is_active', type: 'boolean' },
+      ],
+      relationships: [
+        { type: 'hasMany', target: 'lesson' },
+      ],
+    },
+    customer: {
+      defaultFields: [
+        { name: 'first_name', type: 'string', required: true },
+        { name: 'last_name', type: 'string', required: true },
+        { name: 'email', type: 'email', required: true },
+        { name: 'phone', type: 'phone' },
+        { name: 'address', type: 'json' },
+        { name: 'customer_type', type: 'enum' },
+        { name: 'riding_level', type: 'enum' },
+        { name: 'preferred_discipline', type: 'json' },
+        { name: 'owns_horse', type: 'boolean' },
+        { name: 'lesson_package', type: 'json' },
+        { name: 'lessons_remaining', type: 'integer' },
+        { name: 'total_lessons', type: 'integer' },
+        { name: 'total_spent', type: 'decimal' },
+        { name: 'emergency_contact', type: 'json' },
+        { name: 'medical_info', type: 'text' },
+        { name: 'waiver_signed', type: 'boolean' },
+        { name: 'notes', type: 'text' },
+        { name: 'is_active', type: 'boolean' },
+      ],
+      relationships: [
+        { type: 'hasMany', target: 'lesson' },
+        { type: 'hasMany', target: 'boarding' },
+      ],
+    },
+  },
+};
+
+export default equestrianBlueprint;

@@ -1,0 +1,220 @@
+import { Blueprint } from './blueprint.interface';
+
+/**
+ * Animal Shelter Blueprint
+ */
+export const animalshelterBlueprint: Blueprint = {
+  appType: 'animalshelter',
+  description: 'Animal shelter app with animals, adoptions, fosters, volunteers, and donations',
+
+  coreEntities: ['animal', 'adoption', 'foster', 'volunteer', 'donation', 'medical_record'],
+
+  commonFields: { timestamps: true, softDelete: true, userOwnership: true },
+
+  pages: [
+    { path: '/', name: 'Dashboard', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar', props: { links: [
+        { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
+        { label: 'Animals', path: '/animals', icon: 'Cat' },
+        { label: 'Adoptions', path: '/adoptions', icon: 'Heart' },
+        { label: 'Fosters', path: '/fosters', icon: 'Home' },
+        { label: 'Volunteers', path: '/volunteers', icon: 'Users' },
+        { label: 'Donations', path: '/donations', icon: 'Gift' },
+        { label: 'Medical', path: '/medical', icon: 'Stethoscope' },
+      ]}},
+      { id: 'stats', component: 'stats-cards', position: 'main' },
+      { id: 'recent-intakes', component: 'data-table', entity: 'animal', position: 'main' },
+    ]},
+    { path: '/animals', name: 'Animals', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'filters', component: 'filter-form', entity: 'animal', position: 'main' },
+      { id: 'animal-grid', component: 'product-grid', entity: 'animal', position: 'main' },
+    ]},
+    { path: '/adoptions', name: 'Adoptions', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'adoption-board', component: 'kanban-board', entity: 'adoption', position: 'main' },
+    ]},
+    { path: '/fosters', name: 'Fosters', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'foster-table', component: 'data-table', entity: 'foster', position: 'main' },
+    ]},
+    { path: '/volunteers', name: 'Volunteers', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'volunteer-table', component: 'data-table', entity: 'volunteer', position: 'main' },
+    ]},
+    { path: '/donations', name: 'Donations', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'donation-table', component: 'data-table', entity: 'donation', position: 'main' },
+    ]},
+    { path: '/medical', name: 'Medical Records', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'medical-table', component: 'data-table', entity: 'medical_record', position: 'main' },
+    ]},
+    { path: '/adopt', name: 'Adopt a Pet', layout: 'single-column', requiresAuth: false, sections: [
+      { id: 'filters', component: 'filter-form', entity: 'animal', position: 'main' },
+      { id: 'animal-grid', component: 'product-grid', entity: 'animal', position: 'main' },
+    ]},
+    { path: '/apply', name: 'Apply to Adopt', layout: 'single-column', requiresAuth: false, sections: [
+      { id: 'adoption-form', component: 'booking-wizard', entity: 'adoption', position: 'main' },
+    ]},
+  ],
+
+  endpoints: [
+    { method: 'GET', path: '/animals', entity: 'animal', operation: 'list' },
+    { method: 'POST', path: '/animals', entity: 'animal', operation: 'create', requiresAuth: true },
+    { method: 'GET', path: '/adoptions', entity: 'adoption', operation: 'list', requiresAuth: true },
+    { method: 'POST', path: '/adoptions', entity: 'adoption', operation: 'create' },
+    { method: 'GET', path: '/fosters', entity: 'foster', operation: 'list', requiresAuth: true },
+    { method: 'POST', path: '/fosters', entity: 'foster', operation: 'create' },
+    { method: 'GET', path: '/volunteers', entity: 'volunteer', operation: 'list', requiresAuth: true },
+    { method: 'POST', path: '/volunteers', entity: 'volunteer', operation: 'create' },
+    { method: 'GET', path: '/donations', entity: 'donation', operation: 'list', requiresAuth: true },
+    { method: 'POST', path: '/donations', entity: 'donation', operation: 'create' },
+    { method: 'GET', path: '/medical', entity: 'medical_record', operation: 'list', requiresAuth: true },
+  ],
+
+  entityConfig: {
+    animal: {
+      defaultFields: [
+        { name: 'animal_id', type: 'string', required: true },
+        { name: 'name', type: 'string', required: true },
+        { name: 'species', type: 'enum', required: true },
+        { name: 'breed', type: 'string' },
+        { name: 'age', type: 'string' },
+        { name: 'gender', type: 'enum' },
+        { name: 'size', type: 'enum' },
+        { name: 'color', type: 'string' },
+        { name: 'weight', type: 'decimal' },
+        { name: 'microchip_number', type: 'string' },
+        { name: 'intake_date', type: 'date', required: true },
+        { name: 'intake_type', type: 'enum' },
+        { name: 'description', type: 'text' },
+        { name: 'temperament', type: 'json' },
+        { name: 'good_with', type: 'json' },
+        { name: 'special_needs', type: 'json' },
+        { name: 'spayed_neutered', type: 'boolean' },
+        { name: 'vaccinated', type: 'boolean' },
+        { name: 'adoption_fee', type: 'decimal' },
+        { name: 'location', type: 'string' },
+        { name: 'photos', type: 'json' },
+        { name: 'status', type: 'enum', required: true },
+      ],
+      relationships: [
+        { type: 'hasMany', target: 'medical_record' },
+        { type: 'hasOne', target: 'adoption' },
+        { type: 'hasOne', target: 'foster' },
+      ],
+    },
+    adoption: {
+      defaultFields: [
+        { name: 'application_number', type: 'string', required: true },
+        { name: 'application_date', type: 'date', required: true },
+        { name: 'applicant_name', type: 'string', required: true },
+        { name: 'email', type: 'email', required: true },
+        { name: 'phone', type: 'phone', required: true },
+        { name: 'address', type: 'json' },
+        { name: 'housing_type', type: 'enum' },
+        { name: 'own_rent', type: 'enum' },
+        { name: 'landlord_permission', type: 'boolean' },
+        { name: 'other_pets', type: 'json' },
+        { name: 'household_members', type: 'json' },
+        { name: 'vet_reference', type: 'json' },
+        { name: 'personal_reference', type: 'json' },
+        { name: 'experience', type: 'text' },
+        { name: 'reason_for_adoption', type: 'text' },
+        { name: 'home_visit_date', type: 'date' },
+        { name: 'home_visit_notes', type: 'text' },
+        { name: 'adoption_date', type: 'date' },
+        { name: 'adoption_fee_paid', type: 'decimal' },
+        { name: 'notes', type: 'text' },
+        { name: 'status', type: 'enum', required: true },
+      ],
+      relationships: [
+        { type: 'belongsTo', target: 'animal' },
+      ],
+    },
+    foster: {
+      defaultFields: [
+        { name: 'foster_number', type: 'string', required: true },
+        { name: 'foster_name', type: 'string', required: true },
+        { name: 'email', type: 'email', required: true },
+        { name: 'phone', type: 'phone', required: true },
+        { name: 'address', type: 'json' },
+        { name: 'species_preferences', type: 'json' },
+        { name: 'can_foster', type: 'json' },
+        { name: 'start_date', type: 'date' },
+        { name: 'end_date', type: 'date' },
+        { name: 'supplies_provided', type: 'json' },
+        { name: 'stipend', type: 'decimal' },
+        { name: 'notes', type: 'text' },
+        { name: 'status', type: 'enum', required: true },
+      ],
+      relationships: [
+        { type: 'belongsTo', target: 'animal' },
+      ],
+    },
+    volunteer: {
+      defaultFields: [
+        { name: 'first_name', type: 'string', required: true },
+        { name: 'last_name', type: 'string', required: true },
+        { name: 'email', type: 'email', required: true },
+        { name: 'phone', type: 'phone' },
+        { name: 'date_of_birth', type: 'date' },
+        { name: 'address', type: 'json' },
+        { name: 'interests', type: 'json' },
+        { name: 'availability', type: 'json' },
+        { name: 'skills', type: 'json' },
+        { name: 'emergency_contact', type: 'json' },
+        { name: 'start_date', type: 'date' },
+        { name: 'hours_logged', type: 'decimal' },
+        { name: 'background_check', type: 'boolean' },
+        { name: 'orientation_completed', type: 'boolean' },
+        { name: 'notes', type: 'text' },
+        { name: 'is_active', type: 'boolean' },
+      ],
+      relationships: [],
+    },
+    donation: {
+      defaultFields: [
+        { name: 'donation_number', type: 'string', required: true },
+        { name: 'donation_date', type: 'date', required: true },
+        { name: 'donation_type', type: 'enum', required: true },
+        { name: 'donor_name', type: 'string' },
+        { name: 'email', type: 'email' },
+        { name: 'phone', type: 'phone' },
+        { name: 'address', type: 'json' },
+        { name: 'amount', type: 'decimal' },
+        { name: 'items', type: 'json' },
+        { name: 'campaign', type: 'string' },
+        { name: 'recurring', type: 'boolean' },
+        { name: 'anonymous', type: 'boolean' },
+        { name: 'tax_receipt_sent', type: 'boolean' },
+        { name: 'notes', type: 'text' },
+      ],
+      relationships: [],
+    },
+    medical_record: {
+      defaultFields: [
+        { name: 'record_date', type: 'date', required: true },
+        { name: 'record_type', type: 'enum', required: true },
+        { name: 'veterinarian', type: 'string' },
+        { name: 'weight', type: 'decimal' },
+        { name: 'temperature', type: 'decimal' },
+        { name: 'diagnosis', type: 'text' },
+        { name: 'treatment', type: 'text' },
+        { name: 'medications', type: 'json' },
+        { name: 'vaccinations', type: 'json' },
+        { name: 'lab_results', type: 'json' },
+        { name: 'spay_neuter_date', type: 'date' },
+        { name: 'next_appointment', type: 'date' },
+        { name: 'cost', type: 'decimal' },
+        { name: 'notes', type: 'text' },
+      ],
+      relationships: [
+        { type: 'belongsTo', target: 'animal' },
+      ],
+    },
+  },
+};
+
+export default animalshelterBlueprint;

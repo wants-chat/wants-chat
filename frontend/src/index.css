@@ -1,0 +1,353 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Smooth scrolling for the entire page */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Smooth scrolling for containers */
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
+@layer base {
+  :root {
+    /* Light elegant theme - modern and simple */
+    --background: 0 0% 100%;
+    --foreground: 215 25% 27%;
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 27%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 27%;
+    --primary: 175 84% 32%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 215 25% 27%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 175 84% 32%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 175 84% 32%;
+    --radius: 0.75rem;
+
+    /* Brand color - Teal/Cyan */
+    --brand: #0D9488;
+    --brand-light: #14B8A6;
+    --brand-dark: #0F766E;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Landing page and public pages dark theme */
+.landing-page,
+.public-dark {
+  --background: 3 10% 6%;
+  --foreground: 0 0% 100%;
+  background-color: #030712 !important;
+  min-height: 100vh;
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Custom scrollbar for light theme */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.25);
+  }
+
+  /* Custom scrollbar for dark theme */
+  .dark-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(75, 85, 99, 0.5) transparent;
+  }
+
+  .dark-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .dark-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .dark-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(75, 85, 99, 0.5);
+    border-radius: 10px;
+  }
+
+  .dark-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(75, 85, 99, 0.8);
+  }
+
+  /* Auto-hide scrollbar - only shows when content overflows */
+  .dark-scrollbar-auto {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .dark-scrollbar-auto::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+
+  /* Show scrollbar on hover when content overflows */
+  .dark-scrollbar-auto:hover {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(75, 85, 99, 0.5) transparent;
+  }
+
+  .dark-scrollbar-auto:hover::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    display: block;
+  }
+
+  .dark-scrollbar-auto:hover::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .dark-scrollbar-auto:hover::-webkit-scrollbar-thumb {
+    background: rgba(75, 85, 99, 0.5);
+    border-radius: 10px;
+  }
+
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-scroll {
+    animation: scroll 30s linear infinite;
+  }
+
+  .animate-scroll:hover {
+    animation-play-state: paused;
+  }
+
+  /* Personal Stats Dashboard Animations */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pulse-slow {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  @keyframes gradient-xy {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-gradient-xy {
+    background-size: 400% 400%;
+    animation: gradient-xy 15s ease infinite;
+  }
+}
+
+/* Jodit Editor Light Theme - Global Overrides */
+/* Target all Jodit editors globally */
+.jodit-container,
+.jodit-workplace,
+.jodit-wysiwyg,
+.jodit-wysiwyg_mode,
+.jodit-source,
+.jodit,
+.jodit-react-container,
+.jodit-container [contenteditable="true"],
+.jodit-container .jodit-workplace,
+.jodit-container .jodit-wysiwyg {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+
+.jodit-container {
+  border: 1px solid #e5e7eb !important;
+  border-radius: 0.5rem !important;
+}
+
+.jodit-toolbar__box,
+.jodit-container .jodit-toolbar__box {
+  background: #f9fafb !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.jodit-toolbar-button__button,
+.jodit-container .jodit-toolbar-button__button {
+  color: #374151 !important;
+  background: transparent !important;
+}
+
+.jodit-toolbar-button__button:hover,
+.jodit-container .jodit-toolbar-button__button:hover {
+  background: #f3f4f6 !important;
+}
+
+.jodit-toolbar-button__icon,
+.jodit-container .jodit-toolbar-button__icon {
+  fill: #374151 !important;
+}
+
+.jodit-toolbar-button__icon svg,
+.jodit-container .jodit-toolbar-button__icon svg {
+  fill: #374151 !important;
+  stroke: #374151 !important;
+}
+
+.jodit-wysiwyg,
+.jodit-wysiwyg *,
+.jodit-container .jodit-wysiwyg,
+.jodit-container .jodit-wysiwyg * {
+  color: #1f2937 !important;
+}
+
+.jodit-placeholder,
+.jodit-container .jodit-placeholder {
+  color: #9ca3af !important;
+}
+
+.jodit-status-bar,
+.jodit-container .jodit-status-bar {
+  background: #f9fafb !important;
+  background-color: #f9fafb !important;
+  border-top: 1px solid #e5e7eb !important;
+  color: #6b7280 !important;
+}
+
+.jodit-status-bar__item,
+.jodit-container .jodit-status-bar__item,
+.jodit-status-bar a,
+.jodit-container .jodit-status-bar a {
+  color: #6b7280 !important;
+}
+
+/* Dropdown menus */
+.jodit-toolbar-collection,
+.jodit-popup,
+.jodit-popup__content {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+}
+
+.jodit-popup .jodit-toolbar-button__button {
+  color: #374151 !important;
+}
+
+/* Date and Time Input Icons - Light Theme */
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"] {
+  color-scheme: light !important;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+input[type="month"]::-webkit-calendar-picker-indicator,
+input[type="week"]::-webkit-calendar-picker-indicator {
+  cursor: pointer !important;
+  opacity: 0.7 !important;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="time"]::-webkit-calendar-picker-indicator:hover,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1 !important;
+}
+
+/* Fluxez Chatbot Widget - Fix input text contrast */
+#fluxez-chatbot-widget input,
+#fluxez-chatbot-widget textarea,
+[id^="fluxez"] input,
+[id^="fluxez"] textarea {
+  color: #1f2937 !important;
+  background-color: #ffffff !important;
+  -webkit-text-fill-color: #1f2937 !important;
+}
+
+#fluxez-chatbot-widget input::placeholder,
+#fluxez-chatbot-widget textarea::placeholder,
+[id^="fluxez"] input::placeholder,
+[id^="fluxez"] textarea::placeholder {
+  color: #6b7280 !important;
+  -webkit-text-fill-color: #6b7280 !important;
+}
+
+#fluxez-chatbot-widget input::selection,
+#fluxez-chatbot-widget textarea::selection,
+[id^="fluxez"] input::selection,
+[id^="fluxez"] textarea::selection {
+  background-color: #3b82f6 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}

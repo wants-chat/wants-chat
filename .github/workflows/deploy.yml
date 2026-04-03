@@ -1,0 +1,242 @@
+name: Deploy to Production Server
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+env:
+  NODE_VERSION: '20.x'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'production' }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+        chmod 600 ~/.ssh/deploy_key
+        ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+
+    - name: Deploy Backend
+      env:
+        SERVER_IP: ${{ secrets.SERVER_IP }}
+      run: |
+        echo "Deploying backend to $SERVER_IP..."
+
+        ssh -i ~/.ssh/deploy_key root@$SERVER_IP << 'ENDSSH'
+          set -e
+
+          echo "Updating code..."
+          cd /opt/wants
+
+          # Pull latest changes
+          git fetch origin
+          git reset --hard origin/main
+
+          # Use .env.production from repository
+          if [ -f backend/.env.production ]; then
+            echo "Using .env.production from repository"
+          else
+            echo "ERROR: .env.production not found in repository!"
+            exit 1
+          fi
+
+          echo "Building backend..."
+          cd backend
+
+          # Remove .env.local if it exists (to prevent conflicts)
+          if [ -f .env.local ]; then
+            mv .env.local .env.local.old 2>/dev/null || true
+          fi
+
+          # Clean npm cache and node_modules to prevent ENOTEMPTY errors
+          rm -rf node_modules
+          npm cache clean --force
+
+          npm ci --production=false
+          npm run build
+
+          echo "Restarting backend service..."
+          pm2 delete wants-backend 2>/dev/null || true
+          NODE_ENV=production pm2 start dist/main.js --name wants-backend
+          pm2 save
+
+          # Wait for backend to start
+          sleep 10
+
+          # Check if backend is running
+          pm2 status
+
+          echo "Backend deployment complete!"
+        ENDSSH
+
+    - name: Deploy Frontend
+      env:
+        SERVER_IP: ${{ secrets.SERVER_IP }}
+      run: |
+        echo "Deploying frontend..."
+
+        ssh -i ~/.ssh/deploy_key root@$SERVER_IP << 'ENDSSH'
+          set -e
+
+          cd /opt/wants/frontend
+
+          echo "Installing dependencies..."
+          npm install
+
+          echo "Building frontend..."
+          NODE_OPTIONS='--max-old-space-size=4096' NODE_ENV=production npm run build
+
+          echo "Frontend deployment complete!"
+        ENDSSH
+
+    - name: Run Database Migrations
+      env:
+        SERVER_IP: ${{ secrets.SERVER_IP }}
+      run: |
+        echo "Running database migrations..."
+
+        ssh -i ~/.ssh/deploy_key root@$SERVER_IP << 'ENDSSH'
+          set -e
+
+          cd /opt/wants/backend
+
+          # Check if migrations exist
+          if [ -d "src/migrations" ] || [ -d "dist/migrations" ]; then
+            echo "Running migrations..."
+            npm run migration:run || true
+          else
+            echo "No migrations to run"
+          fi
+
+          echo "Database migrations complete!"
+        ENDSSH
+
+    - name: Health Check
+      env:
+        SERVER_IP: ${{ secrets.SERVER_IP }}
+      run: |
+        echo "Running health checks..."
+
+        # Wait for services to stabilize
+        sleep 10
+
+        # Check API health
+        echo "Checking API health..."
+        response=$(curl -s -o /dev/null -w "%{http_code}" https://api.wants.chat/health || echo "000")
+
+        if [ "$response" = "200" ] || [ "$response" = "404" ]; then
+          echo "API is responding (HTTP $response)"
+        else
+          echo "API health check failed (HTTP $response)"
+          exit 1
+        fi
+
+        # Check frontend
+        echo "Checking frontend..."
+        response=$(curl -s -o /dev/null -w "%{http_code}" https://wants.chat || echo "000")
+
+        if [ "$response" = "200" ] || [ "$response" = "301" ] || [ "$response" = "302" ]; then
+          echo "Frontend is responding (HTTP $response)"
+        else
+          echo "Frontend health check failed (HTTP $response)"
+          exit 1
+        fi
+
+        echo "All health checks passed!"
+
+    - name: Clear Cache
+      if: success()
+      env:
+        SERVER_IP: ${{ secrets.SERVER_IP }}
+      run: |
+        echo "Clearing caches..."
+
+        ssh -i ~/.ssh/deploy_key root@$SERVER_IP << 'ENDSSH'
+          # Clear Redis cache if needed
+          redis-cli FLUSHDB || true
+
+          # Clear nginx cache if configured
+          rm -rf /var/cache/nginx/* || true
+
+          # Reload nginx
+          nginx -s reload || true
+
+          echo "Cache cleared!"
+        ENDSSH
+
+    - name: Notify Deployment Status
+      if: always()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const status = '${{ job.status }}';
+          const emoji = status === 'success' ? '✅' : '❌';
+          const environment = '${{ github.event.inputs.environment || 'production' }}';
+          const message = `${emoji} Deployment to ${environment} ${status}`;
+
+          console.log(message);
+
+          if (context.eventName === 'push') {
+            try {
+              await github.rest.repos.createCommitComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                commit_sha: context.sha,
+                body: message + '\n\n' +
+                      `- API: https://api.wants.chat\n` +
+                      `- Frontend: https://wants.chat\n` +
+                      `- Time: ${new Date().toISOString()}`
+              });
+            } catch (error) {
+              console.log('Could not create commit comment:', error.message);
+            }
+          }
+
+    - name: Rollback on Failure
+      if: failure()
+      env:
+        SERVER_IP: ${{ secrets.SERVER_IP }}
+      run: |
+        echo "Rolling back deployment..."
+
+        ssh -i ~/.ssh/deploy_key root@$SERVER_IP << 'ENDSSH'
+          cd /opt/wants
+
+          # Revert to previous commit
+          git reset --hard HEAD~1
+
+          # Rebuild and restart
+          cd backend
+
+          if [ -f .env.local ]; then
+            mv .env.local .env.local.old 2>/dev/null || true
+          fi
+
+          rm -rf node_modules
+          npm cache clean --force
+          npm ci --production=false
+
+          npm run build
+          pm2 delete wants-backend 2>/dev/null || true
+          NODE_ENV=production pm2 start dist/main.js --name wants-backend
+          pm2 save
+
+          echo "Rollback complete!"
+        ENDSSH

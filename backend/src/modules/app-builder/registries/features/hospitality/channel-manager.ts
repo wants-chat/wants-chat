@@ -1,0 +1,441 @@
+/**
+ * Channel Manager Feature Definition
+ *
+ * OTA channel management for hotels with inventory sync,
+ * rate parity, and booking import from multiple channels.
+ */
+
+import { FeatureDefinition } from '../../../interfaces/feature.interface';
+
+export const CHANNEL_MANAGER_FEATURE: FeatureDefinition = {
+  id: 'channel-manager',
+  name: 'Channel Manager',
+  category: 'hospitality',
+  description: 'OTA channel management with inventory sync, rate parity, and booking import',
+  icon: 'share-nodes',
+
+  includedInAppTypes: [
+    'restaurant',
+    'hotel',
+    'cafe',
+    'bar',
+    'bakery',
+    'catering',
+    'food-truck',
+    'hostel',
+    'resort',
+    'vacation-rental',
+    'bed-and-breakfast',
+    'motel',
+    'boutique-hotel',
+    'property-management',
+  ],
+
+  activationKeywords: [
+    'channel manager',
+    'ota',
+    'booking.com',
+    'expedia',
+    'airbnb',
+    'vrbo',
+    'inventory sync',
+    'rate parity',
+    'channel distribution',
+    'ota integration',
+    'multi-channel',
+    'online travel agency',
+  ],
+
+  enabledByDefault: false,
+  optional: true,
+
+  dependencies: ['user-auth'],
+  conflicts: [],
+
+  pages: [
+    {
+      id: 'channel-dashboard',
+      route: '/admin/channels',
+      section: 'admin',
+      title: 'Channel Dashboard',
+      authRequired: true,
+      templateId: 'channel-dashboard',
+      components: [
+        'channel-overview',
+        'channel-status',
+        'sync-status',
+        'booking-summary',
+      ],
+      layout: 'admin',
+    },
+    {
+      id: 'inventory-sync',
+      route: '/admin/channels/inventory',
+      section: 'admin',
+      title: 'Inventory Sync',
+      authRequired: true,
+      templateId: 'inventory-sync',
+      components: [
+        'availability-grid',
+        'sync-controls',
+        'channel-mapping',
+        'sync-history',
+      ],
+      layout: 'admin',
+    },
+    {
+      id: 'rate-parity',
+      route: '/admin/channels/rates',
+      section: 'admin',
+      title: 'Rate Parity',
+      authRequired: true,
+      templateId: 'rate-parity',
+      components: [
+        'rate-comparison',
+        'rate-editor',
+        'parity-alerts',
+        'channel-rates',
+      ],
+      layout: 'admin',
+    },
+    {
+      id: 'booking-import',
+      route: '/admin/channels/bookings',
+      section: 'admin',
+      title: 'Booking Import',
+      authRequired: true,
+      templateId: 'booking-import',
+      components: [
+        'imported-bookings',
+        'booking-queue',
+        'import-settings',
+        'error-log',
+      ],
+      layout: 'admin',
+    },
+    {
+      id: 'channel-settings',
+      route: '/admin/channels/settings',
+      section: 'admin',
+      title: 'Channel Settings',
+      authRequired: true,
+      templateId: 'channel-settings',
+      components: [
+        'channel-config',
+        'api-credentials',
+        'mapping-rules',
+        'notification-settings',
+      ],
+      layout: 'admin',
+    },
+  ],
+
+  components: [
+    // Dashboard components
+    'channel-overview',
+    'channel-status',
+    'sync-status',
+    'booking-summary',
+
+    // Inventory components
+    'availability-grid',
+    'sync-controls',
+    'channel-mapping',
+    'sync-history',
+    'sync-logs',
+
+    // Rate components
+    'rate-comparison',
+    'rate-editor',
+    'parity-alerts',
+    'channel-rates',
+
+    // Booking components
+    'imported-bookings',
+    'booking-queue',
+    'import-settings',
+    'error-log',
+
+    // Settings components
+    'channel-config',
+    'api-credentials',
+    'mapping-rules',
+    'notification-settings',
+  ],
+
+  entities: [
+    {
+      name: 'channels',
+      displayName: 'Channels',
+      description: 'Connected OTA channels',
+      isCore: true,
+    },
+    {
+      name: 'channel_bookings',
+      displayName: 'Channel Bookings',
+      description: 'Bookings imported from channels',
+      isCore: true,
+    },
+    {
+      name: 'rate_plans',
+      displayName: 'Rate Plans',
+      description: 'Rate plans for channels',
+      isCore: true,
+    },
+    {
+      name: 'inventory_sync',
+      displayName: 'Inventory Sync',
+      description: 'Inventory sync records',
+      isCore: true,
+    },
+    {
+      name: 'channel_mappings',
+      displayName: 'Channel Mappings',
+      description: 'Room to channel mappings',
+      isCore: false,
+    },
+    {
+      name: 'sync_logs',
+      displayName: 'Sync Logs',
+      description: 'Sync operation logs',
+      isCore: false,
+    },
+  ],
+
+  apiRoutes: [
+    // Channel routes
+    {
+      method: 'GET',
+      path: '/channels',
+      auth: true,
+      handler: 'crud',
+      entity: 'channels',
+      description: 'List connected channels',
+    },
+    {
+      method: 'POST',
+      path: '/channels',
+      auth: true,
+      handler: 'crud',
+      entity: 'channels',
+      description: 'Connect new channel',
+    },
+    {
+      method: 'GET',
+      path: '/channels/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'channels',
+      description: 'Get channel details',
+    },
+    {
+      method: 'PUT',
+      path: '/channels/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'channels',
+      description: 'Update channel',
+    },
+    {
+      method: 'DELETE',
+      path: '/channels/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'channels',
+      description: 'Disconnect channel',
+    },
+    {
+      method: 'POST',
+      path: '/channels/:id/test',
+      auth: true,
+      handler: 'custom',
+      entity: 'channels',
+      description: 'Test channel connection',
+    },
+    {
+      method: 'GET',
+      path: '/channels/:id/status',
+      auth: true,
+      handler: 'custom',
+      entity: 'channels',
+      description: 'Get channel status',
+    },
+
+    // Channel booking routes
+    {
+      method: 'GET',
+      path: '/channel-bookings',
+      auth: true,
+      handler: 'crud',
+      entity: 'channel_bookings',
+      description: 'List channel bookings',
+    },
+    {
+      method: 'GET',
+      path: '/channel-bookings/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'channel_bookings',
+      description: 'Get booking details',
+    },
+    {
+      method: 'POST',
+      path: '/channel-bookings/:id/confirm',
+      auth: true,
+      handler: 'custom',
+      entity: 'channel_bookings',
+      description: 'Confirm booking',
+    },
+    {
+      method: 'POST',
+      path: '/channel-bookings/:id/reject',
+      auth: true,
+      handler: 'custom',
+      entity: 'channel_bookings',
+      description: 'Reject booking',
+    },
+    {
+      method: 'POST',
+      path: '/channel-bookings/import',
+      auth: true,
+      handler: 'custom',
+      entity: 'channel_bookings',
+      description: 'Import bookings',
+    },
+
+    // Rate plan routes
+    {
+      method: 'GET',
+      path: '/rate-plans',
+      auth: true,
+      handler: 'crud',
+      entity: 'rate_plans',
+      description: 'List rate plans',
+    },
+    {
+      method: 'POST',
+      path: '/rate-plans',
+      auth: true,
+      handler: 'crud',
+      entity: 'rate_plans',
+      description: 'Create rate plan',
+    },
+    {
+      method: 'PUT',
+      path: '/rate-plans/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'rate_plans',
+      description: 'Update rate plan',
+    },
+    {
+      method: 'DELETE',
+      path: '/rate-plans/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'rate_plans',
+      description: 'Delete rate plan',
+    },
+    {
+      method: 'POST',
+      path: '/rate-plans/:id/push',
+      auth: true,
+      handler: 'custom',
+      entity: 'rate_plans',
+      description: 'Push rates to channels',
+    },
+
+    // Inventory sync routes
+    {
+      method: 'GET',
+      path: '/inventory-sync',
+      auth: true,
+      handler: 'crud',
+      entity: 'inventory_sync',
+      description: 'Get sync status',
+    },
+    {
+      method: 'POST',
+      path: '/inventory-sync/push',
+      auth: true,
+      handler: 'custom',
+      entity: 'inventory_sync',
+      description: 'Push inventory to channels',
+    },
+    {
+      method: 'POST',
+      path: '/inventory-sync/pull',
+      auth: true,
+      handler: 'custom',
+      entity: 'inventory_sync',
+      description: 'Pull inventory from channels',
+    },
+    {
+      method: 'GET',
+      path: '/inventory-sync/logs',
+      auth: true,
+      handler: 'custom',
+      entity: 'inventory_sync',
+      description: 'Get sync logs',
+    },
+  ],
+
+  config: [
+    {
+      key: 'autoSync',
+      label: 'Auto Sync',
+      type: 'boolean',
+      default: true,
+      description: 'Automatically sync inventory changes',
+    },
+    {
+      key: 'syncInterval',
+      label: 'Sync Interval (minutes)',
+      type: 'number',
+      default: 15,
+      description: 'How often to sync with channels',
+    },
+    {
+      key: 'autoConfirmBookings',
+      label: 'Auto-Confirm Bookings',
+      type: 'boolean',
+      default: false,
+      description: 'Automatically confirm imported bookings',
+    },
+    {
+      key: 'rateParity',
+      label: 'Enforce Rate Parity',
+      type: 'boolean',
+      default: true,
+      description: 'Maintain same rates across all channels',
+    },
+    {
+      key: 'parityAlerts',
+      label: 'Parity Alerts',
+      type: 'boolean',
+      default: true,
+      description: 'Alert when rate parity is broken',
+    },
+    {
+      key: 'inventoryBuffer',
+      label: 'Inventory Buffer',
+      type: 'number',
+      default: 1,
+      description: 'Hold back rooms from channels',
+    },
+    {
+      key: 'lastRoomHold',
+      label: 'Last Room Hold',
+      type: 'boolean',
+      default: true,
+      description: 'Hold last room for direct bookings',
+    },
+    {
+      key: 'webhookEnabled',
+      label: 'Enable Webhooks',
+      type: 'boolean',
+      default: true,
+      description: 'Receive real-time booking notifications',
+    },
+  ],
+};

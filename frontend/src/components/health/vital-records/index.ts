@@ -1,0 +1,9 @@
+export { default as VitalSectionSelector } from './VitalSectionSelector';
+export { default as BloodPressureSection } from './BloodPressureSection';
+export { default as HeartRateSection } from './HeartRateSection';
+export { default as TemperatureSection } from './TemperatureSection';
+export { default as BloodSugarSection } from './BloodSugarSection';
+export { default as WeightBMISection } from './WeightBMISection';
+export { default as RespiratorySection } from './RespiratorySection';
+export { default as CholesterolSection } from './CholesterolSection';
+export { default as AdditionalInfoSection } from './AdditionalInfoSection';

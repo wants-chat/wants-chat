@@ -1,0 +1,226 @@
+import { Blueprint } from './blueprint.interface';
+
+/**
+ * Equipment Rental Blueprint
+ */
+export const equipmentrentalBlueprint: Blueprint = {
+  appType: 'equipmentrental',
+  description: 'Equipment rental app with inventory, reservations, contracts, and maintenance',
+
+  coreEntities: ['equipment', 'reservation', 'contract', 'customer', 'maintenance', 'invoice'],
+
+  commonFields: { timestamps: true, softDelete: true, userOwnership: true },
+
+  pages: [
+    { path: '/', name: 'Dashboard', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar', props: { links: [
+        { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
+        { label: 'Equipment', path: '/equipment', icon: 'Forklift' },
+        { label: 'Reservations', path: '/reservations', icon: 'Calendar' },
+        { label: 'Contracts', path: '/contracts', icon: 'FileSignature' },
+        { label: 'Customers', path: '/customers', icon: 'Users' },
+        { label: 'Maintenance', path: '/maintenance', icon: 'Wrench' },
+        { label: 'Invoices', path: '/invoices', icon: 'FileText' },
+      ]}},
+      { id: 'stats', component: 'stats-cards', position: 'main' },
+      { id: 'active-rentals', component: 'data-table', entity: 'contract', position: 'main' },
+    ]},
+    { path: '/equipment', name: 'Equipment', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'filters', component: 'filter-form', entity: 'equipment', position: 'main' },
+      { id: 'equipment-grid', component: 'product-grid', entity: 'equipment', position: 'main' },
+    ]},
+    { path: '/reservations', name: 'Reservations', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'reservation-calendar', component: 'appointment-calendar', entity: 'reservation', position: 'main' },
+      { id: 'reservation-list', component: 'data-table', entity: 'reservation', position: 'main' },
+    ]},
+    { path: '/contracts', name: 'Contracts', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'contract-table', component: 'data-table', entity: 'contract', position: 'main' },
+    ]},
+    { path: '/customers', name: 'Customers', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'search', component: 'search-bar', position: 'main' },
+      { id: 'customer-table', component: 'data-table', entity: 'customer', position: 'main' },
+    ]},
+    { path: '/maintenance', name: 'Maintenance', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'maintenance-table', component: 'data-table', entity: 'maintenance', position: 'main' },
+    ]},
+    { path: '/invoices', name: 'Invoices', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'invoice-table', component: 'data-table', entity: 'invoice', position: 'main' },
+    ]},
+    { path: '/rent', name: 'Rent Equipment', layout: 'single-column', requiresAuth: false, sections: [
+      { id: 'equipment-grid', component: 'product-grid', entity: 'equipment', position: 'main' },
+      { id: 'reservation-form', component: 'booking-wizard', entity: 'reservation', position: 'main' },
+    ]},
+  ],
+
+  endpoints: [
+    { method: 'GET', path: '/equipment', entity: 'equipment', operation: 'list' },
+    { method: 'POST', path: '/equipment', entity: 'equipment', operation: 'create', requiresAuth: true },
+    { method: 'GET', path: '/reservations', entity: 'reservation', operation: 'list', requiresAuth: true },
+    { method: 'POST', path: '/reservations', entity: 'reservation', operation: 'create' },
+    { method: 'GET', path: '/contracts', entity: 'contract', operation: 'list', requiresAuth: true },
+    { method: 'POST', path: '/contracts', entity: 'contract', operation: 'create', requiresAuth: true },
+    { method: 'GET', path: '/customers', entity: 'customer', operation: 'list', requiresAuth: true },
+    { method: 'POST', path: '/customers', entity: 'customer', operation: 'create', requiresAuth: true },
+    { method: 'GET', path: '/maintenance', entity: 'maintenance', operation: 'list', requiresAuth: true },
+    { method: 'GET', path: '/invoices', entity: 'invoice', operation: 'list', requiresAuth: true },
+  ],
+
+  entityConfig: {
+    equipment: {
+      defaultFields: [
+        { name: 'equipment_id', type: 'string', required: true },
+        { name: 'equipment_name', type: 'string', required: true },
+        { name: 'category', type: 'enum', required: true },
+        { name: 'description', type: 'text' },
+        { name: 'manufacturer', type: 'string' },
+        { name: 'model', type: 'string' },
+        { name: 'year', type: 'integer' },
+        { name: 'serial_number', type: 'string' },
+        { name: 'specifications', type: 'json' },
+        { name: 'hourly_rate', type: 'decimal' },
+        { name: 'daily_rate', type: 'decimal', required: true },
+        { name: 'weekly_rate', type: 'decimal' },
+        { name: 'monthly_rate', type: 'decimal' },
+        { name: 'deposit_amount', type: 'decimal' },
+        { name: 'current_hours', type: 'integer' },
+        { name: 'condition', type: 'enum' },
+        { name: 'location', type: 'string' },
+        { name: 'image_url', type: 'image' },
+        { name: 'is_available', type: 'boolean' },
+      ],
+      relationships: [
+        { type: 'hasMany', target: 'reservation' },
+        { type: 'hasMany', target: 'contract' },
+        { type: 'hasMany', target: 'maintenance' },
+      ],
+    },
+    reservation: {
+      defaultFields: [
+        { name: 'reservation_number', type: 'string', required: true },
+        { name: 'start_date', type: 'date', required: true },
+        { name: 'end_date', type: 'date', required: true },
+        { name: 'customer_name', type: 'string', required: true },
+        { name: 'email', type: 'email', required: true },
+        { name: 'phone', type: 'phone', required: true },
+        { name: 'pickup_location', type: 'string' },
+        { name: 'delivery_required', type: 'boolean' },
+        { name: 'delivery_address', type: 'json' },
+        { name: 'estimated_total', type: 'decimal' },
+        { name: 'deposit_paid', type: 'boolean' },
+        { name: 'notes', type: 'text' },
+        { name: 'status', type: 'enum', required: true },
+      ],
+      relationships: [
+        { type: 'belongsTo', target: 'equipment' },
+        { type: 'belongsTo', target: 'customer' },
+        { type: 'hasOne', target: 'contract' },
+      ],
+    },
+    contract: {
+      defaultFields: [
+        { name: 'contract_number', type: 'string', required: true },
+        { name: 'start_date', type: 'date', required: true },
+        { name: 'end_date', type: 'date', required: true },
+        { name: 'actual_return_date', type: 'date' },
+        { name: 'pickup_date', type: 'datetime' },
+        { name: 'return_date', type: 'datetime' },
+        { name: 'starting_hours', type: 'integer' },
+        { name: 'ending_hours', type: 'integer' },
+        { name: 'rental_rate', type: 'decimal' },
+        { name: 'rental_period', type: 'enum' },
+        { name: 'subtotal', type: 'decimal' },
+        { name: 'tax', type: 'decimal' },
+        { name: 'delivery_fee', type: 'decimal' },
+        { name: 'damage_waiver', type: 'decimal' },
+        { name: 'deposit', type: 'decimal' },
+        { name: 'total', type: 'decimal', required: true },
+        { name: 'checkout_condition', type: 'text' },
+        { name: 'return_condition', type: 'text' },
+        { name: 'damage_charges', type: 'decimal' },
+        { name: 'late_fees', type: 'decimal' },
+        { name: 'signature_url', type: 'string' },
+        { name: 'status', type: 'enum', required: true },
+      ],
+      relationships: [
+        { type: 'belongsTo', target: 'equipment' },
+        { type: 'belongsTo', target: 'customer' },
+        { type: 'belongsTo', target: 'reservation' },
+        { type: 'hasOne', target: 'invoice' },
+      ],
+    },
+    customer: {
+      defaultFields: [
+        { name: 'customer_number', type: 'string', required: true },
+        { name: 'customer_type', type: 'enum' },
+        { name: 'company_name', type: 'string' },
+        { name: 'contact_name', type: 'string', required: true },
+        { name: 'email', type: 'email', required: true },
+        { name: 'phone', type: 'phone', required: true },
+        { name: 'address', type: 'json' },
+        { name: 'drivers_license', type: 'string' },
+        { name: 'insurance_on_file', type: 'boolean' },
+        { name: 'credit_card_on_file', type: 'boolean' },
+        { name: 'credit_limit', type: 'decimal' },
+        { name: 'notes', type: 'text' },
+        { name: 'is_active', type: 'boolean' },
+      ],
+      relationships: [
+        { type: 'hasMany', target: 'reservation' },
+        { type: 'hasMany', target: 'contract' },
+        { type: 'hasMany', target: 'invoice' },
+      ],
+    },
+    maintenance: {
+      defaultFields: [
+        { name: 'maintenance_number', type: 'string', required: true },
+        { name: 'maintenance_type', type: 'enum', required: true },
+        { name: 'scheduled_date', type: 'date', required: true },
+        { name: 'completed_date', type: 'date' },
+        { name: 'technician', type: 'string' },
+        { name: 'hours_at_service', type: 'integer' },
+        { name: 'work_performed', type: 'text' },
+        { name: 'parts_used', type: 'json' },
+        { name: 'labor_cost', type: 'decimal' },
+        { name: 'parts_cost', type: 'decimal' },
+        { name: 'total_cost', type: 'decimal' },
+        { name: 'next_service_due', type: 'date' },
+        { name: 'notes', type: 'text' },
+        { name: 'status', type: 'enum', required: true },
+      ],
+      relationships: [
+        { type: 'belongsTo', target: 'equipment' },
+      ],
+    },
+    invoice: {
+      defaultFields: [
+        { name: 'invoice_number', type: 'string', required: true },
+        { name: 'invoice_date', type: 'date', required: true },
+        { name: 'due_date', type: 'date' },
+        { name: 'rental_charges', type: 'decimal' },
+        { name: 'delivery_charges', type: 'decimal' },
+        { name: 'damage_charges', type: 'decimal' },
+        { name: 'late_fees', type: 'decimal' },
+        { name: 'tax', type: 'decimal' },
+        { name: 'deposit_applied', type: 'decimal' },
+        { name: 'total', type: 'decimal', required: true },
+        { name: 'amount_paid', type: 'decimal' },
+        { name: 'balance_due', type: 'decimal' },
+        { name: 'payment_date', type: 'date' },
+        { name: 'notes', type: 'text' },
+        { name: 'status', type: 'enum', required: true },
+      ],
+      relationships: [
+        { type: 'belongsTo', target: 'customer' },
+        { type: 'belongsTo', target: 'contract' },
+      ],
+    },
+  },
+};
+
+export default equipmentrentalBlueprint;

@@ -1,0 +1,1065 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTheme } from '../../contexts/ThemeContext';
+import { toast } from '../../components/ui/sonner';
+import { useCreateSeriousCondition, useUpdateSeriousCondition, useSeriousConditionById } from '../../hooks/useServices';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Label } from '../../components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
+import { Badge } from '../../components/ui/badge';
+import { Moon, Sun } from 'lucide-react';
+import {
+  ChevronLeft,
+  Warning as AlertCircle,
+  Save,
+  Check
+} from '@mui/icons-material';
+import { countryCodes } from '../../data/countryCodes';
+import MedicalReportsUploadSection from '../../components/health/serious-condition/MedicalReportsUploadSection';
+import ConditionInformationSection from '../../components/health/serious-condition/ConditionInformationSection';
+import TreatmentsSection from '../../components/health/serious-condition/TreatmentsSection';
+import MedicationsSection from '../../components/health/serious-condition/MedicationsSection';
+import NotesSection from '../../components/health/serious-condition/NotesSection';
+
+import type { SeriousConditionFormData, Treatment } from '../../types/health/serious-conditions';
+import type { TreatmentItem, ReportFile, SeriousConditionForm } from '../../types/health';
+
+const AddSeriousCondition: React.FC = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const editId = searchParams.get('edit');
+  const isEditMode = editId === 'true';
+  
+  const { theme, toggleTheme } = useTheme();
+  const createSeriousConditionMutation = useCreateSeriousCondition();
+  const updateSeriousConditionMutation = useUpdateSeriousCondition();
+  
+  // For edit mode, get the ID from localStorage for now
+  const conditionId = isEditMode ? JSON.parse(localStorage.getItem('editingCondition') || '{}').id : null;
+  const { data: existingCondition, loading: conditionLoading, error: conditionError } = useSeriousConditionById(conditionId);
+  
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [currentMedication, setCurrentMedication] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [reports, setReports] = useState<ReportFile[]>([]);
+  
+  const [formData, setFormData] = useState<SeriousConditionForm>({
+    condition: '',
+    diagnosis_date: '',
+    severity: 'moderate',
+    treating_doctor: '',
+    hospital: '',
+    treatments: [],
+    medications: [],
+    last_checkup: '',
+    next_checkup: '',
+    status: 'active',
+    emergencyCountryCode: '+1',
+    emergencyPhoneNumber: '',
+    notes: ''
+  });
+
+  const [currentTreatment, setCurrentTreatment] = useState<TreatmentItem>({
+    type: '',
+    start_date: '',
+    end_date: '',
+    frequency: '',
+    notes: ''
+  });
+
+  const [errors, setErrors] = useState<Partial<SeriousConditionForm>>({});
+  const [emergencyCountryDropdownOpen, setEmergencyCountryDropdownOpen] = useState(false);
+  const [emergencyCountrySearchTerm, setEmergencyCountrySearchTerm] = useState('');
+  const emergencyDropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleInputChange = (field: keyof SeriousConditionForm, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+    // Clear error for this field
+    if (errors[field]) {
+      setErrors(prev => ({
+        ...prev,
+        [field]: ''
+      }));
+    }
+  };
+
+  const handleTreatmentChange = (field: keyof TreatmentItem, value: string) => {
+    setCurrentTreatment(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const filteredEmergencyCountries = countryCodes.filter(country =>
+    country.name.toLowerCase().includes(emergencyCountrySearchTerm.toLowerCase()) ||
+    country.code.includes(emergencyCountrySearchTerm)
+  );
+
+  const selectedEmergencyCountry = countryCodes.find(country => country.code === formData.emergencyCountryCode);
+
+  // Handle click outside to close emergency dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (emergencyDropdownRef.current && !emergencyDropdownRef.current.contains(event.target as Node)) {
+        setEmergencyCountryDropdownOpen(false);
+        setEmergencyCountrySearchTerm('');
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  // Pre-populate form when editing existing condition
+  useEffect(() => {
+    if (isEditMode && existingCondition) {
+      // Parse emergency contact to extract country code and phone number
+      let extractedCountryCode = '+1';
+      let extractedPhoneNumber = '';
+      
+      if (existingCondition.emergency_contact) {
+        const phoneMatch = existingCondition.emergency_contact.match(/^(\+\d{1,3})\s*(.+)$/);
+        if (phoneMatch) {
+          extractedCountryCode = phoneMatch[1];
+          extractedPhoneNumber = phoneMatch[2];
+        } else {
+          extractedPhoneNumber = existingCondition.emergency_contact;
+        }
+      }
+
+      setFormData({
+        condition: existingCondition.condition || '',
+        diagnosis_date: existingCondition.diagnosis_date || '',
+        severity: existingCondition.severity || 'moderate',
+        treating_doctor: existingCondition.treating_doctor || '',
+        hospital: existingCondition.hospital || '',
+        treatments: existingCondition.treatments?.map(t => ({
+          type: t.type,
+          start_date: t.start_date,
+          end_date: t.end_date,
+          frequency: t.frequency,
+          notes: t.notes
+        })) || [],
+        medications: existingCondition.medications || [],
+        last_checkup: existingCondition.last_checkup || '',
+        next_checkup: existingCondition.next_checkup || '',
+        status: existingCondition.status || 'active',
+        emergencyCountryCode: extractedCountryCode,
+        emergencyPhoneNumber: extractedPhoneNumber,
+        notes: existingCondition.notes || ''
+      });
+    }
+  }, [isEditMode, existingCondition]);
+
+  const addTreatment = () => {
+    if (currentTreatment.type.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        treatments: [...prev.treatments, { ...currentTreatment }]
+      }));
+      setCurrentTreatment({
+        type: '',
+        start_date: '',
+        end_date: '',
+        frequency: '',
+        notes: ''
+      });
+    }
+  };
+
+  const removeTreatment = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      treatments: prev.treatments.filter((_, i) => i !== index)
+    }));
+  };
+
+  const addMedication = () => {
+    if (currentMedication.trim() && !formData.medications.includes(currentMedication.trim())) {
+      setFormData(prev => ({
+        ...prev,
+        medications: [...prev.medications, currentMedication.trim()]
+      }));
+      setCurrentMedication('');
+    }
+  };
+
+  const removeMedication = (medication: string) => {
+    setFormData(prev => ({
+      ...prev,
+      medications: prev.medications.filter(m => m !== medication)
+    }));
+  };
+
+  // File handling functions for reports
+  const processFiles = (files: FileList | File[]) => {
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
+    const maxSize = 10 * 1024 * 1024; // 10MB for medical reports
+
+    const fileArray = Array.from(files);
+
+    fileArray.forEach(file => {
+      // Validate file type
+      if (!validTypes.includes(file.type)) {
+        toast.error(`${file.name} is not a valid file type. Please upload images or PDFs only.`);
+        return;
+      }
+
+      // Validate file size
+      if (file.size > maxSize) {
+        toast.error(`${file.name} is too large. Maximum file size is 10MB.`);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const newReport: ReportFile = {
+          id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+          file: file,
+          preview: e.target?.result as string,
+          uploading: false
+        };
+        setReports(prev => [...prev, newReport]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      processFiles(e.target.files);
+    }
+  };
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      processFiles(e.dataTransfer.files);
+    }
+  };
+
+  const removeReport = (id: string) => {
+    setReports(prev => prev.filter(report => report.id !== id));
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+  };
+
+  const validateForm = () => {
+    const newErrors: Partial<SeriousConditionForm> = {};
+    
+    if (!formData.condition.trim()) {
+      newErrors.condition = 'Condition name is required';
+    }
+    
+    if (!formData.diagnosis_date) {
+      newErrors.diagnosis_date = 'Diagnosis date is required';
+    }
+    
+    if (!formData.treating_doctor.trim()) {
+      newErrors.treating_doctor = 'Treating doctor is required';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
+    try {
+      setApiError(null);
+
+      // Prepare data for API
+      const conditionData: SeriousConditionFormData = {
+        condition: formData.condition,
+        diagnosis_date: formData.diagnosis_date,
+        severity: formData.severity,
+        status: formData.status,
+        treating_doctor: formData.treating_doctor,
+        hospital: formData.hospital,
+        last_checkup: formData.last_checkup,
+        next_checkup: formData.next_checkup,
+        emergency_contact: formData.emergencyPhoneNumber 
+          ? `${formData.emergencyCountryCode} ${formData.emergencyPhoneNumber}` 
+          : '',
+        treatments: formData.treatments.map(t => ({
+          type: t.type,
+          start_date: t.start_date,
+          end_date: t.end_date,
+          frequency: t.frequency,
+          notes: t.notes
+        })),
+        medications: formData.medications,
+        reports: reports.map(r => r.file), // For file upload
+        notes: formData.notes
+      };
+
+      // Debug log to check what's being sent
+      console.log('Submitting condition data:', conditionData);
+      console.log('Treatments:', conditionData.treatments);
+      console.log('Medications:', conditionData.medications);
+      console.log('Reports:', conditionData.reports);
+
+      if (isEditMode && conditionId) {
+        await updateSeriousConditionMutation.mutate({ id: conditionId, data: conditionData });
+      } else {
+        await createSeriousConditionMutation.mutate(conditionData);
+      }
+      
+      setShowSuccess(true);
+      setTimeout(() => {
+        navigate('/health/serious-care');
+      }, 2000);
+    } catch (error: any) {
+      console.error(`Error ${isEditMode ? 'updating' : 'creating'} serious condition:`, error);
+      setApiError(error?.message || `Failed to ${isEditMode ? 'update' : 'save'} condition. Please try again.`);
+    }
+  };
+
+  const handleCancel = () => {
+    navigate('/health/serious-care');
+  };
+
+  const commonConditions = [
+    'Type 2 Diabetes', 'Hypertension', 'Heart Disease', 'Cancer', 'COPD', 
+    'Asthma', 'Arthritis', 'Depression', 'Anxiety', 'Kidney Disease',
+    'Liver Disease', 'Stroke', 'Epilepsy', 'Multiple Sclerosis', 'Parkinson\'s Disease',
+    'Alzheimer\'s Disease', 'Crohn\'s Disease', 'Ulcerative Colitis', 'Lupus', 'Fibromyalgia'
+  ];
+
+  const treatmentTypes = [
+    'Medication Management', 'Surgery', 'Chemotherapy', 'Radiation Therapy',
+    'Physical Therapy', 'Lifestyle Modification', 'Dietary Changes', 'Regular Monitoring',
+    'Specialist Consultation', 'Laboratory Tests', 'Imaging Studies', 'Counseling'
+  ];
+
+  const frequencies = [
+    'Daily', 'Twice Daily', 'Three Times Daily', 'Weekly', 'Bi-weekly',
+    'Monthly', 'Quarterly', 'Semi-annually', 'Annually', 'As Needed'
+  ];
+
+  const severityOptions = [
+    { value: 'mild', label: 'Mild', color: 'text-green-600' },
+    { value: 'moderate', label: 'Moderate', color: 'text-yellow-600' },
+    { value: 'severe', label: 'Severe', color: 'text-orange-600' },
+    { value: 'critical', label: 'Critical', color: 'text-red-600' }
+  ];
+
+  const statusOptions = [
+    { value: 'active', label: 'Active', color: 'text-red-600' },
+    { value: 'monitoring', label: 'Monitoring', color: 'text-blue-600' },
+    { value: 'remission', label: 'Remission', color: 'text-green-600' },
+    { value: 'resolved', label: 'Resolved', color: 'text-gray-600' }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-3">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleCancel}
+                className="mr-2"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </Button>
+              <AlertCircle className="h-6 w-6 text-primary" />
+              <span className="text-xl font-semibold text-gray-900 dark:text-white">
+                {isEditMode ? 'Edit Serious Condition' : 'Add Serious Condition'}
+              </span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleTheme}
+                aria-label="Toggle theme"
+              >
+                {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+              </Button>
+            </div>
+          </div>
+        </nav>
+      </header>
+
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Loading state for edit mode */}
+        {isEditMode && conditionLoading && (
+          <div className="flex justify-center items-center py-12">
+            <div className="text-center">
+              <div className="animate-spin h-12 w-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+              <p className="text-gray-600 dark:text-gray-400">Loading condition data...</p>
+            </div>
+          </div>
+        )}
+
+        {/* Error state for edit mode */}
+        {isEditMode && conditionError && (
+          <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
+              <div>
+                <h4 className="text-sm font-semibold text-red-900 dark:text-red-100">Error Loading Condition</h4>
+                <p className="text-sm text-red-700 dark:text-red-200">
+                  {String(conditionError) || 'Failed to load condition data. Please try again.'}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showSuccess && (
+          <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+            <div className="flex items-center gap-3">
+              <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+              <div>
+                <h4 className="text-sm font-semibold text-green-900 dark:text-green-100">Success!</h4>
+                <p className="text-sm text-green-700 dark:text-green-200">
+                  Serious condition has been {isEditMode ? 'updated' : 'added'} successfully. Redirecting...
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {apiError && (
+          <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
+              <div>
+                <h4 className="text-sm font-semibold text-red-900 dark:text-red-100">Error</h4>
+                <p className="text-sm text-red-700 dark:text-red-200">
+                  {apiError}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Only show form if not loading in edit mode */}
+        {(!isEditMode || !conditionLoading) && !conditionError && (
+          <>
+        {/* Medical Reports Upload Section */}
+        <Card className="mb-8 rounded-2xl bg-gradient-to-r from-white via-white to-primary/5 dark:from-gray-800 dark:via-gray-800 dark:to-primary/10 border-l-4 border-primary">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-900 dark:text-white">
+              <CloudUpload className="h-6 w-6 text-primary" />
+              Medical Reports
+            </CardTitle>
+            <CardDescription className="text-base text-gray-600 dark:text-gray-400">
+              Upload medical reports, test results, X-rays, or other relevant documents
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {/* Drag and Drop Zone */}
+            <div
+              className={`border-2 border-dashed rounded-xl p-8 text-center transition-all ${
+                isDragging 
+                  ? 'border-primary bg-primary/10 dark:bg-primary/20' 
+                  : 'border-gray-300 dark:border-gray-600 hover:border-primary hover:bg-gray-50 dark:hover:bg-gray-800'
+              }`}
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+            >
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                accept="image/*,.pdf"
+                onChange={handleFileSelect}
+                className="hidden"
+              />
+              
+              <div className="flex flex-col items-center">
+                <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${
+                  isDragging ? 'bg-primary/20' : 'bg-gray-100 dark:bg-gray-700'
+                }`}>
+                  <CloudUpload className={`h-8 w-8 ${
+                    isDragging ? 'text-primary' : 'text-gray-400'
+                  }`} />
+                </div>
+                
+                <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
+                  {isDragging ? 'Drop your files here' : 'Drag & Drop medical reports'}
+                </h3>
+                
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                  or click to browse from your device
+                </p>
+                
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="rounded-xl"
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  Choose Files
+                </Button>
+                
+                <p className="text-xs text-gray-400 mt-4">
+                  Supported formats: JPG, PNG, GIF, WebP, PDF (Max 10MB per file)
+                </p>
+              </div>
+            </div>
+
+            {/* Uploaded Reports Preview */}
+            {reports.length > 0 && (
+              <div className="mt-6">
+                <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                  Uploaded Reports ({reports.length})
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {reports.map((report) => (
+                    <div
+                      key={report.id}
+                      className="relative group border rounded-xl overflow-hidden bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all"
+                    >
+                      {/* Preview */}
+                      {report.file.type.startsWith('image/') ? (
+                        <div className="aspect-[4/3] relative">
+                          <img
+                            src={report.preview}
+                            alt={report.file.name}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => removeReport(report.id)}
+                              className="text-white hover:bg-red-500/20"
+                            >
+                              <Delete className="h-5 w-5" />
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="aspect-[4/3] flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-700">
+                          <InsertDriveFile className="h-12 w-12 text-gray-400 mb-2" />
+                          <span className="text-xs text-gray-500">PDF Document</span>
+                        </div>
+                      )}
+                      
+                      {/* File Info */}
+                      <div className="p-3 border-t">
+                        <p className="text-xs font-medium text-gray-900 dark:text-white truncate">
+                          {report.file.name}
+                        </p>
+                        <div className="flex items-center justify-between mt-1">
+                          <span className="text-xs text-gray-500">
+                            {formatFileSize(report.file.size)}
+                          </span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => removeReport(report.id)}
+                            className="h-6 w-6 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                  <div className="flex gap-2">
+                    <AlertCircle className="h-4 w-4 text-yellow-600 dark:text-yellow-400 mt-0.5" />
+                    <div className="text-xs text-yellow-700 dark:text-yellow-300">
+                      <strong>Note:</strong> These documents will be stored securely with your medical record. 
+                      Ensure you have permission to upload any medical documents.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Basic Information */}
+        <Card className="mb-8 rounded-2xl bg-gradient-to-r from-white via-white to-primary/5 dark:from-gray-800 dark:via-gray-800 dark:to-primary/10 border-l-4 border-primary">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-900 dark:text-white">
+              <AlertCircle className="h-6 w-6 text-primary" />
+              Condition Information
+            </CardTitle>
+            <CardDescription className="text-base text-gray-600 dark:text-gray-400">
+              Enter the basic details about the serious condition
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="condition" className="text-sm font-semibold text-gray-700 dark:text-gray-300">Condition Name *</Label>
+                  <Input
+                    id="condition"
+                    value={formData.condition}
+                    onChange={(e) => handleInputChange('condition', e.target.value)}
+                    placeholder="Enter condition name (e.g., Type 2 Diabetes)"
+                    className={`h-12 rounded-xl ${errors.condition ? 'border-red-500' : ''}`}
+                  />
+                  {errors.condition && <p className="text-sm text-red-500">{errors.condition}</p>}
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {commonConditions.slice(0, 10).map(condition => (
+                      <Badge 
+                        key={condition}
+                        variant="outline" 
+                        className="text-xs cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                        onClick={() => handleInputChange('condition', condition)}
+                      >
+                        {condition}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="diagnosisDate" className="text-sm font-semibold text-gray-700 dark:text-gray-300">Diagnosis Date *</Label>
+                  <div className="relative">
+                    <Calendar className="absolute left-3 top-3 h-5 w-5 text-primary" />
+                    <Input
+                      id="diagnosisDate"
+                      type="date"
+                      value={formData.diagnosis_date}
+                      onChange={(e) => handleInputChange('diagnosis_date', e.target.value)}
+                      className={`pl-12 h-12 rounded-xl ${errors.diagnosis_date ? 'border-red-500' : ''}`}
+                    />
+                  </div>
+                  {errors.diagnosis_date && <p className="text-sm text-red-500">{errors.diagnosis_date}</p>}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="severity" className="text-sm font-semibold text-gray-700 dark:text-gray-300">Severity</Label>
+                    <Select value={formData.severity} onValueChange={(value) => handleInputChange('severity', value as 'mild' | 'moderate' | 'severe' | 'critical')}>
+                      <SelectTrigger id="severity" className="h-12 rounded-xl">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {severityOptions.map(option => (
+                          <SelectItem key={option.value} value={option.value}>
+                            <span className={option.color}>{option.label}</span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="status" className="text-sm font-semibold text-gray-700 dark:text-gray-300">Current Status</Label>
+                    <Select value={formData.status} onValueChange={(value) => handleInputChange('status', value as 'active' | 'remission' | 'monitoring' | 'resolved')}>
+                      <SelectTrigger id="status" className="h-12 rounded-xl">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {statusOptions.map(option => (
+                          <SelectItem key={option.value} value={option.value}>
+                            <span className={option.color}>{option.label}</span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="treatingDoctor" className="text-sm font-semibold text-gray-700 dark:text-gray-300">Treating Doctor *</Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-3 h-5 w-5 text-primary" />
+                    <Input
+                      id="treatingDoctor"
+                      value={formData.treating_doctor}
+                      onChange={(e) => handleInputChange('treating_doctor', e.target.value)}
+                      placeholder="Enter doctor's name"
+                      className={`pl-12 h-12 rounded-xl ${errors.treating_doctor ? 'border-red-500' : ''}`}
+                    />
+                  </div>
+                  {errors.treating_doctor && <p className="text-sm text-red-500">{errors.treating_doctor}</p>}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="hospital" className="text-sm font-semibold text-gray-700 dark:text-gray-300">Hospital/Clinic</Label>
+                  <div className="relative">
+                    <LocalHospital className="absolute left-3 top-3 h-5 w-5 text-primary" />
+                    <Input
+                      id="hospital"
+                      value={formData.hospital}
+                      onChange={(e) => handleInputChange('hospital', e.target.value)}
+                      placeholder="Enter hospital or clinic name"
+                      className="pl-12 h-12 rounded-xl"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="lastCheckup" className="text-sm font-semibold text-gray-700 dark:text-gray-300">Last Checkup</Label>
+                    <div className="relative">
+                      <Calendar className="absolute left-3 top-3 h-5 w-5 text-primary" />
+                      <Input
+                        id="lastCheckup"
+                        type="date"
+                        value={formData.last_checkup}
+                        onChange={(e) => handleInputChange('last_checkup', e.target.value)}
+                        className="pl-12 h-12 rounded-xl"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="nextCheckup" className="text-sm font-semibold text-gray-700 dark:text-gray-300">Next Checkup</Label>
+                    <div className="relative">
+                      <Calendar className="absolute left-3 top-3 h-5 w-5 text-primary" />
+                      <Input
+                        id="nextCheckup"
+                        type="date"
+                        value={formData.next_checkup}
+                        onChange={(e) => handleInputChange('next_checkup', e.target.value)}
+                        className="pl-12 h-12 rounded-xl"
+                        min={new Date().toISOString().split('T')[0]}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="emergencyPhoneNumber" className="text-sm font-semibold text-gray-700 dark:text-gray-300">Emergency Contact</Label>
+                  <div className="flex gap-2">
+                    {/* Country Code Dropdown */}
+                    <div className="relative w-32" ref={emergencyDropdownRef}>
+                      <button
+                        type="button"
+                        onClick={() => setEmergencyCountryDropdownOpen(!emergencyCountryDropdownOpen)}
+                        className="w-full px-3 py-3 text-left border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary h-12"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg">{selectedEmergencyCountry?.flag}</span>
+                          <span className="text-sm text-gray-700 dark:text-gray-300">{selectedEmergencyCountry?.code}</span>
+                        </div>
+                      </button>
+                      
+                      {emergencyCountryDropdownOpen && (
+                        <div className="absolute z-50 w-80 mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl shadow-lg max-h-60 overflow-hidden">
+                          <div className="p-2 border-b border-gray-200 dark:border-gray-700">
+                            <Input
+                              type="text"
+                              placeholder="Search country..."
+                              value={emergencyCountrySearchTerm}
+                              onChange={(e) => setEmergencyCountrySearchTerm(e.target.value)}
+                              className="w-full text-sm h-10 rounded-lg"
+                            />
+                          </div>
+                          <div className="max-h-48 overflow-y-auto">
+                            {filteredEmergencyCountries.map((country) => (
+                              <button
+                                key={country.iso}
+                                type="button"
+                                onClick={() => {
+                                  handleInputChange('emergencyCountryCode', country.code);
+                                  setEmergencyCountryDropdownOpen(false);
+                                  setEmergencyCountrySearchTerm('');
+                                }}
+                                className="w-full px-3 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3"
+                              >
+                                <span className="text-lg">{country.flag}</span>
+                                <span className="text-sm text-gray-900 dark:text-gray-100">{country.name}</span>
+                                <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">{country.code}</span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Phone Number Input */}
+                    <div className="flex-1 relative">
+                      <Phone className="absolute left-3 top-3 h-5 w-5 text-primary" />
+                      <Input
+                        id="emergencyPhoneNumber"
+                        type="tel"
+                        value={formData.emergencyPhoneNumber}
+                        onChange={(e) => handleInputChange('emergencyPhoneNumber', e.target.value)}
+                        placeholder="Enter emergency contact number"
+                        className="pl-12 h-12 rounded-xl"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Treatments */}
+        <Card className="mb-8 rounded-2xl bg-gradient-to-r from-white via-white to-primary/5 dark:from-gray-800 dark:via-gray-800 dark:to-primary/10 border-l-4 border-primary">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-900 dark:text-white">
+              <LocalHospital className="h-6 w-6 text-primary" />
+              Treatments
+            </CardTitle>
+            <CardDescription className="text-base text-gray-600 dark:text-gray-400">
+              Add current and past treatments for this condition
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6 border border-primary/20 dark:border-primary/30 rounded-xl bg-primary/5 dark:bg-primary/10">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="treatmentType" className="text-sm font-semibold text-gray-700 dark:text-gray-300">Treatment Type</Label>
+                  <Select value={currentTreatment.type} onValueChange={(value) => handleTreatmentChange('type', value)}>
+                    <SelectTrigger id="treatmentType" className="h-12 rounded-xl">
+                      <SelectValue placeholder="Select treatment type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {treatmentTypes.map(type => (
+                        <SelectItem key={type} value={type}>{type}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="treatmentStartDate" className="text-sm font-semibold text-gray-700 dark:text-gray-300">Start Date</Label>
+                    <Input
+                      id="treatmentStartDate"
+                      type="date"
+                      value={currentTreatment.start_date}
+                      onChange={(e) => handleTreatmentChange('start_date', e.target.value)}
+                      className="h-12 rounded-xl"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="treatmentEndDate" className="text-sm font-semibold text-gray-700 dark:text-gray-300">End Date</Label>
+                    <Input
+                      id="treatmentEndDate"
+                      type="date"
+                      value={currentTreatment.end_date}
+                      onChange={(e) => handleTreatmentChange('end_date', e.target.value)}
+                      className="h-12 rounded-xl"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="treatmentFrequency" className="text-sm font-semibold text-gray-700 dark:text-gray-300">Frequency</Label>
+                  <Select value={currentTreatment.frequency} onValueChange={(value) => handleTreatmentChange('frequency', value)}>
+                    <SelectTrigger id="treatmentFrequency" className="h-12 rounded-xl">
+                      <SelectValue placeholder="Select frequency" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {frequencies.map(freq => (
+                        <SelectItem key={freq} value={freq}>{freq}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="treatmentNotes" className="text-sm font-semibold text-gray-700 dark:text-gray-300">Notes</Label>
+                  <Input
+                    id="treatmentNotes"
+                    value={currentTreatment.notes}
+                    onChange={(e) => handleTreatmentChange('notes', e.target.value)}
+                    placeholder="Additional treatment details"
+                    className="h-12 rounded-xl"
+                  />
+                </div>
+
+                <Button onClick={addTreatment} variant="outline" className="w-full h-12 rounded-xl">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Treatment
+                </Button>
+              </div>
+            </div>
+
+            {formData.treatments.length > 0 && (
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium">Current Treatments:</h4>
+                <div className="space-y-2">
+                  {formData.treatments.map((treatment, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                      <div className="flex-1">
+                        <div className="font-medium">{treatment.type}</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                          {treatment.start_date} {treatment.end_date && `- ${treatment.end_date}`}
+                          {treatment.frequency && ` • ${treatment.frequency}`}
+                        </div>
+                        {treatment.notes && (
+                          <div className="text-sm text-gray-500 dark:text-gray-500 mt-1">{treatment.notes}</div>
+                        )}
+                      </div>
+                      <Button onClick={() => removeTreatment(index)} variant="ghost" size="sm">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Medications */}
+        <Card className="mb-8 rounded-2xl bg-gradient-to-r from-white via-white to-primary/5 dark:from-gray-800 dark:via-gray-800 dark:to-primary/10 border-l-4 border-primary">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-900 dark:text-white">
+              <Pill className="h-6 w-6 text-primary" />
+              Medications
+            </CardTitle>
+            <CardDescription className="text-base text-gray-600 dark:text-gray-400">
+              Add medications for this condition
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex gap-2">
+              <Input
+                value={currentMedication}
+                onChange={(e) => setCurrentMedication(e.target.value)}
+                placeholder="Enter medication name"
+                onKeyPress={(e) => e.key === 'Enter' && addMedication()}
+                className="flex-1 h-12 rounded-xl"
+              />
+              <Button onClick={addMedication} variant="outline" className="h-12 rounded-xl">
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {formData.medications.length > 0 && (
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium">Current Medications:</h4>
+                <div className="flex flex-wrap gap-2">
+                  {formData.medications.map(medication => (
+                    <Badge key={medication} className="flex items-center gap-1">
+                      <Pill className="h-3 w-3 text-primary" />
+                      {medication}
+                      <button onClick={() => removeMedication(medication)}>
+                        <Trash2 className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Notes */}
+        <Card className="mb-8 rounded-2xl bg-gradient-to-r from-white via-white to-primary/5 dark:from-gray-800 dark:via-gray-800 dark:to-primary/10 border-l-4 border-primary">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-900 dark:text-white">
+              <AlertCircle className="h-6 w-6 text-primary" />
+              Additional Notes
+            </CardTitle>
+            <CardDescription className="text-base text-gray-600 dark:text-gray-400">
+              Add any additional information about this condition or care instructions
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <textarea
+              value={formData.notes}
+              onChange={(e) => handleInputChange('notes', e.target.value)}
+              placeholder="Enter any additional information about this condition, symptoms, care instructions, or important notes..."
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+              rows={5}
+            />
+          </CardContent>
+        </Card>
+
+        <div className="flex justify-between items-center gap-4">
+          <Button 
+            variant="outline" 
+            onClick={handleCancel}
+            className="h-12 px-6 rounded-xl font-medium"
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleSubmit}
+            disabled={createSeriousConditionMutation.loading || updateSeriousConditionMutation.loading || (isEditMode && conditionLoading)}
+            className="flex items-center gap-2 h-12 px-6 rounded-xl font-medium bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {(createSeriousConditionMutation.loading || updateSeriousConditionMutation.loading) ? (
+              <>
+                <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
+                {isEditMode ? 'Updating...' : 'Saving...'}
+              </>
+            ) : (
+              <>
+                <Save className="h-4 w-4" />
+                {isEditMode ? 'Update Condition' : 'Save Condition'}
+              </>
+            )}
+          </Button>
+        </div>
+
+        <div className="mt-8 p-5 bg-primary/5 dark:bg-primary/10 border border-primary/20 dark:border-primary/30 rounded-xl">
+          <div className="flex gap-3">
+            <AlertCircle className="h-6 w-6 text-primary mt-0.5" />
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Important</h4>
+              <p className="text-sm text-gray-700 dark:text-gray-200 mt-1">
+                This information is for tracking purposes only. Always follow your healthcare provider's 
+                treatment plan and seek immediate medical attention in emergencies.
+              </p>
+            </div>
+          </div>
+        </div>
+          </>
+        )}
+      </main>
+    </div>
+  );
+};
+
+export default AddSeriousCondition;

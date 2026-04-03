@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "Wants - 1000+ AI-Powered Tools",
+  "version": "1.0.0",
+  "description": "1000+ AI-powered tools for everyone. JSON formatter, calculators, converters, generators & more.",
+  "permissions": [
+    "storage",
+    "cookies",
+    "clipboardWrite",
+    "clipboardRead"
+  ],
+  "host_permissions": [
+    "https://api.wants.chat/*",
+    "https://wants.chat/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://wants.chat/*", "https://*.wants.chat/*"],
+      "js": ["content-script.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}

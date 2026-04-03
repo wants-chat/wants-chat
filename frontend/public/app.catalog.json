@@ -1,0 +1,906 @@
+{
+  "version": "2.0.0",
+  "lastUpdated": "2025-12-28",
+  "totalApps": 46,
+  "deployedApps": 40,
+  "baseUrls": {
+    "backend": "https://{worker}.fluxez.workers.dev",
+    "frontend": "https://{app}.app.fluxez.com",
+    "apiDocs": "https://{worker}.fluxez.workers.dev/docs"
+  },
+  "apps": [
+    {
+      "id": "api-tester",
+      "name": "API Tester",
+      "description": "Test REST APIs with requests",
+      "category": "developer-tools",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://api-tester-api.fluxez.workers.dev",
+      "frontendUrl": "https://api-tester.app.fluxez.com",
+      "workerName": "api-tester-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://api-tester-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "bmi-calculator",
+      "name": "BMI Calculator",
+      "description": "Calculate and track BMI with history",
+      "category": "healthcare",
+      "hasBackend": false,
+      "hasFrontend": true,
+      "status": "frontend-only",
+      "backendUrl": null,
+      "frontendUrl": "https://bmi-calculator.app.fluxez.com",
+      "workerName": null,
+      "localPorts": {
+        "frontend": 3000
+      },
+      "apiDocsUrl": null
+    },
+    {
+      "id": "book-tracker",
+      "name": "Book Tracker",
+      "description": "Track books and reading progress",
+      "category": "productivity",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://book-tracker-api.fluxez.workers.dev",
+      "frontendUrl": "https://book-tracker.app.fluxez.com",
+      "workerName": "book-tracker-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://book-tracker-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "bookmark-manager",
+      "name": "Bookmark Manager",
+      "description": "Save and organize bookmarks",
+      "category": "productivity",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://bookmark-manager-api.fluxez.workers.dev",
+      "frontendUrl": "https://bookmark-manager.app.fluxez.com",
+      "workerName": "bookmark-manager-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://bookmark-manager-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "budget-planner",
+      "name": "Budget Planner",
+      "description": "Plan and track budgets with goals",
+      "category": "business-finance",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://budget-planner-api.fluxez.workers.dev",
+      "frontendUrl": "https://budget-planner.app.fluxez.com",
+      "workerName": "budget-planner-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://budget-planner-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "calendar-app",
+      "name": "Calendar App",
+      "description": "Manage events and schedules",
+      "category": "productivity",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://calendar-api.fluxez.workers.dev",
+      "frontendUrl": "https://calendar-app.app.fluxez.com",
+      "workerName": "calendar-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://calendar-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "code-snippets",
+      "name": "Code Snippets",
+      "description": "Store and organize code snippets",
+      "category": "developer-tools",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://code-snippets-api.fluxez.workers.dev",
+      "frontendUrl": "https://code-snippets.app.fluxez.com",
+      "workerName": "code-snippets-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://code-snippets-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "color-picker",
+      "name": "Color Picker",
+      "description": "Pick colors with format conversion and palettes",
+      "category": "developer-tools",
+      "hasBackend": false,
+      "hasFrontend": true,
+      "status": "frontend-only",
+      "backendUrl": null,
+      "frontendUrl": "https://color-picker.app.fluxez.com",
+      "workerName": null,
+      "localPorts": {
+        "frontend": 3000
+      },
+      "apiDocsUrl": null
+    },
+    {
+      "id": "contact-manager",
+      "name": "Contact Manager",
+      "description": "Manage contacts and address book",
+      "category": "productivity",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://contact-manager-api.fluxez.workers.dev",
+      "frontendUrl": "https://contact-manager.app.fluxez.com",
+      "workerName": "contact-manager-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://contact-manager-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "crm",
+      "name": "CRM",
+      "description": "Customer relationship management",
+      "category": "business-finance",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://crm-api.fluxez.workers.dev",
+      "frontendUrl": "https://crm.app.fluxez.com",
+      "workerName": "crm-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://crm-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "document-manager",
+      "name": "Document Manager",
+      "description": "Organize and manage documents",
+      "category": "productivity",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://document-manager-api.fluxez.workers.dev",
+      "frontendUrl": "https://document-manager.app.fluxez.com",
+      "workerName": "document-manager-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://document-manager-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "event-planner",
+      "name": "Event Planner",
+      "description": "Plan and manage events",
+      "category": "productivity",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://event-planner-api.fluxez.workers.dev",
+      "frontendUrl": "https://event-planner.app.fluxez.com",
+      "workerName": "event-planner-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://event-planner-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "expense-report",
+      "name": "Expense Report",
+      "description": "Create expense reports",
+      "category": "business-finance",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://expense-report-api.fluxez.workers.dev",
+      "frontendUrl": "https://expense-report.app.fluxez.com",
+      "workerName": "expense-report-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://expense-report-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "expense-splitter",
+      "name": "Expense Splitter",
+      "description": "Split expenses among groups",
+      "category": "business-finance",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://expense-splitter-api.fluxez.workers.dev",
+      "frontendUrl": "https://expense-splitter.app.fluxez.com",
+      "workerName": "expense-splitter-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://expense-splitter-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "expense-tracker",
+      "name": "Expense Tracker",
+      "description": "Track expenses with categories and reports",
+      "category": "business-finance",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://expense-tracker-api.fluxez.workers.dev",
+      "frontendUrl": "https://expense-tracker.app.fluxez.com",
+      "workerName": "expense-tracker-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://expense-tracker-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "file-converter",
+      "name": "File Converter",
+      "description": "Convert files between formats",
+      "category": "utilities",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://file-converter-api.fluxez.workers.dev",
+      "frontendUrl": "https://file-converter.app.fluxez.com",
+      "workerName": "file-converter-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://file-converter-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "flashcard-app",
+      "name": "Flashcard App",
+      "description": "Study with flashcards",
+      "category": "education",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://flashcard-app-api.fluxez.workers.dev",
+      "frontendUrl": "https://flashcard-app.app.fluxez.com",
+      "workerName": "flashcard-app-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://flashcard-app-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "goal-tracker",
+      "name": "Goal Tracker",
+      "description": "Set and track personal goals",
+      "category": "productivity",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://goal-tracker-api.fluxez.workers.dev",
+      "frontendUrl": "https://goal-tracker.app.fluxez.com",
+      "workerName": "goal-tracker-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://goal-tracker-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "habit-streak",
+      "name": "Habit Streak",
+      "description": "Build habits with streaks",
+      "category": "productivity",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://habit-streak-api.fluxez.workers.dev",
+      "frontendUrl": "https://habit-streak.app.fluxez.com",
+      "workerName": "habit-streak-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://habit-streak-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "habit-tracker",
+      "name": "Habit Tracker",
+      "description": "Build and track daily habits",
+      "category": "productivity",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://habit-tracker-api.fluxez.workers.dev",
+      "frontendUrl": "https://habit-tracker.app.fluxez.com",
+      "workerName": "habit-tracker-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://habit-tracker-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "inventory-manager",
+      "name": "Inventory Manager",
+      "description": "Manage inventory and stock",
+      "category": "business-finance",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://inventory-manager-api.fluxez.workers.dev",
+      "frontendUrl": "https://inventory-manager.app.fluxez.com",
+      "workerName": "inventory-manager-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://inventory-manager-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "invoice-generator",
+      "name": "Invoice Generator",
+      "description": "Create professional invoices with client management",
+      "category": "business-finance",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://invoice-generator-api.fluxez.workers.dev",
+      "frontendUrl": "https://invoice-generator.app.fluxez.com",
+      "workerName": "invoice-generator-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://invoice-generator-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "job-tracker",
+      "name": "Job Tracker",
+      "description": "Track job applications",
+      "category": "productivity",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://job-tracker-api.fluxez.workers.dev",
+      "frontendUrl": "https://job-tracker.app.fluxez.com",
+      "workerName": "job-tracker-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://job-tracker-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "journal-diary",
+      "name": "Journal Diary",
+      "description": "Daily journaling and diary",
+      "category": "productivity",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://journal-diary-api.fluxez.workers.dev",
+      "frontendUrl": "https://journal-diary.app.fluxez.com",
+      "workerName": "journal-diary-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://journal-diary-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "json-formatter",
+      "name": "JSON Formatter",
+      "description": "Format, validate, and minify JSON",
+      "category": "developer-tools",
+      "hasBackend": false,
+      "hasFrontend": true,
+      "status": "frontend-only",
+      "backendUrl": null,
+      "frontendUrl": "https://json-formatter.app.fluxez.com",
+      "workerName": null,
+      "localPorts": {
+        "frontend": 3000
+      },
+      "apiDocsUrl": null
+    },
+    {
+      "id": "kanban-board",
+      "name": "Kanban Board",
+      "description": "Visual task management with boards",
+      "category": "productivity",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://kanban-board-api.fluxez.workers.dev",
+      "frontendUrl": "https://kanban-board.app.fluxez.com",
+      "workerName": "kanban-board-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://kanban-board-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "knowledge-base",
+      "name": "Knowledge Base",
+      "description": "Create and organize documentation",
+      "category": "productivity",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://knowledge-base-api.fluxez.workers.dev",
+      "frontendUrl": "https://knowledge-base.app.fluxez.com",
+      "workerName": "knowledge-base-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://knowledge-base-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "link-shortener",
+      "name": "Link Shortener",
+      "description": "Shorten URLs with analytics",
+      "category": "utilities",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://link-shortener-api.fluxez.workers.dev",
+      "frontendUrl": "https://link-shortener.app.fluxez.com",
+      "workerName": "link-shortener-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://link-shortener-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "markdown-editor",
+      "name": "Markdown Editor",
+      "description": "Edit markdown with live preview",
+      "category": "developer-tools",
+      "hasBackend": false,
+      "hasFrontend": true,
+      "status": "frontend-only",
+      "backendUrl": null,
+      "frontendUrl": "https://markdown-editor.app.fluxez.com",
+      "workerName": null,
+      "localPorts": {
+        "frontend": 3000
+      },
+      "apiDocsUrl": null
+    },
+    {
+      "id": "meal-planner",
+      "name": "Meal Planner",
+      "description": "Plan meals and recipes",
+      "category": "lifestyle",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://meal-planner-api.fluxez.workers.dev",
+      "frontendUrl": "https://meal-planner.app.fluxez.com",
+      "workerName": "meal-planner-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://meal-planner-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "meeting-scheduler",
+      "name": "Meeting Scheduler",
+      "description": "Schedule and manage meetings",
+      "category": "productivity",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://meeting-scheduler-api.fluxez.workers.dev",
+      "frontendUrl": "https://meeting-scheduler.app.fluxez.com",
+      "workerName": "meeting-scheduler-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://meeting-scheduler-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "mood-tracker",
+      "name": "Mood Tracker",
+      "description": "Track daily mood and emotions",
+      "category": "healthcare",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://mood-tracker-api.fluxez.workers.dev",
+      "frontendUrl": "https://mood-tracker.app.fluxez.com",
+      "workerName": "mood-tracker-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://mood-tracker-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "note-taking",
+      "name": "Note Taking",
+      "description": "Create and organize notes with folders",
+      "category": "productivity",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://note-taking-api.fluxez.workers.dev",
+      "frontendUrl": "https://note-taking.app.fluxez.com",
+      "workerName": "note-taking-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://note-taking-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "password-generator",
+      "name": "Password Generator",
+      "description": "Generate secure passwords with options",
+      "category": "developer-tools",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://password-generator-api.fluxez.workers.dev",
+      "frontendUrl": "https://password-generator.app.fluxez.com",
+      "workerName": "password-generator-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://password-generator-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "password-manager",
+      "name": "Password Manager",
+      "description": "Securely store passwords",
+      "category": "security",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://password-manager-api.fluxez.workers.dev",
+      "frontendUrl": "https://password-manager.app.fluxez.com",
+      "workerName": "password-manager-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://password-manager-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "pomodoro-pro",
+      "name": "Pomodoro Pro",
+      "description": "Advanced focus timer with stats",
+      "category": "productivity",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://pomodoro-pro-api.fluxez.workers.dev",
+      "frontendUrl": "https://pomodoro-pro.app.fluxez.com",
+      "workerName": "pomodoro-pro-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://pomodoro-pro-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "pomodoro-timer",
+      "name": "Pomodoro Timer",
+      "description": "Focus timer with breaks and stats",
+      "category": "productivity",
+      "hasBackend": false,
+      "hasFrontend": true,
+      "status": "frontend-only",
+      "backendUrl": null,
+      "frontendUrl": "https://pomodoro-timer.app.fluxez.com",
+      "workerName": null,
+      "localPorts": {
+        "frontend": 3000
+      },
+      "apiDocsUrl": null
+    },
+    {
+      "id": "portfolio-manager",
+      "name": "Portfolio Manager",
+      "description": "Track investments and portfolio performance",
+      "category": "business-finance",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://portfolio-manager-api.fluxez.workers.dev",
+      "frontendUrl": "https://portfolio-manager.app.fluxez.com",
+      "workerName": "portfolio-manager-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://portfolio-manager-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "project-manager",
+      "name": "Project Manager",
+      "description": "Manage projects and tasks",
+      "category": "productivity",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://project-manager-api.fluxez.workers.dev",
+      "frontendUrl": "https://project-manager.app.fluxez.com",
+      "workerName": "project-manager-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://project-manager-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "quiz-maker",
+      "name": "Quiz Maker",
+      "description": "Create and take quizzes",
+      "category": "education",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://quiz-maker-api.fluxez.workers.dev",
+      "frontendUrl": "https://quiz-maker.app.fluxez.com",
+      "workerName": "quiz-maker-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://quiz-maker-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "recipe-manager",
+      "name": "Recipe Manager",
+      "description": "Store and organize recipes",
+      "category": "lifestyle",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://recipe-manager-api.fluxez.workers.dev",
+      "frontendUrl": "https://recipe-manager.app.fluxez.com",
+      "workerName": "recipe-manager-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://recipe-manager-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "subscription-tracker",
+      "name": "Subscription Tracker",
+      "description": "Track subscriptions and renewals",
+      "category": "business-finance",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://subscription-tracker-api.fluxez.workers.dev",
+      "frontendUrl": "https://subscription-tracker.app.fluxez.com",
+      "workerName": "subscription-tracker-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://subscription-tracker-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "survey-builder",
+      "name": "Survey Builder",
+      "description": "Create and share surveys",
+      "category": "productivity",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://survey-builder-api.fluxez.workers.dev",
+      "frontendUrl": "https://survey-builder.app.fluxez.com",
+      "workerName": "survey-builder-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://survey-builder-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "task-manager",
+      "name": "Task Manager",
+      "description": "Manage tasks and to-dos",
+      "category": "productivity",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://task-manager-api.fluxez.workers.dev",
+      "frontendUrl": "https://task-manager.app.fluxez.com",
+      "workerName": "task-manager-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://task-manager-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "time-tracker",
+      "name": "Time Tracker",
+      "description": "Track time spent on tasks and projects",
+      "category": "productivity",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://time-tracker-api.fluxez.workers.dev",
+      "frontendUrl": "https://time-tracker.app.fluxez.com",
+      "workerName": "time-tracker-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://time-tracker-api.fluxez.workers.dev/docs"
+    },
+    {
+      "id": "workout-tracker",
+      "name": "Workout Tracker",
+      "description": "Track workouts and exercises",
+      "category": "healthcare",
+      "hasBackend": true,
+      "hasFrontend": true,
+      "status": "deployed",
+      "backendUrl": "https://workout-tracker-api.fluxez.workers.dev",
+      "frontendUrl": "https://workout-tracker.app.fluxez.com",
+      "workerName": "workout-tracker-api",
+      "localPorts": {
+        "frontend": 3000,
+        "backend": 4000
+      },
+      "apiDocsUrl": "https://workout-tracker-api.fluxez.workers.dev/docs"
+    }
+  ],
+  "categories": [
+    {
+      "id": "business-finance",
+      "name": "Business & Finance",
+      "icon": "briefcase",
+      "apps": [
+        "budget-planner",
+        "crm",
+        "expense-report",
+        "expense-splitter",
+        "expense-tracker",
+        "inventory-manager",
+        "invoice-generator",
+        "portfolio-manager",
+        "subscription-tracker"
+      ]
+    },
+    {
+      "id": "productivity",
+      "name": "Productivity",
+      "icon": "zap",
+      "apps": [
+        "book-tracker",
+        "bookmark-manager",
+        "calendar-app",
+        "contact-manager",
+        "document-manager",
+        "event-planner",
+        "goal-tracker",
+        "habit-streak",
+        "habit-tracker",
+        "job-tracker",
+        "journal-diary",
+        "kanban-board",
+        "knowledge-base",
+        "meeting-scheduler",
+        "note-taking",
+        "pomodoro-pro",
+        "pomodoro-timer",
+        "project-manager",
+        "survey-builder",
+        "task-manager",
+        "time-tracker"
+      ]
+    },
+    {
+      "id": "developer-tools",
+      "name": "Developer Tools",
+      "icon": "code",
+      "apps": [
+        "api-tester",
+        "code-snippets",
+        "color-picker",
+        "json-formatter",
+        "markdown-editor",
+        "password-generator"
+      ]
+    },
+    {
+      "id": "healthcare",
+      "name": "Healthcare & Fitness",
+      "icon": "heart",
+      "apps": [
+        "bmi-calculator",
+        "mood-tracker",
+        "workout-tracker"
+      ]
+    },
+    {
+      "id": "education",
+      "name": "Education",
+      "icon": "book-open",
+      "apps": [
+        "flashcard-app",
+        "quiz-maker"
+      ]
+    },
+    {
+      "id": "lifestyle",
+      "name": "Lifestyle",
+      "icon": "star",
+      "apps": [
+        "meal-planner",
+        "recipe-manager"
+      ]
+    },
+    {
+      "id": "utilities",
+      "name": "Utilities",
+      "icon": "tool",
+      "apps": [
+        "file-converter",
+        "link-shortener"
+      ]
+    },
+    {
+      "id": "security",
+      "name": "Security",
+      "icon": "lock",
+      "apps": [
+        "password-manager"
+      ]
+    }
+  ],
+  "statusTypes": {
+    "deployed": "Backend deployed and healthy on Cloudflare Workers",
+    "frontend-only": "No backend required, frontend only app",
+    "needs-rewrite": "Backend needs to be rewritten to use Fluxez SDK",
+    "planned": "Not yet implemented"
+  },
+  "stats": {
+    "totalApps": 46,
+    "withBackend": 41,
+    "frontendOnly": 5,
+    "deployed": 41
+  }
+}

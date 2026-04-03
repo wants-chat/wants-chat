@@ -1,0 +1,352 @@
+/**
+ * Team Management Feature Definition
+ *
+ * Team members, roles, permissions, and organization
+ * management for multi-user applications.
+ */
+
+import { FeatureDefinition } from '../../interfaces/feature.interface';
+
+export const TEAM_MANAGEMENT_FEATURE: FeatureDefinition = {
+  id: 'team-management',
+  name: 'Team Management',
+  category: 'business',
+  description: 'Team members, roles, permissions, and organization structure',
+  icon: 'users-cog',
+
+  includedInAppTypes: [
+    'saas',
+    'project-management',
+    'team-collaboration',
+    'enterprise',
+    'agency',
+    'startup',
+    'hr-management',
+    'crm',
+  ],
+
+  activationKeywords: [
+    'team',
+    'team management',
+    'members',
+    'roles',
+    'permissions',
+    'organization',
+    'invite members',
+    'user management',
+    'access control',
+  ],
+
+  enabledByDefault: false,
+  optional: true,
+
+  dependencies: ['user-auth'],
+  conflicts: [],
+
+  pages: [
+    {
+      id: 'team-list',
+      route: '/team',
+      section: 'frontend',
+      title: 'Team',
+      authRequired: true,
+      templateId: 'team-list',
+      components: [
+        'members-grid',
+        'member-card',
+        'invite-button',
+        'role-filter',
+      ],
+      layout: 'default',
+    },
+    {
+      id: 'member-detail',
+      route: '/team/:id',
+      section: 'frontend',
+      title: 'Member',
+      authRequired: true,
+      templateId: 'member-detail',
+      components: [
+        'member-header',
+        'member-info',
+        'member-activity',
+        'role-assignment',
+      ],
+      layout: 'default',
+    },
+    {
+      id: 'invite-members',
+      route: '/team/invite',
+      section: 'frontend',
+      title: 'Invite Members',
+      authRequired: true,
+      templateId: 'invite-members',
+      components: [
+        'invite-form',
+        'bulk-invite',
+        'pending-invites',
+      ],
+      layout: 'default',
+    },
+    {
+      id: 'roles-permissions',
+      route: '/admin/roles',
+      section: 'admin',
+      title: 'Roles & Permissions',
+      authRequired: true,
+      templateId: 'roles-permissions',
+      components: [
+        'roles-list',
+        'role-editor',
+        'permissions-matrix',
+        'create-role-button',
+      ],
+      layout: 'admin',
+    },
+    {
+      id: 'organization-settings',
+      route: '/admin/organization',
+      section: 'admin',
+      title: 'Organization',
+      authRequired: true,
+      templateId: 'organization-settings',
+      components: [
+        'org-info-form',
+        'branding-settings',
+        'billing-info',
+        'departments-list',
+      ],
+      layout: 'admin',
+    },
+  ],
+
+  components: [
+    // Team list
+    'members-grid',
+    'member-card',
+    'invite-button',
+    'role-filter',
+
+    // Member detail
+    'member-header',
+    'member-info',
+    'member-activity',
+    'role-assignment',
+
+    // Invite
+    'invite-form',
+    'bulk-invite',
+    'pending-invites',
+    'invite-link',
+
+    // Roles
+    'roles-list',
+    'role-editor',
+    'permissions-matrix',
+    'create-role-button',
+
+    // Organization
+    'org-info-form',
+    'branding-settings',
+    'billing-info',
+    'departments-list',
+  ],
+
+  entities: [
+    {
+      name: 'team_members',
+      displayName: 'Team Members',
+      description: 'Team members',
+      isCore: true,
+      fields: [
+        { name: 'id', type: 'uuid', primaryKey: true, default: 'gen_random_uuid()' },
+        { name: 'user_id', type: 'uuid', required: true },
+        { name: 'organization_id', type: 'uuid', references: { table: 'organizations' } },
+        { name: 'role_id', type: 'uuid', references: { table: 'roles' } },
+        { name: 'status', type: 'text', default: "'active'" },
+        { name: 'joined_at', type: 'timestamptz', default: 'now()' },
+        { name: 'invited_by', type: 'uuid' },
+        { name: 'department', type: 'text' },
+        { name: 'title', type: 'text' },
+        { name: 'created_at', type: 'timestamptz', default: 'now()' },
+        { name: 'updated_at', type: 'timestamptz', default: 'now()' },
+      ],
+    },
+    {
+      name: 'roles',
+      displayName: 'Roles',
+      description: 'User roles',
+      isCore: true,
+      fields: [
+        { name: 'id', type: 'uuid', primaryKey: true, default: 'gen_random_uuid()' },
+        { name: 'name', type: 'text', required: true },
+        { name: 'slug', type: 'text', unique: true },
+        { name: 'description', type: 'text' },
+        { name: 'permissions', type: 'jsonb' },
+        { name: 'is_system', type: 'boolean', default: 'false' },
+        { name: 'organization_id', type: 'uuid' },
+        { name: 'created_at', type: 'timestamptz', default: 'now()' },
+        { name: 'updated_at', type: 'timestamptz', default: 'now()' },
+      ],
+    },
+    {
+      name: 'invitations',
+      displayName: 'Invitations',
+      description: 'Pending invites',
+      isCore: false,
+      fields: [
+        { name: 'id', type: 'uuid', primaryKey: true, default: 'gen_random_uuid()' },
+        { name: 'email', type: 'text', required: true },
+        { name: 'organization_id', type: 'uuid', references: { table: 'organizations' } },
+        { name: 'role_id', type: 'uuid', references: { table: 'roles' } },
+        { name: 'invited_by', type: 'uuid', required: true },
+        { name: 'token', type: 'text', unique: true },
+        { name: 'status', type: 'text', default: "'pending'" },
+        { name: 'expires_at', type: 'timestamptz' },
+        { name: 'accepted_at', type: 'timestamptz' },
+        { name: 'created_at', type: 'timestamptz', default: 'now()' },
+      ],
+    },
+    {
+      name: 'organizations',
+      displayName: 'Organizations',
+      description: 'Organization/team',
+      isCore: false,
+      fields: [
+        { name: 'id', type: 'uuid', primaryKey: true, default: 'gen_random_uuid()' },
+        { name: 'name', type: 'text', required: true },
+        { name: 'slug', type: 'text', unique: true },
+        { name: 'logo_url', type: 'text' },
+        { name: 'website', type: 'text' },
+        { name: 'owner_id', type: 'uuid', required: true },
+        { name: 'settings', type: 'jsonb' },
+        { name: 'billing_email', type: 'text' },
+        { name: 'plan', type: 'text' },
+        { name: 'created_at', type: 'timestamptz', default: 'now()' },
+        { name: 'updated_at', type: 'timestamptz', default: 'now()' },
+      ],
+    },
+  ],
+
+  apiRoutes: [
+    {
+      method: 'GET',
+      path: '/team',
+      auth: true,
+      handler: 'crud',
+      entity: 'team_members',
+      description: 'List members',
+    },
+    {
+      method: 'GET',
+      path: '/team/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'team_members',
+      description: 'Get member',
+    },
+    {
+      method: 'PUT',
+      path: '/team/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'team_members',
+      description: 'Update member',
+    },
+    {
+      method: 'DELETE',
+      path: '/team/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'team_members',
+      description: 'Remove member',
+    },
+    {
+      method: 'POST',
+      path: '/team/invite',
+      auth: true,
+      handler: 'custom',
+      entity: 'invitations',
+      description: 'Invite member',
+    },
+    {
+      method: 'POST',
+      path: '/team/invite/accept',
+      auth: true,
+      handler: 'custom',
+      entity: 'invitations',
+      description: 'Accept invite',
+    },
+    {
+      method: 'GET',
+      path: '/roles',
+      auth: true,
+      handler: 'crud',
+      entity: 'roles',
+      description: 'List roles',
+    },
+    {
+      method: 'POST',
+      path: '/roles',
+      auth: true,
+      handler: 'crud',
+      entity: 'roles',
+      description: 'Create role',
+    },
+    {
+      method: 'PUT',
+      path: '/roles/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'roles',
+      description: 'Update role',
+    },
+    {
+      method: 'DELETE',
+      path: '/roles/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'roles',
+      description: 'Delete role',
+    },
+    {
+      method: 'POST',
+      path: '/team/:id/role',
+      auth: true,
+      handler: 'custom',
+      entity: 'team_members',
+      description: 'Assign role',
+    },
+  ],
+
+  config: [
+    {
+      key: 'maxMembers',
+      label: 'Max Team Members',
+      type: 'number',
+      default: 100,
+      description: 'Maximum team size',
+    },
+    {
+      key: 'defaultRole',
+      label: 'Default Role',
+      type: 'string',
+      default: 'member',
+      description: 'Role for new members',
+    },
+    {
+      key: 'inviteExpireDays',
+      label: 'Invite Expiration (days)',
+      type: 'number',
+      default: 7,
+      description: 'Days until invite expires',
+    },
+    {
+      key: 'allowSelfRemove',
+      label: 'Allow Self-Removal',
+      type: 'boolean',
+      default: true,
+      description: 'Let members leave team',
+    },
+  ],
+};

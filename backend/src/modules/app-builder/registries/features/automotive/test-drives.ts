@@ -1,0 +1,450 @@
+/**
+ * Test Drives Feature Definition
+ *
+ * Complete test drive scheduling and management for automotive applications.
+ * Supports online booking, calendar integration, and follow-up tracking.
+ */
+
+import { FeatureDefinition } from '../../../interfaces/feature.interface';
+
+export const TEST_DRIVES_FEATURE: FeatureDefinition = {
+  id: 'test-drives',
+  name: 'Test Drives',
+  category: 'business',
+  description: 'Schedule and manage test drive appointments with calendar integration and follow-up tracking',
+  icon: 'steering-wheel',
+
+  includedInAppTypes: [
+    'automotive-dealership',
+    'car-dealership',
+    'used-car-lot',
+    'vehicle-marketplace',
+    'auto-dealer',
+    'motorcycle-dealership',
+    'rv-dealership',
+    'truck-dealership',
+  ],
+
+  activationKeywords: [
+    'test drive',
+    'test drives',
+    'schedule test drive',
+    'book test drive',
+    'test drive appointment',
+    'vehicle test',
+    'car test drive',
+    'demo drive',
+    'vehicle demo',
+    'try before buy',
+    'test drive booking',
+    'drive appointment',
+  ],
+
+  enabledByDefault: true,
+  optional: false,
+
+  dependencies: ['user-auth', 'vehicle-inventory', 'calendar'],
+  conflicts: [],
+
+  pages: [
+    {
+      id: 'schedule-test-drive',
+      route: '/test-drive/:vehicleId',
+      section: 'frontend',
+      title: 'Schedule Test Drive',
+      authRequired: false,
+      templateId: 'schedule-test-drive',
+      components: [
+        'vehicle-summary-card',
+        'date-picker',
+        'time-slot-selector',
+        'customer-info-form',
+        'drivers-license-upload',
+        'booking-confirmation',
+      ],
+      layout: 'centered',
+    },
+    {
+      id: 'test-drive-confirmation',
+      route: '/test-drive/confirmation/:bookingId',
+      section: 'frontend',
+      title: 'Booking Confirmed',
+      authRequired: false,
+      templateId: 'test-drive-confirmation',
+      components: [
+        'booking-success',
+        'appointment-details',
+        'add-to-calendar',
+        'directions-map',
+        'what-to-bring',
+      ],
+      layout: 'centered',
+    },
+    {
+      id: 'my-test-drives',
+      route: '/my-test-drives',
+      section: 'frontend',
+      title: 'My Test Drives',
+      authRequired: true,
+      templateId: 'my-test-drives',
+      components: [
+        'upcoming-test-drives',
+        'past-test-drives',
+        'reschedule-button',
+        'cancel-button',
+      ],
+      layout: 'dashboard',
+    },
+    {
+      id: 'admin-test-drives',
+      route: '/admin/test-drives',
+      section: 'admin',
+      title: 'Manage Test Drives',
+      authRequired: true,
+      roles: ['admin', 'sales'],
+      templateId: 'admin-test-drives',
+      components: [
+        'test-drives-calendar',
+        'test-drives-table',
+        'status-filter',
+        'salesperson-assignment',
+        'follow-up-tracker',
+        'conversion-stats',
+      ],
+      layout: 'admin',
+    },
+    {
+      id: 'test-drive-detail',
+      route: '/admin/test-drives/:id',
+      section: 'admin',
+      title: 'Test Drive Details',
+      authRequired: true,
+      roles: ['admin', 'sales'],
+      templateId: 'test-drive-detail',
+      components: [
+        'customer-info',
+        'vehicle-info',
+        'appointment-info',
+        'notes-section',
+        'follow-up-actions',
+        'outcome-tracker',
+      ],
+      layout: 'admin',
+    },
+    {
+      id: 'availability-settings',
+      route: '/admin/test-drives/availability',
+      section: 'admin',
+      title: 'Availability Settings',
+      authRequired: true,
+      roles: ['admin'],
+      templateId: 'availability-settings',
+      components: [
+        'weekly-schedule',
+        'blocked-dates',
+        'max-appointments',
+        'buffer-time-settings',
+        'salesperson-availability',
+      ],
+      layout: 'admin',
+    },
+  ],
+
+  components: [
+    // Booking components
+    'vehicle-summary-card',
+    'date-picker',
+    'time-slot-selector',
+    'customer-info-form',
+    'drivers-license-upload',
+    'booking-confirmation',
+
+    // Confirmation components
+    'booking-success',
+    'appointment-details',
+    'add-to-calendar',
+    'directions-map',
+    'what-to-bring',
+
+    // Customer components
+    'upcoming-test-drives',
+    'past-test-drives',
+    'reschedule-button',
+    'cancel-button',
+
+    // Admin components
+    'test-drives-calendar',
+    'test-drives-table',
+    'status-filter',
+    'salesperson-assignment',
+    'follow-up-tracker',
+    'conversion-stats',
+    'customer-info',
+    'vehicle-info',
+    'appointment-info',
+    'notes-section',
+    'follow-up-actions',
+    'outcome-tracker',
+
+    // Settings components
+    'weekly-schedule',
+    'blocked-dates',
+    'max-appointments',
+    'buffer-time-settings',
+    'salesperson-availability',
+  ],
+
+  entities: [
+    {
+      name: 'test_drive_bookings',
+      displayName: 'Test Drive Bookings',
+      description: 'Test drive appointment records',
+      isCore: true,
+    },
+    {
+      name: 'test_drive_availability',
+      displayName: 'Test Drive Availability',
+      description: 'Available time slots for test drives',
+      isCore: true,
+    },
+    {
+      name: 'test_drive_notes',
+      displayName: 'Test Drive Notes',
+      description: 'Notes and follow-ups for test drives',
+      isCore: false,
+    },
+    {
+      name: 'salesperson_schedules',
+      displayName: 'Salesperson Schedules',
+      description: 'Salesperson availability schedules',
+      isCore: false,
+    },
+  ],
+
+  apiRoutes: [
+    // Booking CRUD
+    {
+      method: 'GET',
+      path: '/test-drives',
+      auth: true,
+      handler: 'crud',
+      entity: 'test_drive_bookings',
+      operation: 'list',
+      description: 'List all test drive bookings',
+    },
+    {
+      method: 'GET',
+      path: '/test-drives/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'test_drive_bookings',
+      operation: 'get',
+      description: 'Get test drive booking details',
+    },
+    {
+      method: 'POST',
+      path: '/test-drives',
+      auth: false,
+      handler: 'crud',
+      entity: 'test_drive_bookings',
+      operation: 'create',
+      description: 'Create new test drive booking',
+    },
+    {
+      method: 'PUT',
+      path: '/test-drives/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'test_drive_bookings',
+      operation: 'update',
+      description: 'Update test drive booking',
+    },
+    {
+      method: 'DELETE',
+      path: '/test-drives/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'test_drive_bookings',
+      operation: 'delete',
+      description: 'Cancel test drive booking',
+    },
+
+    // Availability
+    {
+      method: 'GET',
+      path: '/test-drives/availability/:vehicleId',
+      auth: false,
+      handler: 'custom',
+      entity: 'test_drive_availability',
+      description: 'Get available time slots for a vehicle',
+    },
+    {
+      method: 'GET',
+      path: '/test-drives/availability/date/:date',
+      auth: false,
+      handler: 'custom',
+      entity: 'test_drive_availability',
+      description: 'Get available slots for a specific date',
+    },
+    {
+      method: 'PUT',
+      path: '/test-drives/availability',
+      auth: true,
+      role: 'admin',
+      handler: 'custom',
+      entity: 'test_drive_availability',
+      description: 'Update availability settings',
+    },
+
+    // Status updates
+    {
+      method: 'PUT',
+      path: '/test-drives/:id/status',
+      auth: true,
+      handler: 'custom',
+      entity: 'test_drive_bookings',
+      description: 'Update booking status',
+    },
+    {
+      method: 'PUT',
+      path: '/test-drives/:id/reschedule',
+      auth: true,
+      handler: 'custom',
+      entity: 'test_drive_bookings',
+      description: 'Reschedule test drive',
+    },
+    {
+      method: 'PUT',
+      path: '/test-drives/:id/assign',
+      auth: true,
+      role: 'admin',
+      handler: 'custom',
+      entity: 'test_drive_bookings',
+      description: 'Assign salesperson to test drive',
+    },
+
+    // Notes
+    {
+      method: 'GET',
+      path: '/test-drives/:id/notes',
+      auth: true,
+      handler: 'crud',
+      entity: 'test_drive_notes',
+      operation: 'list',
+      description: 'Get notes for a test drive',
+    },
+    {
+      method: 'POST',
+      path: '/test-drives/:id/notes',
+      auth: true,
+      handler: 'crud',
+      entity: 'test_drive_notes',
+      operation: 'create',
+      description: 'Add note to test drive',
+    },
+
+    // Follow-up
+    {
+      method: 'POST',
+      path: '/test-drives/:id/follow-up',
+      auth: true,
+      handler: 'custom',
+      entity: 'test_drive_bookings',
+      description: 'Schedule follow-up for test drive',
+    },
+    {
+      method: 'PUT',
+      path: '/test-drives/:id/outcome',
+      auth: true,
+      handler: 'custom',
+      entity: 'test_drive_bookings',
+      description: 'Record test drive outcome',
+    },
+
+    // Analytics
+    {
+      method: 'GET',
+      path: '/test-drives/stats',
+      auth: true,
+      role: 'admin',
+      handler: 'custom',
+      entity: 'test_drive_bookings',
+      description: 'Get test drive statistics',
+    },
+    {
+      method: 'GET',
+      path: '/test-drives/conversion-rate',
+      auth: true,
+      role: 'admin',
+      handler: 'custom',
+      entity: 'test_drive_bookings',
+      description: 'Get conversion rate from test drives',
+    },
+  ],
+
+  config: [
+    {
+      key: 'requireDriversLicense',
+      label: 'Require Drivers License Upload',
+      type: 'boolean',
+      default: true,
+      description: 'Require customers to upload drivers license',
+    },
+    {
+      key: 'defaultDuration',
+      label: 'Default Test Drive Duration (minutes)',
+      type: 'number',
+      default: 30,
+      description: 'Default duration for test drive appointments',
+    },
+    {
+      key: 'bufferTime',
+      label: 'Buffer Time Between Appointments (minutes)',
+      type: 'number',
+      default: 15,
+      description: 'Time buffer between test drive appointments',
+    },
+    {
+      key: 'maxAdvanceBooking',
+      label: 'Max Advance Booking (days)',
+      type: 'number',
+      default: 14,
+      description: 'How far in advance customers can book',
+    },
+    {
+      key: 'minAdvanceBooking',
+      label: 'Min Advance Booking (hours)',
+      type: 'number',
+      default: 2,
+      description: 'Minimum hours before appointment to book',
+    },
+    {
+      key: 'sendReminders',
+      label: 'Send Appointment Reminders',
+      type: 'boolean',
+      default: true,
+      description: 'Send reminder emails/SMS before appointments',
+    },
+    {
+      key: 'reminderHours',
+      label: 'Reminder Hours Before',
+      type: 'number',
+      default: 24,
+      description: 'Hours before appointment to send reminder',
+    },
+    {
+      key: 'allowOnlineCancel',
+      label: 'Allow Online Cancellation',
+      type: 'boolean',
+      default: true,
+      description: 'Allow customers to cancel online',
+    },
+    {
+      key: 'cancelDeadline',
+      label: 'Cancellation Deadline (hours)',
+      type: 'number',
+      default: 4,
+      description: 'Hours before appointment when cancellation is no longer allowed',
+    },
+  ],
+};

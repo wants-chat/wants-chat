@@ -1,0 +1,21 @@
+// Help Component Generators
+export { generateArticleSearchHelp } from './article-search-help.generator';
+export { generateChangelogDisplay } from './changelog-display.generator';
+export { generateChatbotSupport } from './chatbot-support.generator';
+export { generateDocumentationViewer } from './documentation-viewer.generator';
+export { generateFaqAccordionCategorized } from './faq-accordion-categorized.generator';
+export { generateFaqAccordionSimple } from './faq-accordion-simple.generator';
+export { generateFaqSearch } from './faq-search.generator';
+export { generateGuidedTourWalkthrough } from './guided-tour-walkthrough.generator';
+export { generateHelpArticlePage } from './help-article-page.generator';
+export { generateHelpCenterHome } from './help-center-home.generator';
+export { generateHelpSidebarContextual } from './help-sidebar-contextual.generator';
+export { generateKnowledgeBaseCategories } from './knowledge-base-categories.generator';
+export { generateLiveChatWidgetHelp } from './live-chat-widget-help.generator';
+export { generateReviewHelpfulVoting } from './review-helpful-voting.generator';
+export { generateSupportTicketDetailHelp } from './support-ticket-detail-help.generator';
+export { generateSupportTicketForm } from './support-ticket-form.generator';
+export { generateSupportTicketListHelp } from './support-ticket-list-help.generator';
+export { generateTroubleshootingWizard } from './troubleshooting-wizard.generator';
+export { generateTutorialWalkthrough } from './tutorial-walkthrough.generator';
+export { generateVideoTutorialsGallery } from './video-tutorials-gallery.generator';

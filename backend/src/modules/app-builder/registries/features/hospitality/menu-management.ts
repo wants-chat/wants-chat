@@ -1,0 +1,478 @@
+/**
+ * Menu Management Feature Definition
+ *
+ * Complete restaurant menu management with categories, modifiers,
+ * pricing rules, and seasonal items.
+ */
+
+import { FeatureDefinition } from '../../../interfaces/feature.interface';
+
+export const MENU_MANAGEMENT_FEATURE: FeatureDefinition = {
+  id: 'menu-management',
+  name: 'Menu Management',
+  category: 'hospitality',
+  description: 'Restaurant menu builder with categories, modifiers, and dynamic pricing',
+  icon: 'book-open',
+
+  includedInAppTypes: [
+    'restaurant',
+    'hotel',
+    'cafe',
+    'bar',
+    'bakery',
+    'catering',
+    'food-truck',
+    'hostel',
+    'resort',
+    'vacation-rental',
+    'fine-dining',
+    'bistro',
+    'pub',
+    'pizzeria',
+    'fast-food',
+    'deli',
+  ],
+
+  activationKeywords: [
+    'menu',
+    'menu management',
+    'menu builder',
+    'food menu',
+    'drink menu',
+    'menu items',
+    'menu categories',
+    'modifiers',
+    'add-ons',
+    'toppings',
+    'menu pricing',
+    'digital menu',
+    'qr menu',
+  ],
+
+  enabledByDefault: false,
+  optional: true,
+
+  dependencies: ['user-auth'],
+  conflicts: [],
+
+  pages: [
+    {
+      id: 'menu-builder',
+      route: '/admin/menu',
+      section: 'admin',
+      title: 'Menu Builder',
+      authRequired: true,
+      templateId: 'menu-builder',
+      components: [
+        'menu-editor',
+        'drag-drop-items',
+        'category-sorter',
+        'preview-panel',
+      ],
+      layout: 'admin',
+    },
+    {
+      id: 'menu-items',
+      route: '/admin/menu/items',
+      section: 'admin',
+      title: 'Menu Items',
+      authRequired: true,
+      templateId: 'menu-items',
+      components: [
+        'item-form',
+        'items-grid',
+        'item-filters',
+        'bulk-price-update',
+      ],
+      layout: 'admin',
+    },
+    {
+      id: 'menu-categories',
+      route: '/admin/menu/categories',
+      section: 'admin',
+      title: 'Menu Categories',
+      authRequired: true,
+      templateId: 'menu-categories',
+      components: [
+        'category-list',
+        'category-form',
+        'subcategory-tree',
+        'category-images',
+      ],
+      layout: 'admin',
+    },
+    {
+      id: 'menu-modifiers',
+      route: '/admin/menu/modifiers',
+      section: 'admin',
+      title: 'Modifiers & Add-ons',
+      authRequired: true,
+      templateId: 'menu-modifiers',
+      components: [
+        'modifier-groups',
+        'modifier-form',
+        'modifier-pricing',
+        'required-modifiers',
+      ],
+      layout: 'admin',
+    },
+    {
+      id: 'public-menu',
+      route: '/menu',
+      section: 'frontend',
+      title: 'Our Menu',
+      authRequired: false,
+      templateId: 'public-menu',
+      components: [
+        'menu-display',
+        'category-tabs',
+        'item-card',
+        'dietary-filters',
+        'allergen-info',
+      ],
+      layout: 'default',
+    },
+  ],
+
+  components: [
+    // Menu builder components
+    'menu-editor',
+    'drag-drop-items',
+    'category-sorter',
+    'preview-panel',
+
+    // Item management components
+    'item-form',
+    'items-grid',
+    'item-filters',
+    'bulk-price-update',
+    'item-card',
+    'item-image-upload',
+
+    // Category components
+    'category-list',
+    'category-form',
+    'subcategory-tree',
+    'category-images',
+    'category-tabs',
+
+    // Modifier components
+    'modifier-groups',
+    'modifier-form',
+    'modifier-pricing',
+    'required-modifiers',
+
+    // Pricing components
+    'pricing-rules',
+    'time-based-pricing',
+    'happy-hour-settings',
+
+    // Display components
+    'menu-display',
+    'dietary-filters',
+    'allergen-info',
+    'nutrition-info',
+    'qr-code-generator',
+  ],
+
+  entities: [
+    {
+      name: 'menus',
+      displayName: 'Menus',
+      description: 'Restaurant menus (breakfast, lunch, dinner, etc.)',
+      isCore: true,
+    },
+    {
+      name: 'menu_items',
+      displayName: 'Menu Items',
+      description: 'Individual dishes and drinks',
+      isCore: true,
+    },
+    {
+      name: 'menu_categories',
+      displayName: 'Menu Categories',
+      description: 'Categories for organizing menu items',
+      isCore: true,
+    },
+    {
+      name: 'modifiers',
+      displayName: 'Modifiers',
+      description: 'Add-ons and customizations for items',
+      isCore: true,
+    },
+    {
+      name: 'modifier_groups',
+      displayName: 'Modifier Groups',
+      description: 'Groups of related modifiers',
+      isCore: false,
+    },
+    {
+      name: 'prices',
+      displayName: 'Prices',
+      description: 'Price variations and rules',
+      isCore: false,
+    },
+    {
+      name: 'allergens',
+      displayName: 'Allergens',
+      description: 'Allergen information for items',
+      isCore: false,
+    },
+  ],
+
+  apiRoutes: [
+    // Menu routes
+    {
+      method: 'GET',
+      path: '/menus',
+      auth: false,
+      handler: 'crud',
+      entity: 'menus',
+      description: 'List all menus',
+    },
+    {
+      method: 'POST',
+      path: '/menus',
+      auth: true,
+      handler: 'crud',
+      entity: 'menus',
+      description: 'Create menu',
+    },
+    {
+      method: 'GET',
+      path: '/menus/:id',
+      auth: false,
+      handler: 'crud',
+      entity: 'menus',
+      description: 'Get menu details',
+    },
+    {
+      method: 'PUT',
+      path: '/menus/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'menus',
+      description: 'Update menu',
+    },
+    {
+      method: 'DELETE',
+      path: '/menus/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'menus',
+      description: 'Delete menu',
+    },
+
+    // Menu items routes
+    {
+      method: 'GET',
+      path: '/menu-items',
+      auth: false,
+      handler: 'crud',
+      entity: 'menu_items',
+      description: 'List menu items',
+    },
+    {
+      method: 'POST',
+      path: '/menu-items',
+      auth: true,
+      handler: 'crud',
+      entity: 'menu_items',
+      description: 'Create menu item',
+    },
+    {
+      method: 'GET',
+      path: '/menu-items/:id',
+      auth: false,
+      handler: 'crud',
+      entity: 'menu_items',
+      description: 'Get menu item details',
+    },
+    {
+      method: 'PUT',
+      path: '/menu-items/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'menu_items',
+      description: 'Update menu item',
+    },
+    {
+      method: 'DELETE',
+      path: '/menu-items/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'menu_items',
+      description: 'Delete menu item',
+    },
+    {
+      method: 'POST',
+      path: '/menu-items/:id/toggle-availability',
+      auth: true,
+      handler: 'custom',
+      entity: 'menu_items',
+      description: 'Toggle item availability',
+    },
+    {
+      method: 'PUT',
+      path: '/menu-items/bulk-update',
+      auth: true,
+      handler: 'custom',
+      entity: 'menu_items',
+      description: 'Bulk update items',
+    },
+
+    // Category routes
+    {
+      method: 'GET',
+      path: '/menu-categories',
+      auth: false,
+      handler: 'crud',
+      entity: 'menu_categories',
+      description: 'List categories',
+    },
+    {
+      method: 'POST',
+      path: '/menu-categories',
+      auth: true,
+      handler: 'crud',
+      entity: 'menu_categories',
+      description: 'Create category',
+    },
+    {
+      method: 'PUT',
+      path: '/menu-categories/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'menu_categories',
+      description: 'Update category',
+    },
+    {
+      method: 'DELETE',
+      path: '/menu-categories/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'menu_categories',
+      description: 'Delete category',
+    },
+    {
+      method: 'PUT',
+      path: '/menu-categories/reorder',
+      auth: true,
+      handler: 'custom',
+      entity: 'menu_categories',
+      description: 'Reorder categories',
+    },
+
+    // Modifier routes
+    {
+      method: 'GET',
+      path: '/modifiers',
+      auth: false,
+      handler: 'crud',
+      entity: 'modifiers',
+      description: 'List modifiers',
+    },
+    {
+      method: 'POST',
+      path: '/modifiers',
+      auth: true,
+      handler: 'crud',
+      entity: 'modifiers',
+      description: 'Create modifier',
+    },
+    {
+      method: 'PUT',
+      path: '/modifiers/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'modifiers',
+      description: 'Update modifier',
+    },
+    {
+      method: 'DELETE',
+      path: '/modifiers/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'modifiers',
+      description: 'Delete modifier',
+    },
+
+    // Modifier groups routes
+    {
+      method: 'GET',
+      path: '/modifier-groups',
+      auth: false,
+      handler: 'crud',
+      entity: 'modifier_groups',
+      description: 'List modifier groups',
+    },
+    {
+      method: 'POST',
+      path: '/modifier-groups',
+      auth: true,
+      handler: 'crud',
+      entity: 'modifier_groups',
+      description: 'Create modifier group',
+    },
+    {
+      method: 'PUT',
+      path: '/modifier-groups/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'modifier_groups',
+      description: 'Update modifier group',
+    },
+  ],
+
+  config: [
+    {
+      key: 'showPrices',
+      label: 'Show Prices',
+      type: 'boolean',
+      default: true,
+      description: 'Display prices on public menu',
+    },
+    {
+      key: 'showNutrition',
+      label: 'Show Nutrition Info',
+      type: 'boolean',
+      default: false,
+      description: 'Display nutrition information on items',
+    },
+    {
+      key: 'showAllergens',
+      label: 'Show Allergens',
+      type: 'boolean',
+      default: true,
+      description: 'Display allergen information on items',
+    },
+    {
+      key: 'enableQrMenu',
+      label: 'Enable QR Code Menu',
+      type: 'boolean',
+      default: true,
+      description: 'Generate QR codes for digital menu access',
+    },
+    {
+      key: 'currency',
+      label: 'Currency',
+      type: 'string',
+      default: 'USD',
+      description: 'Currency for menu prices',
+    },
+    {
+      key: 'taxInclusive',
+      label: 'Tax Inclusive Pricing',
+      type: 'boolean',
+      default: false,
+      description: 'Prices include tax',
+    },
+    {
+      key: 'happyHourEnabled',
+      label: 'Enable Happy Hour Pricing',
+      type: 'boolean',
+      default: false,
+      description: 'Support time-based pricing rules',
+    },
+  ],
+};

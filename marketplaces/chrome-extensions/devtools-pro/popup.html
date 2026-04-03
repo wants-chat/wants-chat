@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevTools Pro</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 520px;
+      min-height: 580px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f0f1a;
+      color: #e0e0e0;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left h1 {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-left p {
+      font-size: 11px;
+      opacity: 0.9;
+      margin-top: 2px;
+    }
+
+    .pro-badge {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #000;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .user-status {
+      text-align: right;
+      font-size: 11px;
+    }
+
+    .user-status .plan {
+      font-weight: 600;
+    }
+
+    .user-status .credits {
+      opacity: 0.8;
+    }
+
+    .tabs {
+      display: flex;
+      background: #1a1a2e;
+      border-bottom: 1px solid #2d2d44;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab {
+      padding: 10px 14px;
+      cursor: pointer;
+      font-size: 12px;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tab:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .tab.active {
+      border-bottom-color: #8b5cf6;
+      color: #a78bfa;
+    }
+
+    .tab .ai-icon {
+      width: 14px;
+      height: 14px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      color: #000;
+      font-weight: 700;
+    }
+
+    .tool-container {
+      padding: 16px;
+      display: none;
+      min-height: 400px;
+    }
+
+    .tool-container.active {
+      display: block;
+    }
+
+    .tool-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .tool-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #a78bfa;
+    }
+
+    .tool-subtitle {
+      font-size: 11px;
+      color: #666;
+      margin-top: 2px;
+    }
+
+    .free-badge {
+      background: #22c55e;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    .pro-only-badge {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #000;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    textarea, input[type="text"], select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #2d2d44;
+      border-radius: 8px;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+      font-size: 12px;
+      resize: vertical;
+    }
+
+    textarea {
+      min-height: 140px;
+    }
+
+    textarea:focus, input:focus, select:focus {
+      outline: none;
+      border-color: #8b5cf6;
+    }
+
+    .input-group {
+      margin-bottom: 12px;
+    }
+
+    .input-label {
+      font-size: 11px;
+      color: #888;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    button {
+      flex: 1;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    }
+
+    .btn-ai {
+      background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+      color: #000;
+      font-weight: 600;
+    }
+
+    .btn-ai:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+    }
+
+    .btn-secondary {
+      background: #2d2d44;
+      color: #e0e0e0;
+    }
+
+    .btn-secondary:hover {
+      background: #3d3d54;
+    }
+
+    .output-section {
+      margin-top: 12px;
+    }
+
+    .output-header {
+      font-size: 11px;
+      color: #888;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .copy-btn {
+      background: none;
+      border: 1px solid #2d2d44;
+      color: #8b5cf6;
+      padding: 4px 10px;
+      font-size: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      flex: none;
+    }
+
+    .copy-btn:hover {
+      background: #2d2d44;
+    }
+
+    .status {
+      font-size: 11px;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      text-align: center;
+      display: none;
+    }
+
+    .status.success {
+      background: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .status.error {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .status.loading {
+      background: rgba(139, 92, 246, 0.15);
+      color: #a78bfa;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      display: block;
+    }
+
+    .options-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .options-row label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .options-row input[type="radio"],
+    .options-row input[type="checkbox"] {
+      width: auto;
+    }
+
+    select {
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+
+    .upgrade-banner {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+      border: 1px solid #4c1d95;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    .upgrade-banner h3 {
+      font-size: 14px;
+      color: #fbbf24;
+      margin-bottom: 6px;
+    }
+
+    .upgrade-banner p {
+      font-size: 11px;
+      color: #a78bfa;
+      margin-bottom: 12px;
+    }
+
+    .upgrade-banner button {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      color: #000;
+      font-weight: 600;
+      padding: 10px 24px;
+      flex: none;
+    }
+
+    .result-card {
+      background: #1a1a2e;
+      border: 1px solid #2d2d44;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 12px;
+    }
+
+    .result-card h4 {
+      font-size: 12px;
+      color: #fbbf24;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .result-card ul {
+      list-style: none;
+      font-size: 11px;
+    }
+
+    .result-card li {
+      padding: 6px 0;
+      border-bottom: 1px solid #2d2d44;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .result-card li:last-child {
+      border-bottom: none;
+    }
+
+    .severity-high {
+      color: #ef4444;
+    }
+
+    .severity-medium {
+      color: #f59e0b;
+    }
+
+    .severity-low {
+      color: #22c55e;
+    }
+
+    .footer {
+      padding: 12px 16px;
+      text-align: center;
+      font-size: 10px;
+      color: #555;
+      border-top: 1px solid #2d2d44;
+      background: #0f0f1a;
+    }
+
+    .footer a {
+      color: #8b5cf6;
+      text-decoration: none;
+    }
+
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid transparent;
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-left">
+      <h1>DevTools Pro <span class="pro-badge">AI</span></h1>
+      <p>AI-powered developer utilities</p>
+    </div>
+    <div class="user-status">
+      <div class="plan" id="user-plan">Free Plan</div>
+      <div class="credits" id="user-credits">5 AI credits left</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tool="code-review"><span class="ai-icon">AI</span> Code Review</div>
+    <div class="tab" data-tool="error-explain"><span class="ai-icon">AI</span> Error Explainer</div>
+    <div class="tab" data-tool="regex"><span class="ai-icon">AI</span> Regex Builder</div>
+    <div class="tab" data-tool="typescript"><span class="ai-icon">AI</span> TS Generator</div>
+    <div class="tab" data-tool="json">JSON</div>
+    <div class="tab" data-tool="convert">Convert</div>
+  </div>
+
+  <!-- AI Code Review -->
+  <div class="tool-container active" id="code-review-tool">
+    <div class="tool-header">
+      <div>
+        <div class="tool-title">AI Code Review</div>
+        <div class="tool-subtitle">Get security issues, performance tips & best practices</div>
+      </div>
+      <span class="pro-only-badge">PRO</span>
+    </div>
+
+    <div class="input-group">
+      <label class="input-label">Select Language</label>
+      <select id="code-language">
+        <option value="javascript">JavaScript</option>
+        <option value="typescript">TypeScript</option>
+        <option value="python">Python</option>
+        <option value="java">Java</option>
+        <option value="go">Go</option>
+        <option value="rust">Rust</option>
+        <option value="php">PHP</option>
+        <option value="ruby">Ruby</option>
+        <option value="csharp">C#</option>
+        <option value="sql">SQL</option>
+      </select>
+    </div>
+
+    <textarea id="code-input" placeholder="Paste your code here for AI review...
+
+Example:
+function login(user, pass) {
+  const query = 'SELECT * FROM users WHERE username = \'' + user + '\' AND password = \'' + pass + '\'';
+  return db.execute(query);
+}"></textarea>
+
+    <div class="options-row">
+      <label><input type="checkbox" id="check-security" checked> Security</label>
+      <label><input type="checkbox" id="check-performance" checked> Performance</label>
+      <label><input type="checkbox" id="check-bestpractices" checked> Best Practices</label>
+      <label><input type="checkbox" id="check-bugs"> Potential Bugs</label>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-ai" id="btn-review-code">
+        <span class="ai-icon">AI</span> Review Code (1 credit)
+      </button>
+    </div>
+
+    <div id="code-review-status" class="status"></div>
+    <div id="code-review-result"></div>
+  </div>
+
+  <!-- AI Error Explainer -->
+  <div class="tool-container" id="error-explain-tool">
+    <div class="tool-header">
+      <div>
+        <div class="tool-title">AI Error Explainer</div>
+        <div class="tool-subtitle">Paste any error message, get explanation + fix</div>
+      </div>
+      <span class="pro-only-badge">PRO</span>
+    </div>
+
+    <textarea id="error-input" placeholder="Paste your error message here...
+
+Example:
+TypeError: Cannot read properties of undefined (reading 'map')
+    at UserList (UserList.jsx:15:23)
+    at renderWithHooks (react-dom.development.js:14985:18)"></textarea>
+
+    <div class="input-group">
+      <label class="input-label">Context (optional)</label>
+      <input type="text" id="error-context" placeholder="e.g., React app, Node.js server, Python script...">
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-ai" id="btn-explain-error">
+        <span class="ai-icon">AI</span> Explain Error (1 credit)
+      </button>
+    </div>
+
+    <div id="error-status" class="status"></div>
+    <div id="error-result"></div>
+  </div>
+
+  <!-- AI Regex Builder -->
+  <div class="tool-container" id="regex-tool">
+    <div class="tool-header">
+      <div>
+        <div class="tool-title">AI Regex Builder</div>
+        <div class="tool-subtitle">Describe what you want, get the regex pattern</div>
+      </div>
+      <span class="pro-only-badge">PRO</span>
+    </div>
+
+    <textarea id="regex-description" placeholder="Describe what you want to match in plain English...
+
+Examples:
+- Match email addresses
+- Extract all URLs from text
+- Validate phone numbers in format (xxx) xxx-xxxx
+- Match dates in YYYY-MM-DD format
+- Extract hashtags from social media posts"></textarea>
+
+    <div class="btn-row">
+      <button class="btn-ai" id="btn-build-regex">
+        <span class="ai-icon">AI</span> Generate Regex (1 credit)
+      </button>
+    </div>
+
+    <div id="regex-status" class="status"></div>
+
+    <div class="output-section">
+      <div class="output-header">
+        Generated Pattern
+        <button class="copy-btn" id="btn-copy-regex">Copy</button>
+      </div>
+      <textarea id="regex-output" readonly placeholder="Your regex pattern will appear here..."></textarea>
+    </div>
+
+    <div class="input-group" style="margin-top: 12px;">
+      <label class="input-label">Test String</label>
+      <textarea id="regex-test-input" style="min-height: 60px;" placeholder="Enter text to test the regex..."></textarea>
+    </div>
+    <div class="btn-row">
+      <button class="btn-secondary" id="btn-test-regex">Test Pattern</button>
+    </div>
+    <div id="regex-matches"></div>
+  </div>
+
+  <!-- AI TypeScript Generator -->
+  <div class="tool-container" id="typescript-tool">
+    <div class="tool-header">
+      <div>
+        <div class="tool-title">TypeScript Type Generator</div>
+        <div class="tool-subtitle">Paste JSON, get TypeScript interfaces</div>
+      </div>
+      <span class="free-badge">FREE</span>
+    </div>
+
+    <textarea id="ts-json-input" placeholder="Paste JSON to generate TypeScript types...
+
+Example:
+{
+  \"id\": 1,
+  \"name\": \"John Doe\",
+  \"email\": \"john@example.com\",
+  \"roles\": [\"admin\", \"user\"],
+  \"profile\": {
+    \"avatar\": \"https://...\",
+    \"bio\": \"Developer\"
+  }
+}"></textarea>
+
+    <div class="input-group">
+      <label class="input-label">Interface Name</label>
+      <input type="text" id="ts-interface-name" value="ApiResponse" placeholder="e.g., User, ApiResponse">
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-generate-ts">Generate Types</button>
+    </div>
+
+    <div id="ts-status" class="status"></div>
+
+    <div class="output-section">
+      <div class="output-header">
+        Generated TypeScript
+        <button class="copy-btn" id="btn-copy-ts">Copy</button>
+      </div>
+      <textarea id="ts-output" readonly placeholder="TypeScript interfaces will appear here..."></textarea>
+    </div>
+  </div>
+
+  <!-- JSON Tools (Free) -->
+  <div class="tool-container" id="json-tool">
+    <div class="tool-header">
+      <div>
+        <div class="tool-title">JSON Formatter & Validator</div>
+        <div class="tool-subtitle">Format, minify, and validate JSON</div>
+      </div>
+      <span class="free-badge">FREE</span>
+    </div>
+
+    <textarea id="json-input" placeholder="Paste your JSON here..."></textarea>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-format-json">Format</button>
+      <button class="btn-secondary" id="btn-minify-json">Minify</button>
+      <button class="btn-secondary" id="btn-validate-json">Validate</button>
+    </div>
+
+    <div id="json-status" class="status"></div>
+
+    <div class="output-section">
+      <div class="output-header">
+        Output
+        <button class="copy-btn" id="btn-copy-json">Copy</button>
+      </div>
+      <textarea id="json-output" readonly placeholder="Formatted output will appear here..."></textarea>
+    </div>
+  </div>
+
+  <!-- Converters (Free) -->
+  <div class="tool-container" id="convert-tool">
+    <div class="tool-header">
+      <div>
+        <div class="tool-title">Quick Converters</div>
+        <div class="tool-subtitle">Base64, URL, Hash, UUID</div>
+      </div>
+      <span class="free-badge">FREE</span>
+    </div>
+
+    <div class="input-group">
+      <label class="input-label">Select Converter</label>
+      <select id="converter-type">
+        <option value="base64-encode">Base64 Encode</option>
+        <option value="base64-decode">Base64 Decode</option>
+        <option value="url-encode">URL Encode</option>
+        <option value="url-decode">URL Decode</option>
+        <option value="hash-sha256">SHA-256 Hash</option>
+        <option value="hash-sha512">SHA-512 Hash</option>
+        <option value="uuid">Generate UUID</option>
+        <option value="jwt-decode">JWT Decode</option>
+      </select>
+    </div>
+
+    <textarea id="convert-input" placeholder="Enter text to convert..."></textarea>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-convert">Convert</button>
+    </div>
+
+    <div id="convert-status" class="status"></div>
+
+    <div class="output-section">
+      <div class="output-header">
+        Output
+        <button class="copy-btn" id="btn-copy-convert">Copy</button>
+      </div>
+      <textarea id="convert-output" readonly placeholder="Result will appear here..."></textarea>
+    </div>
+  </div>
+
+  <div class="footer">
+    <a href="https://wants.chat/devtools-pro" target="_blank">Upgrade to Pro</a> |
+    <a href="https://wants.chat" target="_blank">Powered by Wants.chat</a>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

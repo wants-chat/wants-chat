@@ -1,0 +1,463 @@
+/**
+ * Carrier Integration Feature Definition
+ *
+ * Multi-carrier shipping integration for logistics applications.
+ * Supports connecting to multiple carriers, rate shopping, and label generation.
+ */
+
+import { FeatureDefinition } from '../../../interfaces/feature.interface';
+
+export const CARRIER_INTEGRATION_FEATURE: FeatureDefinition = {
+  id: 'carrier-integration',
+  name: 'Carrier Integration',
+  category: 'business',
+  description: 'Integrate with multiple shipping carriers for rate comparison, label printing, and tracking',
+  icon: 'truck',
+
+  includedInAppTypes: [
+    'logistics',
+    'shipping',
+    'ecommerce',
+    'fulfillment',
+    '3pl',
+    'freight-broker',
+    'courier',
+    'parcel',
+  ],
+
+  activationKeywords: [
+    'carrier integration',
+    'multi carrier',
+    'shipping integration',
+    'carrier api',
+    'ups integration',
+    'fedex integration',
+    'usps integration',
+    'dhl integration',
+    'carrier connection',
+    'shipping api',
+    'shipping label',
+    'print label',
+    'carrier rates',
+    'rate shopping',
+    'carrier management',
+  ],
+
+  enabledByDefault: true,
+  optional: false,
+
+  dependencies: ['user-auth', 'shipment-tracking'],
+  conflicts: [],
+
+  pages: [
+    {
+      id: 'carrier-dashboard',
+      route: '/carriers',
+      section: 'frontend',
+      title: 'Carriers',
+      authRequired: true,
+      templateId: 'carrier-dashboard',
+      components: [
+        'carrier-grid',
+        'carrier-status-overview',
+        'rate-comparison-widget',
+        'recent-labels',
+      ],
+      layout: 'dashboard',
+    },
+    {
+      id: 'carrier-setup',
+      route: '/carriers/setup',
+      section: 'frontend',
+      title: 'Add Carrier',
+      authRequired: true,
+      roles: ['admin'],
+      templateId: 'carrier-setup',
+      components: [
+        'carrier-selector',
+        'carrier-credentials-form',
+        'account-type-picker',
+        'test-connection-button',
+        'carrier-settings',
+      ],
+      layout: 'default',
+    },
+    {
+      id: 'carrier-detail',
+      route: '/carriers/:id',
+      section: 'frontend',
+      title: 'Carrier Details',
+      authRequired: true,
+      roles: ['admin'],
+      templateId: 'carrier-detail',
+      components: [
+        'carrier-header',
+        'carrier-stats',
+        'service-list',
+        'carrier-settings-form',
+        'connection-status',
+        'usage-history',
+      ],
+      layout: 'default',
+    },
+    {
+      id: 'label-generator',
+      route: '/labels/create',
+      section: 'frontend',
+      title: 'Create Label',
+      authRequired: true,
+      templateId: 'label-generator',
+      components: [
+        'shipment-details-form',
+        'carrier-selector',
+        'service-picker',
+        'package-options',
+        'rate-preview',
+        'generate-label-button',
+      ],
+      layout: 'default',
+    },
+    {
+      id: 'labels-list',
+      route: '/labels',
+      section: 'frontend',
+      title: 'Shipping Labels',
+      authRequired: true,
+      templateId: 'labels-list',
+      components: [
+        'labels-table',
+        'label-filters',
+        'reprint-button',
+        'void-label-button',
+        'batch-print',
+      ],
+      layout: 'dashboard',
+    },
+    {
+      id: 'admin-carriers',
+      route: '/admin/carriers',
+      section: 'admin',
+      title: 'Manage Carriers',
+      authRequired: true,
+      roles: ['admin'],
+      templateId: 'admin-carriers',
+      components: [
+        'carriers-table',
+        'carrier-health-monitor',
+        'api-usage-chart',
+        'error-logs',
+        'carrier-settings',
+      ],
+      layout: 'admin',
+    },
+  ],
+
+  components: [
+    // Dashboard components
+    'carrier-grid',
+    'carrier-status-overview',
+    'rate-comparison-widget',
+    'recent-labels',
+
+    // Setup components
+    'carrier-selector',
+    'carrier-credentials-form',
+    'account-type-picker',
+    'test-connection-button',
+    'carrier-settings',
+
+    // Detail components
+    'carrier-header',
+    'carrier-stats',
+    'service-list',
+    'carrier-settings-form',
+    'connection-status',
+    'usage-history',
+
+    // Label components
+    'shipment-details-form',
+    'service-picker',
+    'package-options',
+    'rate-preview',
+    'generate-label-button',
+    'labels-table',
+    'label-filters',
+    'reprint-button',
+    'void-label-button',
+    'batch-print',
+
+    // Admin components
+    'carriers-table',
+    'carrier-health-monitor',
+    'api-usage-chart',
+    'error-logs',
+  ],
+
+  entities: [
+    {
+      name: 'carrier_accounts',
+      displayName: 'Carrier Accounts',
+      description: 'Connected carrier account configurations',
+      isCore: true,
+    },
+    {
+      name: 'carrier_services',
+      displayName: 'Carrier Services',
+      description: 'Available services per carrier',
+      isCore: true,
+    },
+    {
+      name: 'shipping_labels',
+      displayName: 'Shipping Labels',
+      description: 'Generated shipping labels',
+      isCore: true,
+    },
+    {
+      name: 'carrier_rates',
+      displayName: 'Carrier Rates',
+      description: 'Cached rate responses',
+      isCore: false,
+    },
+    {
+      name: 'carrier_api_logs',
+      displayName: 'API Logs',
+      description: 'Carrier API request/response logs',
+      isCore: false,
+    },
+  ],
+
+  apiRoutes: [
+    // Carrier accounts
+    {
+      method: 'GET',
+      path: '/carriers',
+      auth: true,
+      handler: 'crud',
+      entity: 'carrier_accounts',
+      operation: 'list',
+      description: 'List connected carriers',
+    },
+    {
+      method: 'GET',
+      path: '/carriers/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'carrier_accounts',
+      operation: 'get',
+      description: 'Get carrier details',
+    },
+    {
+      method: 'POST',
+      path: '/carriers',
+      auth: true,
+      role: 'admin',
+      handler: 'crud',
+      entity: 'carrier_accounts',
+      operation: 'create',
+      description: 'Add carrier account',
+    },
+    {
+      method: 'PUT',
+      path: '/carriers/:id',
+      auth: true,
+      role: 'admin',
+      handler: 'crud',
+      entity: 'carrier_accounts',
+      operation: 'update',
+      description: 'Update carrier settings',
+    },
+    {
+      method: 'DELETE',
+      path: '/carriers/:id',
+      auth: true,
+      role: 'admin',
+      handler: 'crud',
+      entity: 'carrier_accounts',
+      operation: 'delete',
+      description: 'Remove carrier account',
+    },
+
+    // Carrier connection
+    {
+      method: 'POST',
+      path: '/carriers/:id/test',
+      auth: true,
+      role: 'admin',
+      handler: 'custom',
+      entity: 'carrier_accounts',
+      description: 'Test carrier connection',
+    },
+    {
+      method: 'POST',
+      path: '/carriers/:id/sync-services',
+      auth: true,
+      role: 'admin',
+      handler: 'custom',
+      entity: 'carrier_services',
+      description: 'Sync available services',
+    },
+
+    // Carrier services
+    {
+      method: 'GET',
+      path: '/carriers/:id/services',
+      auth: true,
+      handler: 'crud',
+      entity: 'carrier_services',
+      operation: 'list',
+      description: 'List carrier services',
+    },
+
+    // Rate shopping
+    {
+      method: 'POST',
+      path: '/carriers/rates',
+      auth: true,
+      handler: 'custom',
+      entity: 'carrier_rates',
+      description: 'Get rates from all carriers',
+    },
+    {
+      method: 'POST',
+      path: '/carriers/:id/rates',
+      auth: true,
+      handler: 'custom',
+      entity: 'carrier_rates',
+      description: 'Get rates from specific carrier',
+    },
+
+    // Labels
+    {
+      method: 'GET',
+      path: '/labels',
+      auth: true,
+      handler: 'crud',
+      entity: 'shipping_labels',
+      operation: 'list',
+      description: 'List shipping labels',
+    },
+    {
+      method: 'GET',
+      path: '/labels/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'shipping_labels',
+      operation: 'get',
+      description: 'Get label details',
+    },
+    {
+      method: 'POST',
+      path: '/labels',
+      auth: true,
+      handler: 'custom',
+      entity: 'shipping_labels',
+      description: 'Generate shipping label',
+    },
+    {
+      method: 'POST',
+      path: '/labels/:id/void',
+      auth: true,
+      handler: 'custom',
+      entity: 'shipping_labels',
+      description: 'Void shipping label',
+    },
+    {
+      method: 'GET',
+      path: '/labels/:id/download',
+      auth: true,
+      handler: 'custom',
+      entity: 'shipping_labels',
+      description: 'Download label PDF',
+    },
+    {
+      method: 'POST',
+      path: '/labels/batch',
+      auth: true,
+      handler: 'custom',
+      entity: 'shipping_labels',
+      description: 'Generate multiple labels',
+    },
+
+    // API logs
+    {
+      method: 'GET',
+      path: '/admin/carriers/logs',
+      auth: true,
+      role: 'admin',
+      handler: 'crud',
+      entity: 'carrier_api_logs',
+      operation: 'list',
+      description: 'View API logs',
+    },
+  ],
+
+  config: [
+    {
+      key: 'enabledCarriers',
+      label: 'Enabled Carriers',
+      type: 'select',
+      default: 'all',
+      options: [
+        { value: 'all', label: 'All Available' },
+        { value: 'ups', label: 'UPS Only' },
+        { value: 'fedex', label: 'FedEx Only' },
+        { value: 'usps', label: 'USPS Only' },
+        { value: 'custom', label: 'Custom Selection' },
+      ],
+      description: 'Which carriers to enable',
+    },
+    {
+      key: 'defaultLabelFormat',
+      label: 'Default Label Format',
+      type: 'select',
+      default: 'pdf',
+      options: [
+        { value: 'pdf', label: 'PDF' },
+        { value: 'zpl', label: 'ZPL (Thermal)' },
+        { value: 'png', label: 'PNG Image' },
+        { value: 'gif', label: 'GIF Image' },
+      ],
+      description: 'Default format for shipping labels',
+    },
+    {
+      key: 'labelSize',
+      label: 'Label Size',
+      type: 'select',
+      default: '4x6',
+      options: [
+        { value: '4x6', label: '4" x 6"' },
+        { value: '4x8', label: '4" x 8"' },
+        { value: 'letter', label: 'Letter (8.5" x 11")' },
+      ],
+      description: 'Default label size',
+    },
+    {
+      key: 'enableRateCache',
+      label: 'Enable Rate Caching',
+      type: 'boolean',
+      default: true,
+      description: 'Cache carrier rates for faster quotes',
+    },
+    {
+      key: 'rateCacheDuration',
+      label: 'Rate Cache Duration (minutes)',
+      type: 'number',
+      default: 15,
+      description: 'How long to cache carrier rates',
+    },
+    {
+      key: 'enableAddressValidation',
+      label: 'Enable Address Validation',
+      type: 'boolean',
+      default: true,
+      description: 'Validate addresses before label creation',
+    },
+    {
+      key: 'logApiCalls',
+      label: 'Log API Calls',
+      type: 'boolean',
+      default: true,
+      description: 'Log carrier API requests and responses',
+    },
+  ],
+};

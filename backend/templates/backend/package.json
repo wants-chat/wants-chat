@@ -1,0 +1,25 @@
+{
+  "name": "fluxez-backend-template",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Pre-built backend template for Fluxez app generation",
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "wrangler deploy --dry-run --outdir=dist",
+    "deploy": "wrangler deploy",
+    "update:sdk": "npm uninstall @fluxez/node-sdk && npm install github:fluxez/node-sdk"
+  },
+  "dependencies": {
+    "hono": "^4.0.0",
+    "@fluxez/node-sdk": "github:fluxez/node-sdk",
+    "zod": "^3.23.0",
+    "@scalar/hono-api-reference": "^0.5.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241127.0",
+    "typescript": "^5.6.0",
+    "wrangler": "^3.91.0",
+    "tsx": "^4.7.0",
+    "dotenv": "^16.3.0"
+  }
+}

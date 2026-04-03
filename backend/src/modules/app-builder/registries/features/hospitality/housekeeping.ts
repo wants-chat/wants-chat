@@ -1,0 +1,442 @@
+/**
+ * Housekeeping Feature Definition
+ *
+ * Hotel housekeeping management with room status tracking,
+ * task assignment, and inspection checklists.
+ */
+
+import { FeatureDefinition } from '../../../interfaces/feature.interface';
+
+export const HOUSEKEEPING_FEATURE: FeatureDefinition = {
+  id: 'housekeeping',
+  name: 'Housekeeping Management',
+  category: 'hospitality',
+  description: 'Hotel housekeeping with room status, task lists, and inspections',
+  icon: 'sparkles',
+
+  includedInAppTypes: [
+    'restaurant',
+    'hotel',
+    'cafe',
+    'bar',
+    'bakery',
+    'catering',
+    'food-truck',
+    'hostel',
+    'resort',
+    'vacation-rental',
+    'bed-and-breakfast',
+    'motel',
+    'boutique-hotel',
+    'cleaning-service',
+  ],
+
+  activationKeywords: [
+    'housekeeping',
+    'room cleaning',
+    'room status',
+    'cleaning schedule',
+    'housekeeper',
+    'room inspection',
+    'turnover',
+    'maintenance',
+    'room service',
+    'cleaning tasks',
+    'dirty rooms',
+    'clean rooms',
+  ],
+
+  enabledByDefault: false,
+  optional: true,
+
+  dependencies: ['user-auth'],
+  conflicts: [],
+
+  pages: [
+    {
+      id: 'housekeeping-dashboard',
+      route: '/admin/housekeeping',
+      section: 'admin',
+      title: 'Housekeeping Dashboard',
+      authRequired: true,
+      templateId: 'housekeeping-dashboard',
+      components: [
+        'room-grid',
+        'status-overview',
+        'priority-rooms',
+        'staff-availability',
+      ],
+      layout: 'admin',
+    },
+    {
+      id: 'room-status',
+      route: '/admin/housekeeping/rooms',
+      section: 'admin',
+      title: 'Room Status',
+      authRequired: true,
+      templateId: 'room-status',
+      components: [
+        'room-status-grid',
+        'status-toggle',
+        'floor-filter',
+        'bulk-status-update',
+      ],
+      layout: 'admin',
+    },
+    {
+      id: 'task-list',
+      route: '/admin/housekeeping/tasks',
+      section: 'admin',
+      title: 'Housekeeping Tasks',
+      authRequired: true,
+      templateId: 'task-list',
+      components: [
+        'task-card',
+        'task-filters',
+        'assignment-panel',
+        'task-priority',
+      ],
+      layout: 'admin',
+    },
+    {
+      id: 'inspections',
+      route: '/admin/housekeeping/inspections',
+      section: 'admin',
+      title: 'Room Inspections',
+      authRequired: true,
+      templateId: 'inspections',
+      components: [
+        'inspection-checklist',
+        'inspection-history',
+        'photo-upload',
+        'issue-reporter',
+      ],
+      layout: 'admin',
+    },
+    {
+      id: 'housekeeper-view',
+      route: '/housekeeping',
+      section: 'frontend',
+      title: 'My Tasks',
+      authRequired: true,
+      templateId: 'housekeeper-view',
+      components: [
+        'my-tasks-list',
+        'room-details',
+        'task-complete',
+        'supply-request',
+      ],
+      layout: 'default',
+    },
+  ],
+
+  components: [
+    // Dashboard components
+    'room-grid',
+    'status-overview',
+    'priority-rooms',
+    'staff-availability',
+
+    // Status components
+    'room-status-grid',
+    'status-toggle',
+    'floor-filter',
+    'bulk-status-update',
+
+    // Task components
+    'task-card',
+    'task-filters',
+    'assignment-panel',
+    'task-priority',
+    'my-tasks-list',
+    'task-complete',
+
+    // Inspection components
+    'inspection-checklist',
+    'inspection-history',
+    'photo-upload',
+    'issue-reporter',
+
+    // Other components
+    'room-details',
+    'supply-request',
+    'staff-schedule',
+    'performance-stats',
+  ],
+
+  entities: [
+    {
+      name: 'housekeeping_tasks',
+      displayName: 'Housekeeping Tasks',
+      description: 'Room cleaning and maintenance tasks',
+      isCore: true,
+    },
+    {
+      name: 'room_status',
+      displayName: 'Room Status',
+      description: 'Current status of each room',
+      isCore: true,
+    },
+    {
+      name: 'inspections',
+      displayName: 'Inspections',
+      description: 'Room inspection records',
+      isCore: true,
+    },
+    {
+      name: 'housekeeping_staff',
+      displayName: 'Housekeeping Staff',
+      description: 'Housekeeping team members',
+      isCore: true,
+    },
+    {
+      name: 'inspection_items',
+      displayName: 'Inspection Items',
+      description: 'Checklist items for inspections',
+      isCore: false,
+    },
+    {
+      name: 'supply_requests',
+      displayName: 'Supply Requests',
+      description: 'Housekeeping supply requests',
+      isCore: false,
+    },
+  ],
+
+  apiRoutes: [
+    // Task routes
+    {
+      method: 'GET',
+      path: '/housekeeping-tasks',
+      auth: true,
+      handler: 'crud',
+      entity: 'housekeeping_tasks',
+      description: 'List tasks',
+    },
+    {
+      method: 'POST',
+      path: '/housekeeping-tasks',
+      auth: true,
+      handler: 'crud',
+      entity: 'housekeeping_tasks',
+      description: 'Create task',
+    },
+    {
+      method: 'GET',
+      path: '/housekeeping-tasks/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'housekeeping_tasks',
+      description: 'Get task details',
+    },
+    {
+      method: 'PUT',
+      path: '/housekeeping-tasks/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'housekeeping_tasks',
+      description: 'Update task',
+    },
+    {
+      method: 'DELETE',
+      path: '/housekeeping-tasks/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'housekeeping_tasks',
+      description: 'Delete task',
+    },
+    {
+      method: 'POST',
+      path: '/housekeeping-tasks/:id/complete',
+      auth: true,
+      handler: 'custom',
+      entity: 'housekeeping_tasks',
+      description: 'Mark task complete',
+    },
+    {
+      method: 'POST',
+      path: '/housekeeping-tasks/:id/assign',
+      auth: true,
+      handler: 'custom',
+      entity: 'housekeeping_tasks',
+      description: 'Assign task to staff',
+    },
+    {
+      method: 'GET',
+      path: '/housekeeping-tasks/my-tasks',
+      auth: true,
+      handler: 'custom',
+      entity: 'housekeeping_tasks',
+      description: 'Get my assigned tasks',
+    },
+
+    // Room status routes
+    {
+      method: 'GET',
+      path: '/room-status',
+      auth: true,
+      handler: 'crud',
+      entity: 'room_status',
+      description: 'Get all room statuses',
+    },
+    {
+      method: 'GET',
+      path: '/room-status/:roomId',
+      auth: true,
+      handler: 'crud',
+      entity: 'room_status',
+      description: 'Get room status',
+    },
+    {
+      method: 'PUT',
+      path: '/room-status/:roomId',
+      auth: true,
+      handler: 'crud',
+      entity: 'room_status',
+      description: 'Update room status',
+    },
+    {
+      method: 'PUT',
+      path: '/room-status/bulk',
+      auth: true,
+      handler: 'custom',
+      entity: 'room_status',
+      description: 'Bulk update room statuses',
+    },
+
+    // Inspection routes
+    {
+      method: 'GET',
+      path: '/inspections',
+      auth: true,
+      handler: 'crud',
+      entity: 'inspections',
+      description: 'List inspections',
+    },
+    {
+      method: 'POST',
+      path: '/inspections',
+      auth: true,
+      handler: 'crud',
+      entity: 'inspections',
+      description: 'Create inspection',
+    },
+    {
+      method: 'GET',
+      path: '/inspections/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'inspections',
+      description: 'Get inspection details',
+    },
+    {
+      method: 'PUT',
+      path: '/inspections/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'inspections',
+      description: 'Update inspection',
+    },
+    {
+      method: 'POST',
+      path: '/inspections/:id/submit',
+      auth: true,
+      handler: 'custom',
+      entity: 'inspections',
+      description: 'Submit inspection',
+    },
+
+    // Staff routes
+    {
+      method: 'GET',
+      path: '/housekeeping-staff',
+      auth: true,
+      handler: 'crud',
+      entity: 'housekeeping_staff',
+      description: 'List staff',
+    },
+    {
+      method: 'POST',
+      path: '/housekeeping-staff',
+      auth: true,
+      handler: 'crud',
+      entity: 'housekeeping_staff',
+      description: 'Add staff member',
+    },
+    {
+      method: 'PUT',
+      path: '/housekeeping-staff/:id',
+      auth: true,
+      handler: 'crud',
+      entity: 'housekeeping_staff',
+      description: 'Update staff member',
+    },
+    {
+      method: 'GET',
+      path: '/housekeeping-staff/:id/performance',
+      auth: true,
+      handler: 'aggregate',
+      entity: 'housekeeping_staff',
+      description: 'Get staff performance',
+    },
+  ],
+
+  config: [
+    {
+      key: 'defaultTaskDuration',
+      label: 'Default Task Duration (minutes)',
+      type: 'number',
+      default: 30,
+      description: 'Default time allocated for room cleaning',
+    },
+    {
+      key: 'priorityCheckoutRooms',
+      label: 'Prioritize Checkout Rooms',
+      type: 'boolean',
+      default: true,
+      description: 'Automatically prioritize rooms with checkouts',
+    },
+    {
+      key: 'requireInspection',
+      label: 'Require Inspection',
+      type: 'boolean',
+      default: true,
+      description: 'Require inspection before marking room clean',
+    },
+    {
+      key: 'autoAssignTasks',
+      label: 'Auto-Assign Tasks',
+      type: 'boolean',
+      default: false,
+      description: 'Automatically assign tasks to available staff',
+    },
+    {
+      key: 'photoRequired',
+      label: 'Photo Documentation Required',
+      type: 'boolean',
+      default: false,
+      description: 'Require photos for task completion',
+    },
+    {
+      key: 'inspectionItems',
+      label: 'Inspection Checklist Items',
+      type: 'number',
+      default: 10,
+      description: 'Number of checklist items per inspection',
+    },
+    {
+      key: 'turnoverAlert',
+      label: 'Turnover Alert (minutes)',
+      type: 'number',
+      default: 60,
+      description: 'Alert before expected turnover time',
+    },
+    {
+      key: 'trackSupplyUsage',
+      label: 'Track Supply Usage',
+      type: 'boolean',
+      default: true,
+      description: 'Track cleaning supply usage per room',
+    },
+  ],
+};

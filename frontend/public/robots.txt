@@ -1,0 +1,72 @@
+# Wants AI - Robots.txt
+# https://wants.chat
+# Intent-Driven AI Platform | 1100+ Smart Tools | 30+ AI Models
+
+User-agent: *
+
+# Allow public pages
+Allow: /
+Allow: /pricing
+Allow: /support
+Allow: /tools
+Allow: /tools/
+Allow: /enterprise
+Allow: /solutions
+Allow: /solutions/
+
+# Tool category pages (public marketing)
+Allow: /tools/text
+Allow: /tools/calculators
+Allow: /tools/generators
+Allow: /tools/converters
+Allow: /tools/images
+Allow: /tools/business
+Allow: /tools/developer
+Allow: /tools/ai
+
+# Legal pages
+Allow: /privacy
+Allow: /terms
+Allow: /cookies
+Allow: /data-deletion
+
+# Allow static assets
+Allow: /assets/
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.gif$
+Allow: /*.svg$
+Allow: /*.webp$
+Allow: /*.ico$
+Allow: /*.woff$
+Allow: /*.woff2$
+
+# Disallow authentication pages (not useful for search)
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email
+Disallow: /auth/
+Disallow: /onboarding
+Disallow: /oauth-callback
+
+# Disallow user dashboard and profile (require authentication)
+Disallow: /chat
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /billing
+Disallow: /settings/
+Disallow: /organizations/
+
+# Disallow API routes
+Disallow: /api/
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://wants.chat/sitemap.xml

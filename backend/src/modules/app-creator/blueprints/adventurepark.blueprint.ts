@@ -1,0 +1,221 @@
+import { Blueprint } from './blueprint.interface';
+
+/**
+ * Adventure Park Blueprint (Zipline, Bungee, Outdoor Activities)
+ */
+export const adventureparkBlueprint: Blueprint = {
+  appType: 'adventurepark',
+  description: 'Adventure park app with activities, bookings, waivers, and group events',
+
+  coreEntities: ['activity', 'booking', 'customer', 'guide', 'group_event', 'equipment'],
+
+  commonFields: { timestamps: true, softDelete: true, userOwnership: true },
+
+  pages: [
+    { path: '/', name: 'Dashboard', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar', props: { links: [
+        { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
+        { label: 'Activities', path: '/activities', icon: 'Mountain' },
+        { label: 'Bookings', path: '/bookings', icon: 'Calendar' },
+        { label: 'Customers', path: '/customers', icon: 'Users' },
+        { label: 'Guides', path: '/guides', icon: 'UserCheck' },
+        { label: 'Group Events', path: '/groups', icon: 'UsersRound' },
+        { label: 'Equipment', path: '/equipment', icon: 'HardHat' },
+      ]}},
+      { id: 'stats', component: 'stats-cards', position: 'main' },
+      { id: 'today-bookings', component: 'appointment-list', entity: 'booking', position: 'main' },
+    ]},
+    { path: '/activities', name: 'Activities', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'activity-grid', component: 'product-grid', entity: 'activity', position: 'main' },
+    ]},
+    { path: '/bookings', name: 'Bookings', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'booking-calendar', component: 'appointment-calendar', entity: 'booking', position: 'main' },
+      { id: 'booking-table', component: 'data-table', entity: 'booking', position: 'main' },
+    ]},
+    { path: '/customers', name: 'Customers', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'customer-table', component: 'data-table', entity: 'customer', position: 'main' },
+    ]},
+    { path: '/guides', name: 'Guides', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'guide-grid', component: 'staff-grid', entity: 'guide', position: 'main' },
+    ]},
+    { path: '/groups', name: 'Group Events', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'group-calendar', component: 'appointment-calendar', entity: 'group_event', position: 'main' },
+      { id: 'group-table', component: 'data-table', entity: 'group_event', position: 'main' },
+    ]},
+    { path: '/equipment', name: 'Equipment', layout: 'dashboard', requiresAuth: true, sections: [
+      { id: 'sidebar', component: 'sidebar', position: 'sidebar' },
+      { id: 'equipment-table', component: 'data-table', entity: 'equipment', position: 'main' },
+    ]},
+    { path: '/book', name: 'Book Adventure', layout: 'single-column', requiresAuth: false, sections: [
+      { id: 'activity-display', component: 'product-grid', entity: 'activity', position: 'main' },
+      { id: 'booking-form', component: 'booking-wizard', entity: 'booking', position: 'main' },
+    ]},
+    { path: '/group-booking', name: 'Group Booking', layout: 'single-column', requiresAuth: false, sections: [
+      { id: 'group-form', component: 'booking-wizard', entity: 'group_event', position: 'main' },
+    ]},
+  ],
+
+  endpoints: [
+    { method: 'GET', path: '/activities', entity: 'activity', operation: 'list' },
+    { method: 'GET', path: '/bookings', entity: 'booking', operation: 'list', requiresAuth: true },
+    { method: 'POST', path: '/bookings', entity: 'booking', operation: 'create' },
+    { method: 'GET', path: '/customers', entity: 'customer', operation: 'list', requiresAuth: true },
+    { method: 'GET', path: '/guides', entity: 'guide', operation: 'list' },
+    { method: 'GET', path: '/groups', entity: 'group_event', operation: 'list', requiresAuth: true },
+    { method: 'POST', path: '/groups', entity: 'group_event', operation: 'create' },
+    { method: 'GET', path: '/equipment', entity: 'equipment', operation: 'list', requiresAuth: true },
+  ],
+
+  entityConfig: {
+    activity: {
+      defaultFields: [
+        { name: 'activity_name', type: 'string', required: true },
+        { name: 'activity_type', type: 'enum', required: true },
+        { name: 'description', type: 'text' },
+        { name: 'duration_minutes', type: 'integer', required: true },
+        { name: 'difficulty_level', type: 'enum' },
+        { name: 'min_age', type: 'integer' },
+        { name: 'max_weight', type: 'integer' },
+        { name: 'min_height', type: 'integer' },
+        { name: 'max_participants', type: 'integer' },
+        { name: 'requirements', type: 'json' },
+        { name: 'what_to_bring', type: 'json' },
+        { name: 'safety_info', type: 'text' },
+        { name: 'price_adult', type: 'decimal', required: true },
+        { name: 'price_child', type: 'decimal' },
+        { name: 'group_discount', type: 'decimal' },
+        { name: 'images', type: 'json' },
+        { name: 'video_url', type: 'string' },
+        { name: 'is_available', type: 'boolean' },
+        { name: 'seasonal', type: 'json' },
+      ],
+      relationships: [
+        { type: 'hasMany', target: 'booking' },
+      ],
+    },
+    booking: {
+      defaultFields: [
+        { name: 'booking_number', type: 'string', required: true },
+        { name: 'booking_date', type: 'date', required: true },
+        { name: 'time_slot', type: 'datetime', required: true },
+        { name: 'activities_booked', type: 'json', required: true },
+        { name: 'num_adults', type: 'integer', required: true },
+        { name: 'num_children', type: 'integer' },
+        { name: 'participant_info', type: 'json' },
+        { name: 'waivers_signed', type: 'json' },
+        { name: 'waiver_status', type: 'enum' },
+        { name: 'special_requests', type: 'text' },
+        { name: 'add_ons', type: 'json' },
+        { name: 'promo_code', type: 'string' },
+        { name: 'subtotal', type: 'decimal' },
+        { name: 'discount', type: 'decimal' },
+        { name: 'total', type: 'decimal', required: true },
+        { name: 'deposit_paid', type: 'decimal' },
+        { name: 'payment_status', type: 'enum' },
+        { name: 'checked_in', type: 'boolean' },
+        { name: 'notes', type: 'text' },
+        { name: 'status', type: 'enum', required: true },
+      ],
+      relationships: [
+        { type: 'belongsTo', target: 'customer' },
+        { type: 'belongsTo', target: 'guide' },
+      ],
+    },
+    customer: {
+      defaultFields: [
+        { name: 'first_name', type: 'string', required: true },
+        { name: 'last_name', type: 'string', required: true },
+        { name: 'email', type: 'email', required: true },
+        { name: 'phone', type: 'phone' },
+        { name: 'date_of_birth', type: 'date' },
+        { name: 'emergency_contact', type: 'json' },
+        { name: 'medical_info', type: 'json' },
+        { name: 'waiver_on_file', type: 'boolean' },
+        { name: 'waiver_date', type: 'date' },
+        { name: 'total_visits', type: 'integer' },
+        { name: 'total_spent', type: 'decimal' },
+        { name: 'notes', type: 'text' },
+      ],
+      relationships: [
+        { type: 'hasMany', target: 'booking' },
+      ],
+    },
+    guide: {
+      defaultFields: [
+        { name: 'guide_id', type: 'string', required: true },
+        { name: 'first_name', type: 'string', required: true },
+        { name: 'last_name', type: 'string', required: true },
+        { name: 'email', type: 'email' },
+        { name: 'phone', type: 'phone' },
+        { name: 'certifications', type: 'json', required: true },
+        { name: 'activities_certified', type: 'json', required: true },
+        { name: 'first_aid_certified', type: 'boolean' },
+        { name: 'cert_expiry_dates', type: 'json' },
+        { name: 'languages', type: 'json' },
+        { name: 'experience_years', type: 'integer' },
+        { name: 'bio', type: 'text' },
+        { name: 'schedule', type: 'json' },
+        { name: 'rating', type: 'decimal' },
+        { name: 'photo_url', type: 'image' },
+        { name: 'is_active', type: 'boolean' },
+      ],
+      relationships: [
+        { type: 'hasMany', target: 'booking' },
+      ],
+    },
+    group_event: {
+      defaultFields: [
+        { name: 'event_number', type: 'string', required: true },
+        { name: 'event_date', type: 'date', required: true },
+        { name: 'start_time', type: 'datetime', required: true },
+        { name: 'end_time', type: 'datetime' },
+        { name: 'event_type', type: 'enum', required: true },
+        { name: 'organizer_name', type: 'string', required: true },
+        { name: 'organization', type: 'string' },
+        { name: 'email', type: 'email', required: true },
+        { name: 'phone', type: 'phone', required: true },
+        { name: 'expected_participants', type: 'integer', required: true },
+        { name: 'activities_selected', type: 'json', required: true },
+        { name: 'catering', type: 'json' },
+        { name: 'private_area', type: 'boolean' },
+        { name: 'add_ons', type: 'json' },
+        { name: 'special_requirements', type: 'text' },
+        { name: 'quote', type: 'decimal' },
+        { name: 'deposit', type: 'decimal' },
+        { name: 'total', type: 'decimal' },
+        { name: 'notes', type: 'text' },
+        { name: 'status', type: 'enum', required: true },
+      ],
+      relationships: [],
+    },
+    equipment: {
+      defaultFields: [
+        { name: 'equipment_id', type: 'string', required: true },
+        { name: 'equipment_name', type: 'string', required: true },
+        { name: 'equipment_type', type: 'enum', required: true },
+        { name: 'activity_used_for', type: 'json' },
+        { name: 'manufacturer', type: 'string' },
+        { name: 'model', type: 'string' },
+        { name: 'serial_number', type: 'string' },
+        { name: 'purchase_date', type: 'date' },
+        { name: 'last_inspection', type: 'date' },
+        { name: 'next_inspection', type: 'date' },
+        { name: 'inspection_notes', type: 'text' },
+        { name: 'max_uses', type: 'integer' },
+        { name: 'current_uses', type: 'integer' },
+        { name: 'condition', type: 'enum' },
+        { name: 'location', type: 'string' },
+        { name: 'notes', type: 'text' },
+        { name: 'status', type: 'enum', required: true },
+      ],
+      relationships: [],
+    },
+  },
+};
+
+export default adventureparkBlueprint;

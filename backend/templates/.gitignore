@@ -1,0 +1,7 @@
+# Exclude node_modules - they are generated locally by running setup-templates.sh
+backend/node_modules/
+frontend/node_modules/
+mobile/node_modules/
+
+# Keep package-lock.json for reproducible builds
+!*/package-lock.json

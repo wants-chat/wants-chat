@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevTools Quick</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 450px;
+      min-height: 500px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 16px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .header p {
+      font-size: 12px;
+      opacity: 0.9;
+      margin-top: 4px;
+    }
+
+    .tabs {
+      display: flex;
+      background: #16213e;
+      border-bottom: 1px solid #0f3460;
+      overflow-x: auto;
+    }
+
+    .tab {
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 13px;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .tab.active {
+      border-bottom-color: #667eea;
+      color: #667eea;
+    }
+
+    .tool-container {
+      padding: 16px;
+      display: none;
+    }
+
+    .tool-container.active {
+      display: block;
+    }
+
+    .tool-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #667eea;
+    }
+
+    textarea, input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #0f3460;
+      border-radius: 8px;
+      background: #16213e;
+      color: #eee;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 12px;
+      resize: vertical;
+    }
+
+    textarea {
+      min-height: 120px;
+    }
+
+    textarea:focus, input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    button {
+      flex: 1;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: #0f3460;
+      color: #eee;
+    }
+
+    .btn-secondary:hover {
+      background: #1a4a7a;
+    }
+
+    .output-label {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .copy-btn {
+      background: none;
+      border: 1px solid #0f3460;
+      color: #667eea;
+      padding: 4px 8px;
+      font-size: 11px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .copy-btn:hover {
+      background: #0f3460;
+    }
+
+    .hash-options {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hash-options label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .status {
+      font-size: 11px;
+      padding: 8px;
+      border-radius: 4px;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .status.success {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+    }
+
+    .status.error {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+
+    .footer {
+      padding: 12px;
+      text-align: center;
+      font-size: 11px;
+      color: #666;
+      border-top: 1px solid #0f3460;
+    }
+
+    .footer a {
+      color: #667eea;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>DevTools Quick</h1>
+    <p>Essential developer utilities</p>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tool="json">JSON</div>
+    <div class="tab" data-tool="base64">Base64</div>
+    <div class="tab" data-tool="hash">Hash</div>
+    <div class="tab" data-tool="url">URL</div>
+    <div class="tab" data-tool="uuid">UUID</div>
+  </div>
+
+  <!-- JSON Formatter -->
+  <div class="tool-container active" id="json-tool">
+    <div class="tool-title">JSON Formatter & Validator</div>
+    <textarea id="json-input" placeholder="Paste your JSON here..."></textarea>
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-format-json">Format</button>
+      <button class="btn-secondary" id="btn-minify-json">Minify</button>
+      <button class="btn-secondary" id="btn-validate-json">Validate</button>
+    </div>
+    <div class="output-label">
+      Output
+      <button class="copy-btn" id="btn-copy-json">Copy</button>
+    </div>
+    <textarea id="json-output" readonly placeholder="Formatted output will appear here..."></textarea>
+    <div id="json-status" class="status" style="display: none;"></div>
+  </div>
+
+  <!-- Base64 -->
+  <div class="tool-container" id="base64-tool">
+    <div class="tool-title">Base64 Encoder/Decoder</div>
+    <textarea id="base64-input" placeholder="Enter text to encode or Base64 to decode..."></textarea>
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-encode-base64">Encode</button>
+      <button class="btn-secondary" id="btn-decode-base64">Decode</button>
+    </div>
+    <div class="output-label">
+      Output
+      <button class="copy-btn" id="btn-copy-base64">Copy</button>
+    </div>
+    <textarea id="base64-output" readonly placeholder="Result will appear here..."></textarea>
+    <div id="base64-status" class="status" style="display: none;"></div>
+  </div>
+
+  <!-- Hash Generator -->
+  <div class="tool-container" id="hash-tool">
+    <div class="tool-title">Hash Generator</div>
+    <div class="hash-options">
+      <label><input type="radio" name="hash-type" value="SHA-256" checked> SHA-256</label>
+      <label><input type="radio" name="hash-type" value="SHA-384"> SHA-384</label>
+      <label><input type="radio" name="hash-type" value="SHA-512"> SHA-512</label>
+      <label><input type="radio" name="hash-type" value="SHA-1"> SHA-1</label>
+    </div>
+    <textarea id="hash-input" placeholder="Enter text to hash..."></textarea>
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-generate-hash">Generate Hash</button>
+    </div>
+    <div class="output-label">
+      Hash Output
+      <button class="copy-btn" id="btn-copy-hash">Copy</button>
+    </div>
+    <textarea id="hash-output" readonly placeholder="Hash will appear here..."></textarea>
+  </div>
+
+  <!-- URL Encoder -->
+  <div class="tool-container" id="url-tool">
+    <div class="tool-title">URL Encoder/Decoder</div>
+    <textarea id="url-input" placeholder="Enter URL or text to encode/decode..."></textarea>
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-encode-url">Encode</button>
+      <button class="btn-secondary" id="btn-decode-url">Decode</button>
+    </div>
+    <div class="output-label">
+      Output
+      <button class="copy-btn" id="btn-copy-url">Copy</button>
+    </div>
+    <textarea id="url-output" readonly placeholder="Result will appear here..."></textarea>
+  </div>
+
+  <!-- UUID Generator -->
+  <div class="tool-container" id="uuid-tool">
+    <div class="tool-title">UUID Generator</div>
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-generate-uuid">Generate UUID v4</button>
+      <button class="btn-secondary" id="btn-generate-multiple-uuids">Generate 5</button>
+    </div>
+    <div class="output-label">
+      Generated UUIDs
+      <button class="copy-btn" id="btn-copy-uuid">Copy All</button>
+    </div>
+    <textarea id="uuid-output" readonly placeholder="Click generate to create UUIDs..."></textarea>
+  </div>
+
+  <div class="footer">
+    Powered by <a href="https://wants.chat" target="_blank">Wants.chat</a>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
