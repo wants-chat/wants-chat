@@ -12,12 +12,9 @@
   [![GitHub Stars](https://img.shields.io/github/stars/wants-chat/wants-chat?style=for-the-badge)](https://github.com/wants-chat/wants-chat/stargazers)
   [![Contributors](https://img.shields.io/github/contributors/wants-chat/wants-chat?style=for-the-badge)](https://github.com/wants-chat/wants-chat/graphs/contributors)
 
-  [![App Store](https://img.shields.io/badge/📱_App_Store-Download-0D96F6?style=for-the-badge)](https://apps.apple.com/app/wants-chat)
-  [![Play Store](https://img.shields.io/badge/🤖_Play_Store-Download-34A853?style=for-the-badge)](https://play.google.com/store/apps/details?id=chat.wants)
-
   ---
 
-  **1100+ Contextual Tools** | **30+ AI Models** | **No-Code App Builder** | **Self-Hostable**
+  **1000+ Contextual Tools** | **30+ AI Models** | **No-Code App Builder** | **Self-Hostable**
 
   *One platform that replaces 100+ apps you use daily*
 
@@ -72,10 +69,10 @@ In 2025, the average knowledge worker uses **50+ different apps** daily:
 
 ### ✅ wants.chat
 - **Intent Detection** → Shows relevant UI
-- **754+ Contextual Tools** → Ready to use
+- **1000+ Contextual Tools** → Ready to use
 - **No-Code App Builder** → Full-stack apps
 - **Workflow Automation** → n8n-style flows
-- **Multi-Model AI** → 11+ LLM providers
+- **Multi-Model AI** → 30+ LLM providers
 
 </td>
 </tr>
@@ -115,7 +112,7 @@ In 2025, the average knowledge worker uses **50+ different apps** daily:
 
 ## 🌟 Core Features
 
-### 1️⃣ **754+ Contextual Tools** (Growing Daily)
+### 1️⃣ **1000+ Contextual Tools** (Growing Daily)
 
 <details>
 <summary><b>📊 Calculators & Converters (80+)</b></summary>
@@ -276,7 +273,6 @@ Build complete full-stack applications without writing code:
 
 - **Frontend**: React components with Tailwind CSS
 - **Backend**: Hono.js APIs with PostgreSQL
-- **Mobile**: React Native apps (iOS + Android)
 - **Deploy**: One-click deployment
 
 ```
@@ -292,7 +288,7 @@ Build complete full-stack applications without writing code:
 
 ### 3️⃣ **Multi-Model AI Engine**
 
-Choose from 11+ AI models:
+Choose from 30+ AI models:
 
 | Provider | Models |
 |----------|--------|
@@ -366,14 +362,13 @@ Every tool supports comprehensive export:
 
 | Feature | ChatGPT | Claude | Poe | 1min.AI | Manus | **wants.chat** |
 |---------|---------|--------|-----|---------|-------|----------------|
-| Multi-Model AI | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ **11 models** |
+| Multi-Model AI | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ **30+ models** |
 | AI Image Generation | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ **FLUX + SDXL** |
 | AI Video Generation | ✅ Sora | ❌ | ✅ | ✅ | ❌ | ✅ **3 engines** |
-| Contextual UI Tools | ❌ | Artifacts | ❌ | ❌ | ❌ | ✅ **754+ tools** |
+| Contextual UI Tools | ❌ | Artifacts | ❌ | ❌ | ❌ | ✅ **1000+ tools** |
 | No-Code App Builder | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ **Full-stack** |
 | Workflow Automation | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ **500+ connectors** |
-| Mobile Apps | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ **iOS + Android** |
-| Chatbot Deployment | ❌ | ❌ | Bots | ❌ | ❌ | ✅ **7+ platforms** |
+| Browser Extension | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ **Chrome/Firefox** |
 | Self-Hosting | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ **Docker ready** |
 
 ---
@@ -382,15 +377,15 @@ Every tool supports comprehensive export:
 
 ### ✅ Implemented
 
-- [x] 754+ Contextual UI Tools
-- [x] Multi-model AI chat (11 models)
+- [x] 1000+ Contextual UI Tools
+- [x] Multi-model AI chat (30+ models)
 - [x] AI Image Generation (FLUX, SDXL)
 - [x] AI Video Generation (Vidu, KlingAI)
 - [x] Tool data sync to backend
 - [x] Export (PDF, Excel, CSV, JSON)
 - [x] User onboarding flow
 - [x] Stripe billing integration
-- [x] Mobile apps (iOS + Android)
+- [x] Browser extension (Chrome/Firefox)
 - [x] Organization/team support
 - [x] Vector search for tools (Qdrant)
 - [x] Dark/Light theme
@@ -406,7 +401,6 @@ Every tool supports comprehensive export:
 
 ### 📋 Planned
 
-- [ ] Browser extension
 - [ ] API marketplace
 - [ ] Plugin system
 - [ ] Real-time collaboration
@@ -447,10 +441,10 @@ Every tool supports comprehensive export:
 - **Socket.io** for real-time communication
 - **Swagger/OpenAPI** for API documentation
 
-### Mobile
-- **Flutter** (Dart) for iOS and Android
-- **Riverpod** state management
-- **7 languages** supported
+### Browser Extension
+- **Vite** + **TypeScript**
+- **Manifest V3** (Chrome, Edge, Firefox)
+- Shares the same React component library as the web app
 
 ### AI/ML
 - **OpenRouter** unified LLM gateway (30+ models)
@@ -544,17 +538,16 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
 ---
 
-## 📱 Mobile Apps
+## 🧩 Browser Extension
 
-<div align="center">
+A Manifest V3 browser extension lives in [`extension/`](extension/) and brings wants.chat into any tab — invoke tools on highlighted text, save snippets, and chat without leaving the page.
 
-| iOS | Android |
-|-----|---------|
-| [![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=for-the-badge&logo=app-store&logoColor=white)](https://apps.apple.com/app/wants-chat) | [![Play Store](https://img.shields.io/badge/Google_Play-34A853?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=chat.wants) |
-
-</div>
-
-Built with **Flutter** for native performance on both platforms.
+```bash
+cd extension
+npm install
+npm run build
+# Then load extension/dist as an unpacked extension in Chrome/Edge/Firefox
+```
 
 ---
 
