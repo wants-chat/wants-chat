@@ -72,7 +72,7 @@ In 2025, the average knowledge worker uses **50+ different apps** daily:
 - **1,000+ Contextual Tools** → Ready to use
 - **No-Code App Builder** → Full-stack apps
 - **Workflow Automation** → n8n-style flows
-- **Multi-Model AI** → 30+ LLM providers
+- **Multi-Model AI** → 30+ models across 8 providers
 
 </td>
 </tr>
