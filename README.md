@@ -318,13 +318,13 @@ Your data, pre-filled automatically:
 │                 3 PILLARS OF CONTEXT                        │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
-│  1️⃣ ONBOARDING DATA                                        │
+│  1. ONBOARDING DATA                                         │
 │     Currency, timezone, language, industry preferences      │
 │                                                             │
-│  2️⃣ CONTEXTUAL UI HISTORY                                  │
+│  2. CONTEXTUAL UI HISTORY                                   │
 │     Remembers your last inputs for each tool                │
 │                                                             │
-│  3️⃣ CHAT INTELLIGENCE                                      │
+│  3. CHAT INTELLIGENCE                                       │
 │     Extracts entities from conversation                     │
 │     "Budget $5000" → Pre-fills budget calculators           │
 │                                                             │
