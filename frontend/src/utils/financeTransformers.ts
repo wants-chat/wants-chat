@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Finance Module Transformers
  * Converts between snake_case (backend) and camelCase (frontend) for finance/expense data

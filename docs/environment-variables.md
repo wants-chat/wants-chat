@@ -48,14 +48,6 @@
 | `RUNWARE_API_KEY` | - | Runware API key for image generation |
 | `RUNWARE_API_URL` | `https://api.runware.ai/v1` | Runware API endpoint |
 
-### Payments (Optional)
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `STRIPE_SECRET_KEY` | - | Stripe secret key |
-| `STRIPE_PUBLISHABLE_KEY` | - | Stripe publishable key |
-| `STRIPE_WEBHOOK_SECRET` | - | Stripe webhook signing secret |
-
 ### Storage (Optional)
 
 | Variable | Default | Description |
@@ -103,7 +95,6 @@
 | `VITE_APP_NAME` | `Wants Chat` | Application name |
 | `VITE_SITE_URL` | `http://localhost:5173` | Frontend URL |
 | `VITE_GA_MEASUREMENT_ID` | - | Google Analytics 4 ID (optional) |
-| `VITE_STRIPE_PUBLISHABLE_KEY` | - | Stripe publishable key |
 | `VITE_DEBUG` | `false` | Enable debug logging |
 
 ---

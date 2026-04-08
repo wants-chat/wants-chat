@@ -23,7 +23,7 @@ import { appCatalogService, App } from '../services/appCatalogService';
 import { appFilesService } from '../services/appFilesService';
 import { intentRouterService, UnifiedIntentClassification } from '../services/intentRouterService';
 import { branchingService, MessageVersion } from '../services/branchingService';
-import { billingAPI, AIModel } from '../lib/api/billing';
+import { modelsAPI, AIModel } from '../lib/api/models';
 import { api } from '../lib/api';
 import { appsApi } from '../lib/appsApi';
 import { getDomainName } from '../utils/urlDetector';
@@ -419,7 +419,7 @@ const ChatPage: React.FC = () => {
   // Fetch available models based on user's subscription
   const { data: fetchedModels, isLoading: isLoadingModels } = useQuery({
     queryKey: ['available-models'],
-    queryFn: () => billingAPI.getAvailableModels(),
+    queryFn: () => modelsAPI.getAvailableModels(),
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 1,
   });

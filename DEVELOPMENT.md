@@ -84,7 +84,6 @@ To enable additional features, add the corresponding vars to
 | Feature | Env vars |
 |---------|----------|
 | AI image & video generation (FLUX, SDXL, KlingAI, Vidu) | `RUNWARE_API_KEY` |
-| Stripe billing UI | `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET` |
 | Transactional email (Amazon SES) | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION` |
 | File uploads & storage (Cloudflare R2) | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_R2_*` |
 | Research mode / deep web search | `TAVILY_API_KEY`, `EXA_API_KEY`, `JINA_API_KEY`, `FIRECRAWL_API_KEY` |

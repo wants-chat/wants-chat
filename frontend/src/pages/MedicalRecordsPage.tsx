@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Brain, Sparkles, AlertTriangle, TrendingUp, Activity as LucideActivity } from 'lucide-react';

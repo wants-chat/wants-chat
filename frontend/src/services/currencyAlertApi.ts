@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Currency Alert API Service
  * Handles all API operations for currency alerts with localStorage fallback

@@ -15,7 +15,6 @@ import { ContentModule } from './modules/content/content.module';
 import { ContextModule } from './modules/context/context.module';
 import { OnboardingModule } from './modules/onboarding/onboarding.module';
 import { OrganizationModule } from './modules/organization/organization.module';
-import { StripeModule } from './modules/stripe/stripe.module';
 import { MemoryModule } from './modules/memory/memory.module';
 import { StorageModule } from './modules/storage/storage.module';
 import { AppFilesModule } from './modules/app-files/app-files.module';
@@ -68,7 +67,6 @@ import { ToolsModule } from './modules/tools/tools.module';
     ContextModule,
     OnboardingModule,
     OrganizationModule,
-    StripeModule,
     MemoryModule,
     StorageModule,
     AppFilesModule,

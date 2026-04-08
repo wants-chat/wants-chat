@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { cn } from '../../lib/utils';
-import { billingAPI } from '../../lib/api/billing';
 import { getMyOrganizations, Organization, syncOrganizationFromOnboarding } from '../../services/organizationApi';
 import { CreateOrganizationDialog } from '../organization/CreateOrganizationDialog';
 import {
@@ -12,9 +11,6 @@ import {
   User,
   Users,
   Settings,
-  UserPlus,
-  CreditCard,
-  Coins,
   ChevronDown,
   Check,
   Plus,
@@ -34,10 +30,6 @@ export const AuthenticatedHeader: React.FC = () => {
   const [showOrgDropdown, setShowOrgDropdown] = useState(false);
   const [hoveredOrg, setHoveredOrg] = useState<Organization | null>(null);
   const [showCreateOrgDialog, setShowCreateOrgDialog] = useState(false);
-
-  // Billing state
-  const [userCredits, setUserCredits] = useState<number>(0);
-  const [userSubscription, setUserSubscription] = useState<{ planName: string } | null>(null);
 
   // Ref for click outside
   const orgDropdownRef = useRef<HTMLDivElement>(null);
@@ -68,45 +60,6 @@ export const AuthenticatedHeader: React.FC = () => {
     };
 
     loadOrganizations();
-  }, []);
-
-  // Load billing info with real-time updates
-  useEffect(() => {
-    const loadBillingInfo = async () => {
-      try {
-        const [credits, subscription] = await Promise.all([
-          billingAPI.getCredits(),
-          billingAPI.getSubscription(),
-        ]);
-        setUserCredits(credits.balance || 0);
-        setUserSubscription(subscription);
-      } catch (error) {
-        console.error('Failed to load billing info:', error);
-      }
-    };
-
-    // Initial load
-    loadBillingInfo();
-
-    // Listen for real-time credit updates from chat (via socket)
-    const handleCreditUpdate = (event: CustomEvent<{ balance: number; balanceFormatted: string }>) => {
-      console.log('Header received credit update:', event.detail.balanceFormatted);
-      setUserCredits(event.detail.balance);
-    };
-    window.addEventListener('credits:updated', handleCreditUpdate as EventListener);
-
-    // Refresh every 60 seconds as backup
-    const interval = setInterval(loadBillingInfo, 60000);
-
-    // Also refresh on window focus
-    const handleFocus = () => loadBillingInfo();
-    window.addEventListener('focus', handleFocus);
-
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener('focus', handleFocus);
-      window.removeEventListener('credits:updated', handleCreditUpdate as EventListener);
-    };
   }, []);
 
   // Save selected org to localStorage
@@ -218,10 +171,6 @@ export const AuthenticatedHeader: React.FC = () => {
                     <User className="w-4 h-4" />
                     <div className="flex-1">
                       <div className="text-sm font-medium">{t('authenticatedHeader.personal')}</div>
-                      <div className={cn(
-                        "text-xs",
-                        theme === 'dark' ? 'text-slate-500' : 'text-slate-500'
-                      )}>{userSubscription?.planName || 'Free'} {t('authenticatedHeader.plan')}</div>
                     </div>
                     {!selectedOrganization && (
                       <Check className="w-4 h-4 text-[#0D9488]" />
@@ -359,38 +308,10 @@ export const AuthenticatedHeader: React.FC = () => {
           </button>
         </div>
 
-        {/* Right: Language, Credits & Plan */}
+        {/* Right: Language */}
         <div className="flex items-center gap-3">
           {/* Language Switcher */}
           <LanguageSwitcher variant="header" showLabel={true} showFlag={true} />
-
-          {/* Credits */}
-          <div className={cn(
-            "flex items-center gap-2 px-3 py-1.5 rounded-lg",
-            theme === 'dark' ? 'bg-[#2a2a2a]' : 'bg-slate-100'
-          )}>
-            <Coins className="w-4 h-4 text-amber-500" />
-            <span className={cn(
-              "text-sm font-medium",
-              theme === 'dark' ? 'text-white' : 'text-slate-700'
-            )}>
-              ${(userCredits / 1000000).toFixed(2)}
-            </span>
-          </div>
-
-          {/* Plan Badge */}
-          <span className={cn(
-            "px-3 py-1.5 text-xs font-semibold rounded-lg",
-            userSubscription?.planName?.toLowerCase() === 'enterprise'
-              ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white'
-              : userSubscription?.planName?.toLowerCase() === 'pro'
-                ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white'
-                : theme === 'dark'
-                  ? 'bg-[#2a2a2a] text-slate-300'
-                  : 'bg-slate-100 text-slate-600'
-          )}>
-            {userSubscription?.planName || 'Free'}
-          </span>
         </div>
       </header>
 

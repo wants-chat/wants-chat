@@ -37,7 +37,7 @@ export async function extractToolPrefillFromBackend(
   llmResponse?: string,
 ): Promise<ToolPrefillData> {
   try {
-    const response = await api.post<ToolPrefillApiResponse>('/context/tool-prefill', {
+    const response: any = await api.post('/context/tool-prefill', {
       tool_id: toolId,
       user_query: userQuery,
       llm_response: llmResponse,

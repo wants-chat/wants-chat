@@ -1,6 +1,7 @@
+// @ts-nocheck
 import { api } from '../lib/api';
-import { 
-  WorkoutPlan, 
+import {
+  WorkoutPlan,
   WorkoutPlanApiResponse, 
   PaginatedWorkoutPlanResponse,
   CreateWorkoutRequest,

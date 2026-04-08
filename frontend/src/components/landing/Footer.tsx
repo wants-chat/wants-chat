@@ -170,11 +170,6 @@ const Footer: React.FC = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/pricing" className="text-sm text-white/70 hover:text-emerald-400 transition-colors font-medium">
-                    {t('common.pricing')}
-                  </Link>
-                </li>
-                <li>
                   <Link to="/integrations" className="text-sm text-white/70 hover:text-emerald-400 transition-colors font-medium">
                     {t('footer.integrations')}
                   </Link>

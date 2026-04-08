@@ -537,14 +537,6 @@ const FeaturesPage: React.FC = () => {
                 {t('common.startFreeTrial')}
                 <ArrowForwardIcon className="ml-2 h-5 w-5" />
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-gray-700 text-gray-300 hover:bg-gray-800"
-                onClick={() => navigate('/pricing')}
-              >
-                {t('common.pricing')}
-              </Button>
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500">

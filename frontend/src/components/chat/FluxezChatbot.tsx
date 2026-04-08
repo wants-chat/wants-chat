@@ -33,7 +33,6 @@ const AUTH_PATHS = [
 const INTERNAL_PATH_PREFIXES = [
   '/chat',
   '/content',
-  '/billing',
   '/settings',
   '/memories',
   '/preferences',

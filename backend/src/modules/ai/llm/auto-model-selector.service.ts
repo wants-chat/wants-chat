@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DynamicLLMConfigService, DynamicModelConfig } from './dynamic-config';
 import { ModelTier, ModelSelectionStrategy } from './types';
+// NOTE: Tier-based model access removed for OSS. All active models are available to all users.
 
 interface TaskAnalysis {
   taskType: TaskType;
@@ -128,14 +129,6 @@ const TASK_MODEL_RECOMMENDATIONS: Record<TaskType, string[]> = {
     'openai/gpt-4o-mini',         // Good default
     'openai/gpt-4o',              // Quality fallback
   ],
-};
-
-// Tier-based model access
-const TIER_MODEL_ACCESS: Record<ModelTier, ModelTier[]> = {
-  free: ['free'],
-  standard: ['free', 'standard'],
-  premium: ['free', 'standard', 'premium'],
-  enterprise: ['free', 'standard', 'premium', 'enterprise'],
 };
 
 @Injectable()
@@ -291,7 +284,6 @@ export class AutoModelSelectorService {
     analysis: TaskAnalysis,
     userTier: ModelTier,
   ): { model: DynamicModelConfig; reason: string } {
-    const allowedTiers = TIER_MODEL_ACCESS[userTier];
     const allModels = this.dynamicConfig.getAllModels();
 
     // Get recommended models for this task
@@ -299,8 +291,8 @@ export class AutoModelSelectorService {
 
     // Filter to allowed tiers and active models
     let candidates = allModels
-      .filter((m) => m.isActive && allowedTiers.includes(m.tier as ModelTier))
-      .filter((m) => !analysis.needsVision || m.supportsVision);
+      .filter((m: any) => m.isActive)
+      .filter((m: any) => !analysis.needsVision || m.supportsVision);
 
     // Prefer recommended models if available
     const recommendedCandidates = candidates.filter((m) =>
@@ -331,7 +323,6 @@ export class AutoModelSelectorService {
     analysis: TaskAnalysis,
     userTier: ModelTier,
   ): { model: DynamicModelConfig; reason: string } {
-    const allowedTiers = TIER_MODEL_ACCESS[userTier];
     const allModels = this.dynamicConfig.getAllModels();
 
     // Get recommended models for this task (first is best)
@@ -343,7 +334,6 @@ export class AutoModelSelectorService {
         (m) =>
           m.id === modelId &&
           m.isActive &&
-          allowedTiers.includes(m.tier as ModelTier) &&
           (!analysis.needsVision || m.supportsVision),
       );
       if (model) {
@@ -368,7 +358,6 @@ export class AutoModelSelectorService {
     analysis: TaskAnalysis,
     userTier: ModelTier,
   ): { model: DynamicModelConfig; reason: string } {
-    const allowedTiers = TIER_MODEL_ACCESS[userTier];
     const allModels = this.dynamicConfig.getAllModels();
 
     // Fast models (prioritize mini/flash models)
@@ -385,7 +374,6 @@ export class AutoModelSelectorService {
         (m) =>
           m.id === modelId &&
           m.isActive &&
-          allowedTiers.includes(m.tier as ModelTier) &&
           (!analysis.needsVision || m.supportsVision),
       );
       if (model) {
@@ -434,7 +422,6 @@ export class AutoModelSelectorService {
     }
 
     // Default: balanced selection (good quality at reasonable cost)
-    const allowedTiers = TIER_MODEL_ACCESS[userTier];
     const allModels = this.dynamicConfig.getAllModels();
 
     // Balanced models - good quality, reasonable cost
@@ -449,7 +436,6 @@ export class AutoModelSelectorService {
         (m) =>
           m.id === modelId &&
           m.isActive &&
-          allowedTiers.includes(m.tier as ModelTier) &&
           (!analysis.needsVision || m.supportsVision),
       );
       if (model) {

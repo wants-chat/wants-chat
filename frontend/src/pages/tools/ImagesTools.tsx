@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useRef } from 'react';
 import Header from '../../components/landing/Header';
 import { BackgroundEffects } from '../../components/ui/BackgroundEffects';

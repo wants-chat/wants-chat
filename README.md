@@ -412,21 +412,6 @@ _Typical standard-tier pricing as of December 2025; actual figures vary by plan 
 
 ---
 
-## 💰 Pricing
-
-| Plan | Price | Features |
-|------|-------|----------|
-| **Free** | $0/month | 3 AI messages/day (Gemini 2.0 Flash), 100+ tools, 3 image gens/month, community support |
-| **Pro** | $19.99/month | 2,500 AI messages, all 30+ models, unlimited tools, 100 images, 10 videos/month |
-| **Team** | $49.99/month | Unlimited AI messages, unlimited images, 100 videos, no-code app builder, 5 team members, API access |
-| **Enterprise** | $149.99/month | Everything unlimited, custom AI training, SSO/SAML, dedicated support, 99.9% SLA |
-
-Pricing is defined in [`frontend/src/config/pricing.ts`](frontend/src/config/pricing.ts) — that file is the source of truth.
-
-**Add-on Credits**: Purchase additional AI/image/video credits as needed.
-
----
-
 ## 🛠️ Tech Stack
 
 ### Frontend
@@ -457,7 +442,6 @@ Pricing is defined in [`frontend/src/config/pricing.ts`](frontend/src/config/pri
 
 ### Infrastructure
 - **Docker** + Docker Compose
-- **GitHub Actions** CI/CD
 - **Cloudflare R2** storage
 - Self-hostable on any cloud provider
 
@@ -465,80 +449,19 @@ Pricing is defined in [`frontend/src/config/pricing.ts`](frontend/src/config/pri
 
 ## 🚀 Getting Started
 
-### Prerequisites
-
-- Node.js 20+
-- PostgreSQL 15+
-- Redis 7+
-- npm 10+
-
-### Quick Start (Docker)
+The fastest path:
 
 ```bash
-# Clone the repository
 git clone https://github.com/wants-chat/wants-chat.git
 cd wants-chat
-
-# Copy environment files
 cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env
-
-# Start everything with Docker Compose
 docker compose up
 ```
 
-The app will be available at `http://localhost:5173` (frontend) and `http://localhost:3001` (API).
+Then open `http://localhost:5173`.
 
-### Manual Setup
-
-```bash
-# Clone and install
-git clone https://github.com/wants-chat/wants-chat.git
-cd wants-chat
-
-# Install all dependencies (npm workspaces)
-npm install
-
-# Set up environment variables
-cp backend/.env.example backend/.env
-cp frontend/.env.example frontend/.env
-# Edit .env files with your database credentials and API keys
-
-# Start development servers
-make dev-local
-# Or manually:
-# Terminal 1: cd backend && npm run start:dev
-# Terminal 2: cd frontend && npm run dev
-```
-
-### Environment Variables
-
-See [`backend/.env.example`](backend/.env.example) and [`frontend/.env.example`](frontend/.env.example) for all available configuration options.
-
-Key variables:
-```env
-# Backend
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=wantsdb
-DB_USER=postgres
-DB_PASSWORD=your_password
-JWT_SECRET=your_jwt_secret
-OPENROUTER_API_KEY=your_openrouter_key  # Required for AI features
-
-# Frontend
-VITE_API_URL=http://localhost:3001
-VITE_SOCKET_URL=http://localhost:3001
-```
-
-### Self-Hosting
-
-For production self-hosting, see our [Self-Hosting Guide](docs/self-hosting.md).
-
-```bash
-# Production with Docker Compose
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
-```
+For prerequisites, env vars, the no-Docker path, optional features, and troubleshooting, see **[`DEVELOPMENT.md`](DEVELOPMENT.md)** — the canonical contributor onboarding guide.
 
 ---
 
@@ -557,21 +480,13 @@ npm run build
 
 ## 🤝 Contributing
 
-We welcome contributions! See our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions! Start with the [Contributing Guide](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md).
 
-```bash
-# Fork the repository
-# Create your feature branch
-git checkout -b feature/amazing-feature
-
-# Commit your changes
-git commit -m 'Add some amazing feature'
-
-# Push to the branch
-git push origin feature/amazing-feature
-
-# Open a Pull Request
-```
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** — how to propose changes, branch, and open a PR
+- **[DEVELOPMENT.md](DEVELOPMENT.md)** — local setup and contributor onboarding
+- **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** — community standards
+- **[SECURITY.md](SECURITY.md)** — how to report a vulnerability
+- **[CHANGELOG.md](CHANGELOG.md)** — release notes and version history
 
 ---
 

@@ -1,13 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { usePinnedTools } from '../contexts/PinnedToolsContext';
 import { cn } from '../lib/utils';
 import { getToolIcon } from '../lib/toolIcons';
-import { billingAPI } from '../lib/api/billing';
 import {
   MessageSquare,
   Plus,
@@ -16,9 +14,7 @@ import {
   FolderOpen,
   Grid3X3,
   X,
-  CreditCard,
   Brain,
-  Coins,
 } from 'lucide-react';
 import { LanguageSwitcher } from './shared/LanguageSwitcher';
 import { ToolsModal } from './ToolsModal';
@@ -50,31 +46,6 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
   const [showContextualUI, setShowContextualUI] = useState(false);
   const [activeToolConfig, setActiveToolConfig] = useState<UIConfig | null>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
-
-  // Fetch subscription and credits
-  const { data: subscription } = useQuery({
-    queryKey: ['user-subscription'],
-    queryFn: () => billingAPI.getSubscription(),
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
-  });
-
-  const { data: credits } = useQuery({
-    queryKey: ['user-credits'],
-    queryFn: () => billingAPI.getCredits(),
-    staleTime: 60 * 1000, // Cache for 1 minute
-  });
-
-  // Get plan name for display
-  const planName = subscription?.planName || subscription?.plan || 'Free';
-
-  // Format credits for display with 2 decimal places
-  const formatCredits = (microcents: number) => {
-    const dollars = microcents / 1000000;
-    return `$${dollars.toFixed(2)}`;
-  };
-
-  // Get credit balance
-  const creditBalance = credits?.balance || 0;
 
   // Close menus when clicking outside
   useEffect(() => {
@@ -301,56 +272,6 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
               >
                 <FolderOpen className="w-4 h-4" />
                 {t('sidebar.contentLibrary')}
-              </button>
-
-              {/* Credits Balance */}
-              <div className={cn(
-                "px-4 py-2.5 flex items-center gap-3",
-                theme === 'dark' ? 'border-b border-[#2a2a2a]' : 'border-b border-slate-100'
-              )}>
-                <Coins className="w-4 h-4 text-amber-500" />
-                <span className={cn(
-                  "text-sm flex-1",
-                  theme === 'dark' ? 'text-slate-300' : 'text-slate-600'
-                )}>
-                  {t('sidebar.credits')}
-                </span>
-                <span className="text-sm font-semibold text-amber-500">
-                  {formatCredits(creditBalance)}
-                </span>
-              </div>
-
-              {/* Billing & Subscription */}
-              <button
-                onClick={() => {
-                  navigate('/billing');
-                  setShowUserMenu(false);
-                }}
-                className={cn(
-                  "w-full px-4 py-2.5 text-left text-sm flex items-center gap-3 transition-all duration-200",
-                  location.pathname === '/billing'
-                    ? theme === 'dark' ? 'bg-[#2a2a2a] text-[#0D9488]' : 'bg-[#0D9488]/10 text-[#0D9488]'
-                    : theme === 'dark'
-                      ? 'text-slate-300 hover:bg-[#2a2a2a]'
-                      : 'text-slate-600 hover:bg-slate-50'
-                )}
-              >
-                <CreditCard className="w-4 h-4" />
-                <span className="flex-1">{t('sidebar.billingPlan')}</span>
-                <span className={cn(
-                  "px-1.5 py-0.5 text-xs font-medium rounded capitalize",
-                  planName.toLowerCase() === 'free'
-                    ? 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300'
-                    : planName.toLowerCase() === 'pro'
-                    ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400'
-                    : planName.toLowerCase() === 'team'
-                    ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400'
-                    : planName.toLowerCase() === 'enterprise'
-                    ? 'bg-amber-100 text-amber-600 dark:bg-amber-900/50 dark:text-amber-400'
-                    : 'bg-[#0D9488]/20 text-[#0D9488]'
-                )}>
-                  {planName}
-                </span>
               </button>
 
               {/* Memory */}
