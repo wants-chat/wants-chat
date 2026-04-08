@@ -14,7 +14,7 @@
 
   ---
 
-  **1,100+ Contextual Tools** | **30+ AI Models** | **No-Code App Builder** | **Self-Hostable**
+  **1,000+ Contextual Tools** | **30+ AI Models** | **No-Code App Builder** | **Self-Hostable**
 
   *One platform that replaces 100+ apps you use daily*
 
@@ -69,10 +69,10 @@ In 2025, the average knowledge worker uses **50+ different apps** daily:
 
 ### ✅ wants.chat
 - **Intent Detection** → Shows relevant UI
-- **1,100+ Contextual Tools** → Ready to use
+- **1,000+ Contextual Tools** → Ready to use
 - **No-Code App Builder** → Full-stack apps
 - **Workflow Automation** → n8n-style flows
-- **Multi-Model AI** → 30+ LLM providers
+- **Multi-Model AI** → 30+ models across 8 providers
 
 </td>
 </tr>
@@ -95,13 +95,13 @@ In 2025, the average knowledge worker uses **50+ different apps** daily:
 │   User: "Calculate my BMI"                                      │
 │                                                                 │
 │   ┌─────────────────────────────────────┐                       │
-│   │  🏃 BMI Calculator                  │                       │
+│   │  BMI Calculator                     │                       │
 │   │  ─────────────────────────          │                       │
 │   │  Height: [175] cm                   │                       │
 │   │  Weight: [70] kg                    │                       │
 │   │                                     │                       │
-│   │  Your BMI: 22.9 (Normal)           │                       │
-│   │  ▓▓▓▓▓▓▓▓▓░░░░░░░░░░░              │                       │
+│   │  Your BMI: 22.9 (Normal)            │                       │
+│   │  ▓▓▓▓▓▓▓▓▓░░░░░░░░░░░               │                       │
 │   │                                     │                       │
 │   │  [Export PDF] [Track History]       │                       │
 │   └─────────────────────────────────────┘                       │
@@ -112,7 +112,7 @@ In 2025, the average knowledge worker uses **50+ different apps** daily:
 
 ## 🌟 Core Features
 
-### 1️⃣ **1,100+ Contextual Tools** (Growing Daily)
+### 1️⃣ **1,000+ Contextual Tools** (Growing Daily)
 
 <details>
 <summary><b>📊 Calculators & Converters (80+)</b></summary>
@@ -365,7 +365,7 @@ Every tool supports comprehensive export:
 | Multi-Model AI | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ **30+ models** |
 | AI Image Generation | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ **FLUX + SDXL** |
 | AI Video Generation | ✅ Sora | ❌ | ✅ | ✅ | ❌ | ✅ **3 engines** |
-| Contextual UI Tools | ❌ | Artifacts | ❌ | ❌ | ❌ | ✅ **1,100+ tools** |
+| Contextual UI Tools | ❌ | Artifacts | ❌ | ❌ | ❌ | ✅ **1,000+ tools** |
 | No-Code App Builder | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ **Full-stack** |
 | Workflow Automation | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ **500+ connectors** |
 | Browser Extension | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ **Chrome/Firefox** |
@@ -377,7 +377,7 @@ Every tool supports comprehensive export:
 
 ### ✅ Implemented
 
-- [x] 1,100+ Contextual UI Tools
+- [x] 1,000+ Contextual UI Tools
 - [x] Multi-model AI chat (30+ models)
 - [x] AI Image Generation (FLUX, SDXL)
 - [x] AI Video Generation (Vidu, KlingAI)
