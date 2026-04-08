@@ -97,7 +97,7 @@ Connect with popular services and platforms to extend functionality and automate
 ## Tech Stack
 
 ### Frontend
-- **React 19** - Modern UI with hooks and concurrent features
+- **React 18** - Modern UI with hooks and concurrent features
 - **TypeScript** - Type-safe development
 - **Vite** - Lightning-fast build tool
 - **TailwindCSS** - Utility-first CSS

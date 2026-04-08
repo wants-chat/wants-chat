@@ -430,7 +430,7 @@ Pricing is defined in [`frontend/src/config/pricing.ts`](frontend/src/config/pri
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **React 19** + TypeScript
+- **React 18** + TypeScript
 - **Vite** build tooling
 - **Tailwind CSS** + shadcn/ui
 - **Framer Motion** for animations
@@ -439,16 +439,16 @@ Pricing is defined in [`frontend/src/config/pricing.ts`](frontend/src/config/pri
 
 ### Backend
 - **NestJS** (Node.js framework)
-- **PostgreSQL** database
+- **PostgreSQL** database (raw `pg` driver)
 - **Qdrant** vector database (optional)
-- **Redis** for caching
+- **Redis** (via BullMQ queues)
 - **Socket.io** for real-time communication
 - **Swagger/OpenAPI** for API documentation
 
 ### Browser Extension
 - **Vite** + **TypeScript**
 - **Manifest V3** (Chrome, Edge, Firefox)
-- Shares the same React component library as the web app
+- Shares React components with the web app via source-level imports
 
 ### AI/ML
 - **OpenRouter** unified LLM gateway (30+ models)

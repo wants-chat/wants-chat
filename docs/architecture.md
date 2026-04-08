@@ -7,7 +7,7 @@
 │                         CLIENTS                                  │
 ├──────────────┬──────────────┬──────────────┬────────────────────┤
 │   Web App    │  Mobile App  │  Extension   │    API Clients     │
-│  (React 19)  │  (Flutter)   │  (Chrome)    │                    │
+│  (React 18)  │  (Flutter)   │  (Chrome)    │                    │
 └──────┬───────┴──────┬───────┴──────┬───────┴────────┬───────────┘
        │              │              │                │
        └──────────────┴──────────────┴────────────────┘
@@ -59,7 +59,7 @@ The core innovation of Wants AI is the intent-to-UI pipeline:
 
 ```
 wants/
-├── frontend/              # React 19 + TypeScript web application
+├── frontend/              # React 18 + TypeScript web application
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── tools/     # 1100+ tool components (the core of the platform)

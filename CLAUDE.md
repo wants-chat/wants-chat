@@ -12,7 +12,7 @@ This document provides the definitive patterns and best practices for developing
 - **100+ Integrations** - Connect with popular services
 
 ### Tech Stack
-- **Frontend**: React 19, TypeScript, Vite, TailwindCSS, shadcn/ui, Framer Motion
+- **Frontend**: React 18, TypeScript, Vite, TailwindCSS, shadcn/ui, Framer Motion
 - **Backend**: NestJS, raw `pg` (PostgreSQL), Redis, Socket.io
 - **AI**: Multi-provider unified API (OpenRouter) with streaming support
 

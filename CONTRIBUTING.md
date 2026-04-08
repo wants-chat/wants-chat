@@ -75,7 +75,7 @@ Create a PostgreSQL database and update `backend/.env` with your connection stri
 
 ```
 wants-chat/
-├── frontend/               # React 19 + TypeScript + Vite + TailwindCSS
+├── frontend/               # React 18 + TypeScript + Vite + TailwindCSS
 │   └── src/
 │       ├── components/     # React components
 │       │   ├── landing/    # Landing page sections
