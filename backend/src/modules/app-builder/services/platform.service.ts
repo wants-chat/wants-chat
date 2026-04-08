@@ -45,12 +45,25 @@ export class PlatformService {
   private projectId: string;
 
   constructor(dbConfig?: Partial<DbConfig>) {
+    const host = dbConfig?.host || process.env.TENANT_DB_HOST;
+    const user = dbConfig?.user || process.env.TENANT_DB_USER;
+    const password = dbConfig?.password || process.env.TENANT_DB_PASSWORD;
+    const database = dbConfig?.database || process.env.TENANT_DB_NAME;
+
+    if (!host || !user || !password || !database) {
+      throw new Error(
+        'PlatformService requires TENANT_DB_HOST, TENANT_DB_USER, ' +
+          'TENANT_DB_PASSWORD, and TENANT_DB_NAME to be set in the ' +
+          'environment (or passed explicitly via the dbConfig argument).',
+      );
+    }
+
     this.dbConfig = {
-      host: dbConfig?.host || process.env.TENANT_DB_HOST || '46.62.161.254',
+      host,
       port: dbConfig?.port || parseInt(process.env.TENANT_DB_PORT || '5432'),
-      user: dbConfig?.user || process.env.TENANT_DB_USER || 'fluxez',
-      password: dbConfig?.password || process.env.TENANT_DB_PASSWORD || 'wT8Pm3Kx9Nf2Qr5Zc7Vy4Bs6',
-      database: dbConfig?.database || process.env.TENANT_DB_NAME || 'fluxez_platform',
+      user,
+      password,
+      database,
     };
     this.organizationId = process.env.ORGANIZATION_ID || DEFAULT_ORGANIZATION_ID;
     this.projectId = process.env.PROJECT_ID || DEFAULT_PROJECT_ID;

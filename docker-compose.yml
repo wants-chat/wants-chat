@@ -55,11 +55,13 @@ services:
     environment:
       NODE_ENV: development
       PORT: 3000
-      DATABASE_HOST: postgres
-      DATABASE_PORT: 5432
-      DATABASE_USER: ${POSTGRES_USER:-wants}
-      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-wants_secret}
-      DATABASE_NAME: ${POSTGRES_DB:-wants}
+      # Backend reads DB_* (see backend/src/modules/database/database.service.ts).
+      # These override any DB_* values from backend/.env so Compose works out of the box.
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER:-wants}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-wants_secret}
+      DB_NAME: ${POSTGRES_DB:-wants}
       REDIS_HOST: redis
       REDIS_PORT: 6379
     volumes:
