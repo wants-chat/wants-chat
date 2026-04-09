@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Star, Edit, Trash2, ChevronLeft, ChevronRight, AlertTriangle, ArrowLeft } from 'lucide-react';

@@ -62,6 +62,14 @@ services:
       DB_USER: ${POSTGRES_USER:-wants}
       DB_PASSWORD: ${POSTGRES_PASSWORD:-wants_secret}
       DB_NAME: ${POSTGRES_DB:-wants}
+      # PlatformService (app-builder) requires its own TENANT_DB_* vars.
+      # In the OSS Docker setup we just point them at the same Postgres so
+      # contributors get a working stack without extra configuration.
+      TENANT_DB_HOST: postgres
+      TENANT_DB_PORT: 5432
+      TENANT_DB_USER: ${POSTGRES_USER:-wants}
+      TENANT_DB_PASSWORD: ${POSTGRES_PASSWORD:-wants_secret}
+      TENANT_DB_NAME: ${POSTGRES_DB:-wants}
       REDIS_HOST: redis
       REDIS_PORT: 6379
     volumes:

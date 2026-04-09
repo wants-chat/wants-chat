@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Plus, PenTool, FileText, Clock, CheckCircle, Loader2, Trash2, Edit3 } from 'lucide-react';

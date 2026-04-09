@@ -1,0 +1,28 @@
+{
+  "name": "wants-chat",
+  "version": "1.0.0",
+  "private": true,
+  "description": "wants.chat — the world's first intent-driven AI platform",
+  "license": "AGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wants-chat/wants-chat.git"
+  },
+  "workspaces": [
+    "frontend",
+    "backend",
+    "extension"
+  ],
+  "scripts": {
+    "dev": "concurrently -n backend,frontend -c blue,green \"npm run dev -w wants-backend\" \"npm run dev -w wants-frontend\"",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "lint:fix": "npm run lint:fix --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  }
+}

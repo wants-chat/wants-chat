@@ -1,6 +1,7 @@
 {
   "name": "wants-backend",
   "version": "1.0.0",
+  "private": true,
   "scripts": {
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -62,7 +63,6 @@
     "reflect-metadata": "^0.2.1",
     "rxjs": "^7.8.1",
     "sharp": "^0.33.5",
-    "stripe": "^17.2.0",
     "uuid": "^10.0.0",
     "xlsx": "^0.18.5",
     "zod": "^3.23.8"
