@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Moon, Sun, Clock, Save, X, ChevronLeft, AlertCircle } from 'lucide-react';

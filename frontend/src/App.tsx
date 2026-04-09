@@ -20,7 +20,6 @@ import VerifyEmail from './pages/auth/VerifyEmail';
 
 // Public pages
 import LandingPage from './pages/LandingPage';
-import PricingPage from './pages/PricingPage';
 import SupportPage from './pages/SupportPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
@@ -60,7 +59,6 @@ import { FluxezChatbot } from './components/chat/FluxezChatbot';
 // Chat page (to be created)
 import ChatPage from './pages/ChatPage';
 import ContentGalleryPage from './pages/ContentGalleryPage';
-import BillingPage from './pages/BillingPage';
 import SettingsPage from './pages/SettingsPage';
 import MemoriesPage from './pages/MemoriesPage';
 import PreferencesPage from './pages/PreferencesPage';
@@ -107,7 +105,6 @@ const App: React.FC = () => {
                     <Route path="/contact" element={<ContactPage />} />
                     <Route path="/features" element={<FeaturesPage />} />
                     <Route path="/how-it-works" element={<HowItWorksPage />} />
-                    <Route path="/pricing" element={<PricingPage />} />
                     <Route path="/tools" element={<ToolsPage />} />
                     <Route path="/support" element={<SupportPage />} />
                     <Route path="/integrations" element={<IntegrationsPage />} />
@@ -157,7 +154,6 @@ const App: React.FC = () => {
                     <Route path="/chat" element={<ChatPage />} />
                     <Route path="/chat/:conversationId" element={<ChatPage />} />
                     <Route path="/content" element={<ContentGalleryPage />} />
-                    <Route path="/billing" element={<BillingPage />} />
                     <Route path="/settings" element={<SettingsPage />} />
                     <Route path="/memories" element={<MemoriesPage />} />
                     <Route path="/preferences" element={<PreferencesPage />} />

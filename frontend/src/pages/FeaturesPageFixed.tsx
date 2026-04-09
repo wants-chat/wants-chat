@@ -790,15 +790,8 @@ const FeaturesPageFixed: React.FC = () => {
                 className="group bg-primary text-primary-foreground"
                 onClick={() => navigate('/signup')}
               >
-                Start Free Trial
+                Get Started
                 <ArrowForwardIcon className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline"
-                onClick={() => navigate('/pricing')}
-              >
-                View Pricing Plans
               </Button>
             </div>
 

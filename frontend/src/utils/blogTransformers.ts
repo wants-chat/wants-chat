@@ -42,6 +42,7 @@ export function transformBlogFromBackend(backendBlog: any): BlogPost {
   return {
     id: backendBlog.id,
     user_id: userId,
+    userId,
     title: backendBlog.title,
     content: backendBlog.content,
     excerpt: backendBlog.excerpt,

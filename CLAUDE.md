@@ -20,35 +20,13 @@ This document provides the definitive patterns and best practices for developing
 
 ## Table of Contents
 
-1. [Pricing Configuration](#pricing-configuration)
-2. [Database Query Patterns](#database-query-patterns)
-3. [Backend Route Patterns](#backend-route-patterns)
-4. [Authentication Patterns](#authentication-patterns)
-5. [Data Transformation](#data-transformation)
-6. [Error Handling](#error-handling)
-7. [Frontend API Patterns](#frontend-api-patterns)
-8. [Common Mistakes to Avoid](#common-mistakes-to-avoid)
-
----
-
-## Pricing Configuration
-
-All pricing, plans, and FAQ content is centralized in `/frontend/src/config/pricing.ts`.
-
-### Updating Pricing
-To change pricing, features, or FAQ:
-1. Edit `/frontend/src/config/pricing.ts`
-2. Changes automatically reflect across all pages
-
-### Current Plans
-| Plan | Price | AI Models | Key Features |
-|------|-------|-----------|--------------|
-| Free | $0 | Gemini 2.0 Flash only | 3 AI messages/day, 100+ tools, 3 pins |
-| Pro | $19.99/mo | All 30+ models | 2,500 messages, 100 images, 10 videos |
-| Team | $49.99/mo | All 30+ models | Unlimited AI, 5 team members, API |
-| Enterprise | $149.99/mo | All + custom | Unlimited everything, SSO, dedicated support |
-
-**Important**: Free users only have access to Gemini 2.0 Flash, not all AI models.
+1. [Database Query Patterns](#database-query-patterns)
+2. [Backend Route Patterns](#backend-route-patterns)
+3. [Authentication Patterns](#authentication-patterns)
+4. [Data Transformation](#data-transformation)
+5. [Error Handling](#error-handling)
+6. [Frontend API Patterns](#frontend-api-patterns)
+7. [Common Mistakes to Avoid](#common-mistakes-to-avoid)
 
 ---
 
@@ -270,7 +248,6 @@ export function useCreateItem() {
 4. **Not handling JSON fields** - Parse JSON strings from the database when columns are `jsonb` text.
 5. **Inconsistent user ID extraction** - Always use `req.user.userId || req.user.id || req.user.sub`.
 6. **Not verifying ownership** - Check ownership before update/delete operations.
-7. **Hardcoding pricing** - Edit `frontend/src/config/pricing.ts`; it is the single source of truth.
 
 ---
 
@@ -285,7 +262,7 @@ wants/
 │   │   │   ├── tools/        # 1,100+ tool components
 │   │   │   └── ui/           # shadcn/ui components
 │   │   ├── pages/            # Page components
-│   │   ├── config/           # Configuration (pricing, SEO)
+│   │   ├── config/           # Configuration (SEO, etc.)
 │   │   ├── contexts/         # React contexts
 │   │   ├── hooks/            # Custom hooks
 │   │   ├── data/             # Static data (tools, categories)

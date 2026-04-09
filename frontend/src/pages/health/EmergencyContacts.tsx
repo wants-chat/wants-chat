@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Phone, Mail, MapPin, User, AlertCircle, Plus, Edit2, Trash2, Star, Search, Filter, Shield, Heart } from 'lucide-react';

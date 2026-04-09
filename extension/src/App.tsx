@@ -573,26 +573,6 @@ function AppContent() {
         </div>
       )}
 
-      {/* Footer */}
-      {!selectedTool && !user && (
-        <div className={`px-4 py-3 border-t ${theme === 'dark' ? 'bg-gray-800/50 border-gray-700' : 'bg-white border-gray-200'}`}>
-          <div className={`p-3 rounded-lg ${theme === 'dark' ? 'bg-gradient-to-r from-teal-900/50 to-emerald-900/50 border border-teal-700/50' : 'bg-gradient-to-r from-teal-50 to-emerald-50 border border-teal-200'}`}>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium">Unlock AI Tools</p>
-                <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Get Pro for $9.99/mo</p>
-              </div>
-              <button
-                onClick={() => window.open('https://wants.chat/pricing', '_blank')}
-                className="px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-medium rounded-lg hover:opacity-90 flex items-center gap-1"
-              >
-                <Crown className="w-3 h-3" /> Upgrade
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Upgrade Modal */}
       {showUpgradeModal && (
         <UpgradeModal
@@ -647,20 +627,6 @@ function UpgradeModal({
 
           {isLoggedIn ? (
             <>
-              <div className="space-y-3 mb-4">
-                <div className="flex items-center gap-2 text-sm">
-                  <Sparkles className="w-4 h-4 text-teal-500" />
-                  <span>500 AI calls per day</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <CreditCard className="w-4 h-4 text-teal-500" />
-                  <span>$20 monthly credits</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Crown className="w-4 h-4 text-teal-500" />
-                  <span>Access to premium AI models</span>
-                </div>
-              </div>
               <div className="flex gap-2">
                 <button
                   onClick={onClose}
@@ -668,13 +634,7 @@ function UpgradeModal({
                     theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'
                   }`}
                 >
-                  Maybe Later
-                </button>
-                <button
-                  onClick={() => window.open('https://wants.chat/pricing', '_blank')}
-                  className="flex-1 px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-lg text-sm font-medium hover:opacity-90 flex items-center justify-center gap-1"
-                >
-                  <Crown className="w-4 h-4" /> Upgrade
+                  Close
                 </button>
               </div>
             </>

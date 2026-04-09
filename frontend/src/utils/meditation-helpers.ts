@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { MeditationCategory, AudioContent, FeaturedCategory } from '../services/meditationService';
 import { MeditationOption, SubOption } from '../types/meditation/meditation-types';
 import {

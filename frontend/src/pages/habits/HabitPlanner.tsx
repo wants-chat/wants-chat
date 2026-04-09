@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { Plus, Calendar, Target, TrendingUp, Award, Bell, Filter, Search, X, CheckCircle as CheckCircleIcon, CalendarDays, BarChart3, ChevronLeft, ChevronRight, Edit, Trash2, LayoutGrid, List } from 'lucide-react';

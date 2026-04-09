@@ -2,7 +2,6 @@
  * OrganizationDropdown Component
  *
  * A sidebar dropdown for switching between personal workspace and organizations.
- * Only visible for paid plan users with organization access.
  * Matches the styling of the AppSidebar dropdown.
  */
 
@@ -12,7 +11,6 @@ import { useQuery } from '@tanstack/react-query';
 import { Building2, ChevronDown, Plus, Check, Users, User, Loader2 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
-import { billingAPI } from '@/lib/api/billing';
 import {
   getMyOrganizations,
   Organization,
@@ -39,13 +37,6 @@ export const OrganizationDropdown: React.FC<OrganizationDropdownProps> = ({
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Fetch subscription to check if user has Team/Enterprise plan
-  const { data: subscription, isLoading: subscriptionLoading } = useQuery({
-    queryKey: ['user-subscription'],
-    queryFn: () => billingAPI.getSubscription(),
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
-  });
-
   // Fetch user's organizations
   const { data: organizations = [], isLoading: orgsLoading } = useQuery({
     queryKey: ['user-organizations'],
@@ -63,15 +54,6 @@ export const OrganizationDropdown: React.FC<OrganizationDropdownProps> = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  // Check if user has Team or Enterprise plan
-  const planName = subscription?.planName || subscription?.plan || 'Free';
-  const hasTeamAccess = ['team', 'enterprise'].includes(planName.toLowerCase());
-
-  // Don't render if user doesn't have Team/Enterprise plan
-  if (!hasTeamAccess || subscriptionLoading) {
-    return null;
-  }
 
   const currentOrg = currentOrgId
     ? organizations.find((org) => org.id === currentOrgId)

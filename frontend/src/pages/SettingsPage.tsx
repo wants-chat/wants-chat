@@ -44,14 +44,6 @@ const SettingsPage: React.FC = () => {
       onClick: () => navigate('/profile'),
     },
     {
-      id: 'billing',
-      title: t('settings.sections.billing.title'),
-      description: t('settings.sections.billing.description'),
-      icon: CreditCard,
-      onClick: () => navigate('/billing'),
-      badge: 'Pro',
-    },
-    {
       id: 'memory',
       title: t('settings.sections.memory.title'),
       description: t('settings.sections.memory.description'),

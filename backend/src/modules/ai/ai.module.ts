@@ -16,7 +16,7 @@ import { DynamicLLMConfigService } from './llm/dynamic-config';
 import { LLMRouterService } from './llm/llm-router.service';
 import { CreditsService } from './llm/credits.service';
 import { MediaCreditsService } from './llm/media-credits.service';
-import { BillingController } from './llm/billing.controller';
+import { ModelsController } from './llm/models.controller';
 import { AutoModelSelectorService } from './llm/auto-model-selector.service';
 
 @Global()
@@ -38,7 +38,7 @@ import { AutoModelSelectorService } from './llm/auto-model-selector.service';
     ContentModule,
     StorageModule,
   ],
-  controllers: [AIGenerationController, BillingController],
+  controllers: [AIGenerationController, ModelsController],
   providers: [
     AiService,
     ImageAIService,

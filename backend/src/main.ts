@@ -14,10 +14,7 @@ console.log(`[STARTUP] Imports completed in ${Date.now() - startTime}ms`);
 
 async function bootstrap() {
   console.log(`[STARTUP] Bootstrap starting at ${Date.now() - startTime}ms`);
-  const app = await NestFactory.create(AppModule, {
-    // Enable raw body for Stripe webhooks
-    rawBody: true,
-  });
+  const app = await NestFactory.create(AppModule);
   console.log(`[STARTUP] NestFactory.create completed in ${Date.now() - startTime}ms`);
   const configService = app.get(ConfigService);
 
@@ -29,24 +26,7 @@ async function bootstrap() {
   // Configure Socket.IO adapter
   app.useWebSocketAdapter(new IoAdapter(app));
 
-  // Configure raw body capture for Stripe webhooks (MUST BE BEFORE other body parsers)
-  console.log("🔧 Setting up raw body capture for Stripe webhooks...");
-  app.use(
-    bodyParser.json({
-      limit: "50mb",
-      verify: (req: any, res, buf) => {
-        const url = req.originalUrl || req.url;
-        // Capture raw body for Stripe webhook endpoints
-        if (
-          url === "/api/v1/stripe/webhook" ||
-          url.includes("/stripe/webhook")
-        ) {
-          req.rawBody = buf;
-          console.log(`✅ Raw body captured for webhook: ${url}`);
-        }
-      },
-    })
-  );
+  app.use(bodyParser.json({ limit: "50mb" }));
   app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
   // Global validation pipe

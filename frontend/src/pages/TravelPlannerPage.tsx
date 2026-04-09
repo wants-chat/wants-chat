@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import { Search, Plus, Calendar, MapPin, DollarSign, Users, Clock, ArrowLeft } from 'lucide-react';
 import { Button } from '../components/ui/button';

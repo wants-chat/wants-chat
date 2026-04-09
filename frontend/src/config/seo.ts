@@ -17,12 +17,6 @@ export const PAGE_SEO = {
       'Every AI talks. We render. Wants is the first AI platform where you say what you want and get the tool instantly. 500+ contextual tools for business, healthcare, legal, education, and more.',
     url: 'https://wants.chat',
   },
-  pricing: {
-    title: 'Pricing Plans - Wants',
-    description:
-      'Choose the perfect Wants plan for your needs. Flexible pricing from free to enterprise with 500+ AI-powered tools for every industry.',
-    url: 'https://wants.chat/pricing',
-  },
   features: {
     title: 'Features - Wants',
     description:

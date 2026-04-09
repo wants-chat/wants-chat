@@ -186,9 +186,6 @@ frontend/
 
 ## Configuration
 
-### Pricing Configuration
-All pricing, plans, and FAQ content is centralized in `src/config/pricing.ts`. Edit this file to update pricing across the entire site.
-
 ### Environment Variables
 
 | Variable | Description | Required |

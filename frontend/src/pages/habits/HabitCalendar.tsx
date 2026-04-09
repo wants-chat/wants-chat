@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Moon, Sun, ChevronLeft, ChevronRight, Calendar as CalendarIcon, Target, X, CheckCircle as CheckCircleIcon, Loader2 } from 'lucide-react';

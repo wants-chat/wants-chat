@@ -245,28 +245,6 @@ const AppSelectorPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Trial Ended Banner */}
-          <div className="mt-3 p-4 bg-amber-500/20 rounded-lg border border-amber-500/30">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-full bg-amber-500/20">
-                <Clock className="w-5 h-5 text-amber-400" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-amber-300 font-semibold">Trial Ended</h3>
-                <p className="text-white/70 text-sm mt-1">
-                  Your 14-day free trial has ended. Choose 1 app to keep using for free, or upgrade for unlimited access to all 70+ apps.
-                </p>
-              </div>
-              <Button
-                onClick={() => navigate('/billing')}
-                size="sm"
-                className="bg-gradient-to-r from-purple-500 to-pink-500"
-              >
-                Upgrade
-              </Button>
-            </div>
-          </div>
-
           {/* Locked - Unselect Button */}
           {isLocked && selectedApp && (
             <div className="mt-3 p-4 bg-blue-500/20 rounded-lg border border-blue-500/30">
@@ -384,27 +362,6 @@ const AppSelectorPage: React.FC = () => {
           );
         })}
 
-        {/* Upgrade prompt */}
-        <Card className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border-purple-500/30 p-6 mt-6">
-          <div className="flex items-start gap-4">
-            <div className="p-3 rounded-full bg-purple-500/20">
-              <Crown className="w-6 h-6 text-purple-400" />
-            </div>
-            <div className="flex-1">
-              <h3 className="text-white font-semibold">Want access to all apps?</h3>
-              <p className="text-white/60 text-sm mt-1">
-                Upgrade to Starter for 5 apps, or Pro/Premium for unlimited app access,
-                more AI requests, and the ability to change your apps anytime.
-              </p>
-              <Button
-                onClick={() => navigate('/billing')}
-                className="mt-3 bg-gradient-to-r from-purple-500 to-pink-500"
-              >
-                View Plans
-              </Button>
-            </div>
-          </div>
-        </Card>
       </div>
 
       {/* Fixed Footer */}

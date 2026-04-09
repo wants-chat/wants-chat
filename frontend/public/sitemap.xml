@@ -18,14 +18,6 @@
     <priority>1.0</priority>
   </url>
 
-  <!-- Pricing Page - High Priority (Conversion Page) -->
-  <url>
-    <loc>https://wants.chat/pricing</loc>
-    <lastmod>2026-01-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
   <!-- Tools Discovery Page - High Priority -->
   <url>
     <loc>https://wants.chat/tools</loc>

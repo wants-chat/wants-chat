@@ -6,7 +6,6 @@ User-agent: *
 
 # Allow public pages
 Allow: /
-Allow: /pricing
 Allow: /support
 Allow: /tools
 Allow: /tools/
@@ -58,7 +57,6 @@ Disallow: /oauth-callback
 Disallow: /chat
 Disallow: /dashboard
 Disallow: /profile
-Disallow: /billing
 Disallow: /settings/
 Disallow: /organizations/
 

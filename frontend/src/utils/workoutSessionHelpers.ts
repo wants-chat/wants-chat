@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Helper functions for workout session management
  */

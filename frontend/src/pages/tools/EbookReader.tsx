@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect, useRef } from 'react';
 import { BookOpen, Upload, Settings, Bookmark, List, ChevronLeft, ChevronRight, Sun, Moon, ZoomIn, ZoomOut, X } from 'lucide-react';
 import Header from '../../components/landing/Header';

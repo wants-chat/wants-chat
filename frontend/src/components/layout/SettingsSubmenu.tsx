@@ -4,11 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { cn } from '../../lib/utils';
-import { billingAPI } from '../../lib/api/billing';
 import {
   User,
   FolderOpen,
-  CreditCard,
   Brain,
   Sparkles,
   Settings,
@@ -32,19 +30,6 @@ export const SettingsSubmenu: React.FC = () => {
   const { t } = useTranslation();
   const { theme } = useTheme();
   const { user, logout } = useAuth();
-  const [planName, setPlanName] = useState<string>('Free');
-
-  useEffect(() => {
-    const loadBillingInfo = async () => {
-      try {
-        const subscription = await billingAPI.getSubscription();
-        setPlanName(subscription?.planName || subscription?.plan || 'Free');
-      } catch (error) {
-        console.error('Failed to load billing info:', error);
-      }
-    };
-    loadBillingInfo();
-  }, []);
 
   const menuItems: SubmenuItem[] = [
     {
@@ -58,20 +43,6 @@ export const SettingsSubmenu: React.FC = () => {
       label: t('settingsMenu.contentLibrary'),
       icon: FolderOpen,
       path: '/content',
-    },
-    {
-      id: 'billing',
-      label: t('settingsMenu.billingPlan'),
-      icon: CreditCard,
-      path: '/billing',
-      badge: planName,
-      badgeColor: planName.toLowerCase() === 'enterprise'
-        ? 'bg-amber-500/20 text-amber-500'
-        : planName.toLowerCase() === 'pro'
-          ? 'bg-blue-500/20 text-blue-500'
-          : planName.toLowerCase() === 'team'
-            ? 'bg-purple-500/20 text-purple-500'
-            : 'bg-gray-500/20 text-gray-500',
     },
     {
       id: 'memory',
