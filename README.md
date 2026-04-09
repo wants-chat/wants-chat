@@ -43,6 +43,12 @@ In 2025, the average knowledge worker uses **50+ different apps** daily:
 
 ---
 
+## 🚀 Why this project matters
+
+We believe AI should not just talk — it should **DO**.
+
+---
+
 ## 🏆 What Makes wants.chat UNIQUE
 
 <table>
