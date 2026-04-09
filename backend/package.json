@@ -37,7 +37,7 @@
     "change-case": "^4.1.2",
     "cheerio": "^1.0.0",
     "class-transformer": "^0.5.1",
-    "@faker-js/faker": "^9.0.3",
+    "@faker-js/faker": "^10.4.0",
     "bcrypt": "^5.1.1",
     "fuse.js": "^7.0.0",
     "class-validator": "^0.15.1",
