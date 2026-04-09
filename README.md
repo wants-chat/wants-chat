@@ -506,9 +506,13 @@ We welcome contributions! Start with the [Contributing Guide](CONTRIBUTING.md) a
 
 Thank you to all the amazing people who have contributed to wants.chat! 🎉
 
-<a href="https://github.com/wants-chat/wants-chat/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=wants-chat/wants-chat-private&anon=1&max=100&columns=10" />
-</a>
+<a href="https://github.com/nymulinfoinlet"><img src="https://avatars.githubusercontent.com/u/58200874?v=4" width="50" height="50" style="border-radius:50%"></a>
+<a href="https://github.com/InfoinletdevTwo"><img src="https://avatars.githubusercontent.com/u/220129750?v=4" width="50" height="50" style="border-radius:50%"></a>
+<a href="https://github.com/infoinletdevEight"><img src="https://avatars.githubusercontent.com/u/227755009?v=4" width="50" height="50" style="border-radius:50%"></a>
+<a href="https://github.com/infoinletdevSix"><img src="https://avatars.githubusercontent.com/u/227711347?v=4" width="50" height="50" style="border-radius:50%"></a>
+<a href="https://github.com/mdsharifrahman"><img src="https://avatars.githubusercontent.com/u/90321955?v=4" width="50" height="50" style="border-radius:50%"></a>
+<a href="https://github.com/Simana-Yeasmin"><img src="https://avatars.githubusercontent.com/u/100281916?v=4" width="50" height="50" style="border-radius:50%"></a>
+<a href="https://github.com/infoinletdebug2"><img src="https://avatars.githubusercontent.com/u/219597860?v=4" width="50" height="50" style="border-radius:50%"></a>
 
 Want to see your face here? Check out our [Contributing Guide](CONTRIBUTING.md) and start contributing today!
 
