@@ -504,9 +504,13 @@ We welcome contributions! Start with the [Contributing Guide](CONTRIBUTING.md) a
 
 ## Contributors
 
+Thank you to all the amazing people who have contributed to wants.chat! 🎉
+
 <a href="https://github.com/wants-chat/wants-chat/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=wants-chat/wants-chat&anon=1&max=100&columns=10" />
+  <img src="https://contrib.rocks/image?repo=wants-chat/wants-chat-private&anon=1&max=100&columns=10" />
 </a>
+
+Want to see your face here? Check out our [Contributing Guide](CONTRIBUTING.md) and start contributing today!
 
 ---
 
