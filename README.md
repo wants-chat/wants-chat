@@ -1,20 +1,12 @@
 <div align="center">
-  <img src="frontend/public/assets/logo.png" alt="wants.chat Logo" width="120" height="120" />
+  <img src="docs/images/banner.png" alt="wants.chat — The World's First Intent-Driven AI Platform" width="100%" />
 
   # wants.chat
-
-  ### **The World's First Intent-Driven AI Platform**
-
-  *Where "I want..." becomes reality in seconds*
 
   [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-wants.chat-00D4AA?style=for-the-badge)](https://wants.chat)
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue?style=for-the-badge)](LICENSE)
   [![GitHub Stars](https://img.shields.io/github/stars/wants-chat/wants-chat?style=for-the-badge)](https://github.com/wants-chat/wants-chat/stargazers)
   [![Contributors](https://img.shields.io/github/contributors/wants-chat/wants-chat?style=for-the-badge)](https://github.com/wants-chat/wants-chat/graphs/contributors)
-
-  ---
-
-  **1,000+ Contextual Tools** | **30+ AI Models** | **No-Code App Builder** | **Self-Hostable**
 
   *One platform that replaces 100+ apps you use daily*
 
