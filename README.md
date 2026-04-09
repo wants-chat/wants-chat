@@ -1,5 +1,7 @@
 <div align="center">
-  <img src="docs/images/banner.png" alt="wants.chat — The World's First Intent-Driven AI Platform" width="100%" />
+  <a href="https://wants.chat">
+    <img src="frontend/public/assets/logo.png" alt="wants.chat" width="80">
+  </a>
 
   # wants.chat
 
