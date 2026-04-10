@@ -114,7 +114,7 @@ Connect with popular services and platforms to extend functionality and automate
 
 ### Backend
 - **NestJS** - Scalable Node.js framework
-- **Supabase** - Database and authentication
+- **PostgreSQL** - Database (with bcrypt + JWT auth)
 - **Socket.io** - Real-time communication
 
 ---

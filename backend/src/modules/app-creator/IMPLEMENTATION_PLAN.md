@@ -193,7 +193,7 @@ Return ONLY valid JSON.
 
 ### 2.2 Blueprint Storage (Database)
 
-Create table in Supabase:
+Create table in Postgres:
 
 ```sql
 CREATE TABLE app_blueprints (

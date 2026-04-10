@@ -82,7 +82,6 @@ const integrationCategories = [
     apps: [
       { name: 'Airtable', logo: 'A', desc: 'Spreadsheet database' },
       { name: 'Firebase', logo: 'F', desc: 'App development' },
-      { name: 'Supabase', logo: 'S', desc: 'Open source Firebase' },
       { name: 'MongoDB', logo: 'M', desc: 'NoSQL database' },
       { name: 'PostgreSQL', logo: 'P', desc: 'SQL database' },
       { name: 'Coda', logo: 'C', desc: 'Doc-database' },

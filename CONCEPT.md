@@ -1459,7 +1459,7 @@ This is your **MASSIVE opportunity**. Let me show you exactly what exists vs. wh
 | **Pre-built Apps (1000)** | ❌ | ❌ | ❌ | ✅ **Library** |
 | **Complete Platforms (10)** | ❌ | ❌ | ❌ | ✅ **ERP, CRM, etc.** |
 | **Workflow Automation** | ❌ | ❌ | n8n only | ✅ **FluxTurn** |
-| **Database/Backend** | ❌ | ❌ | Supabase | ✅ **Multi-DB native** |
+| **Database/Backend** | ❌ | ❌ | Single BaaS | ✅ **Multi-DB native** |
 | **White-label** | ❌ | ❌ | ❌ | ✅ |
 | **Self-host** | ❌ | ❌ | ❌ | ✅ |
 

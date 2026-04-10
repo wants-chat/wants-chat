@@ -1392,10 +1392,6 @@ EXPO_PUBLIC_API_URL=http://localhost:4000/api
 # App Configuration
 EXPO_PUBLIC_APP_NAME=${slug}
 EXPO_PUBLIC_APP_ENV=development
-
-# Supabase Configuration (if using Supabase backend)
-# EXPO_PUBLIC_SUPABASE_URL=your-supabase-url
-# EXPO_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 `,
       language: 'env',
     };
