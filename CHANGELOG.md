@@ -36,7 +36,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Real-time chat with WebSocket support
 - JWT authentication with OAuth (Google, GitHub, Apple)
 - Stripe billing integration
-- Mobile apps (iOS + Android) built with Flutter
 - Internationalization (English, Japanese)
 - Dark/Light theme
 - Export functionality (PDF, Excel, CSV, JSON)
