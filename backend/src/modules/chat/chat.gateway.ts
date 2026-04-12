@@ -34,6 +34,7 @@ import { MemoryService } from '../memory/memory.service';
 // import { AppMakerService } from '../app-maker/app-maker.service';
 import { DeploymentService } from '../app-builder/services/deployment.service';
 import { AppFilesService } from '../app-files/app-files.service';
+import { McpToolBridgeService } from '../mcp/mcp-tool-bridge.service';
 
 interface AuthContext {
   userId: string;
@@ -139,6 +140,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     private readonly queryEngineAgent: QueryEngineAgent,
     private readonly chartBuilderAgent: ChartBuilderAgent,
     private readonly financeAnalyzerAgent: FinanceAnalyzerAgent,
+    private readonly mcpToolBridge: McpToolBridgeService,
   ) {
     this.logger.log('ChatGateway initialized with namespace: /chat');
   }
@@ -1040,6 +1042,20 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             (hasImages ? `, ${metadata.attachments.filter(a => a.type.startsWith('image/')).length} images` : ''),
           );
 
+          // Inject MCP tool context into the system message if servers are connected
+          try {
+            const mcpContext = await this.mcpToolBridge.buildToolContext();
+            if (mcpContext && builtContext.messages.length > 0) {
+              const systemIdx = builtContext.messages.findIndex(m => m.role === 'system');
+              if (systemIdx >= 0) {
+                builtContext.messages[systemIdx].content += '\n' + mcpContext;
+              }
+              this.logger.debug('MCP tool context injected into system prompt');
+            }
+          } catch (mcpErr) {
+            this.logger.warn('Failed to inject MCP tool context:', mcpErr.message);
+          }
+
           // Generate a message ID for streaming
           const streamMessageId = `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -1084,6 +1100,58 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
           };
           // Include suggested tools so frontend can make them clickable in response
           responseMetadata.suggestedTools = builtContext.suggestedTools;
+
+          // Check if the LLM response contains an MCP tool call
+          try {
+            const mcpCall = this.mcpToolBridge.parseToolCall(assistantResponse);
+            if (mcpCall) {
+              this.logger.log(`MCP tool call detected: ${mcpCall.server}/${mcpCall.tool}`);
+
+              // Execute the MCP tool call
+              const toolResult = await this.mcpToolBridge.executeToolCall(
+                mcpCall.server,
+                mcpCall.tool,
+                mcpCall.arguments,
+              );
+
+              // Build follow-up messages: original context + assistant response + tool result
+              const followUpMessages = [
+                ...builtContext.messages,
+                { role: 'assistant' as const, content: assistantResponse },
+                {
+                  role: 'user' as const,
+                  content: `[MCP Tool Result from ${mcpCall.server}/${mcpCall.tool}]:\n${toolResult}\n\nPlease use this tool result to provide a complete answer to the user's original question.`,
+                },
+              ];
+
+              // Stream the follow-up response
+              let followUpResponse = '';
+              for await (const chunk of this.aiService.chatStream(followUpMessages, {
+                model: selectedModel,
+                userId: session.userId,
+                conversationId: session.conversationId,
+              })) {
+                followUpResponse += chunk;
+                this.server.to(`session:${session.id}`).emit('message:stream:chunk', {
+                  messageId: streamMessageId,
+                  sessionId: session.id,
+                  chunk: chunk,
+                  timestamp: new Date().toISOString(),
+                });
+              }
+
+              // Replace the original response with the follow-up (which incorporates the tool result)
+              assistantResponse = (mcpCall.beforeText ? mcpCall.beforeText + '\n\n' : '') + followUpResponse;
+              responseMetadata.mcpToolCall = {
+                server: mcpCall.server,
+                tool: mcpCall.tool,
+                arguments: mcpCall.arguments,
+              };
+            }
+          } catch (mcpErr) {
+            this.logger.warn('MCP tool call handling failed:', mcpErr.message);
+            // Don't fail the whole response - the original AI response still stands
+          }
 
           // After AI streaming is complete, extract tool intent for suggestions
           if (metadata?.attachments?.length > 0 || builtContext.suggestedTools?.length > 0) {
