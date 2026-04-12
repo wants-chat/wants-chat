@@ -13,9 +13,10 @@ import { AiModule } from '../ai/ai.module';
 import { AuthModule } from '../auth/auth.module';
 import { MemoryModule } from '../memory/memory.module';
 import { ToolSearchModule } from '../tool-search/tool-search.module';
+import { PluginsModule } from '../plugins/plugins.module';
 
 @Module({
-  imports: [DatabaseModule, forwardRef(() => AiModule), AuthModule, MemoryModule, ToolSearchModule],
+  imports: [DatabaseModule, forwardRef(() => AiModule), AuthModule, MemoryModule, ToolSearchModule, PluginsModule],
   controllers: [ContextController, BranchingController],
   providers: [
     ContextService,
