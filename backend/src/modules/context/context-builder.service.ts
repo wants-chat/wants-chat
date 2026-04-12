@@ -5,6 +5,7 @@ import { DatabaseService } from '../database/database.service';
 import { ToolSearchService } from '../tool-search/tool-search.service';
 import { ToolIntentExtractionService } from './tool-intent-extraction.service';
 import { ToolIntentResultDto, AttachmentInputDto, FileCategory, getFileCategoryFromMime } from './dto/tool-intent.dto';
+import { PluginRegistryService } from '../plugins/plugin-registry.service';
 import * as XLSX from 'xlsx';
 
 interface ChatMessage {
@@ -129,6 +130,7 @@ export class ContextBuilderService {
     private readonly contextService: ContextService,
     private readonly toolSearchService: ToolSearchService,
     private readonly toolIntentExtractionService: ToolIntentExtractionService,
+    private readonly pluginRegistryService: PluginRegistryService,
   ) {}
 
   /**
@@ -187,6 +189,13 @@ export class ContextBuilderService {
     if (toolsResult.content) {
       messages[0].content += toolsResult.content; // Append to system prompt
       totalTokens += toolsResult.estimatedTokens;
+    }
+
+    // 2.6. Add enabled plugin tools to context
+    const pluginToolsResult = await this.addPluginToolsToContext(userId);
+    if (pluginToolsResult.content) {
+      messages[0].content += pluginToolsResult.content;
+      totalTokens += pluginToolsResult.estimatedTokens;
     }
 
     // 3. Fetch conversation summaries (for older context)
@@ -753,6 +762,45 @@ Note: Only suggest tools when they directly help with the user's request. Don't 
     } catch (error) {
       this.logger.error('Failed to add tools to context:', error.message);
       return { content: '', estimatedTokens: 0, tools: [] };
+    }
+  }
+
+  /**
+   * Add plugin tools to context for users who have enabled plugins.
+   * Plugin tools appear alongside built-in tools in the AI context.
+   */
+  private async addPluginToolsToContext(
+    userId: string,
+  ): Promise<{ content: string; estimatedTokens: number }> {
+    try {
+      const pluginTools = await this.pluginRegistryService.getUserPluginTools(userId);
+
+      if (pluginTools.length === 0) {
+        return { content: '', estimatedTokens: 0 };
+      }
+
+      const toolsList = pluginTools
+        .map((t) => `- **${t.toolName}** (plugin: ${t.pluginName}): ${t.description}`)
+        .join('\n');
+
+      const pluginContent = `\n\n## Plugin Tools
+The user has enabled the following plugin tools. These work like built-in tools but are provided by community plugins:
+
+${toolsList}
+
+When a plugin tool matches the user's request, mention it by name in bold.`;
+
+      this.logger.debug(
+        `Added ${pluginTools.length} plugin tools to context for user ${userId}`,
+      );
+
+      return {
+        content: pluginContent,
+        estimatedTokens: this.estimateTokens(pluginContent),
+      };
+    } catch (error) {
+      this.logger.error('Failed to add plugin tools to context:', error.message);
+      return { content: '', estimatedTokens: 0 };
     }
   }
 

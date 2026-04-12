@@ -43,6 +43,7 @@ import { AppBuilderModule } from './modules/app-builder/app-builder.module';
 import { ToolsApiModule } from './modules/tools-api/tools-api.module';
 import { ToolsModule } from './modules/tools/tools.module';
 import { AgentsModule } from './modules/agents/agents.module';
+import { PluginsModule } from './modules/plugins/plugins.module';
 
 @Module({
   imports: [
@@ -95,6 +96,7 @@ import { AgentsModule } from './modules/agents/agents.module';
     ToolsApiModule,
     ToolsModule,
     AgentsModule,
+    PluginsModule,
   ],
 })
 export class AppModule {}
