@@ -43,6 +43,7 @@ import { AppBuilderModule } from './modules/app-builder/app-builder.module';
 import { ToolsApiModule } from './modules/tools-api/tools-api.module';
 import { ToolsModule } from './modules/tools/tools.module';
 import { McpModule } from './modules/mcp/mcp.module';
+import { KnowledgeModule } from './modules/knowledge/knowledge.module';
 
 @Module({
   imports: [
@@ -95,6 +96,7 @@ import { McpModule } from './modules/mcp/mcp.module';
     ToolsApiModule,
     ToolsModule,
     McpModule,
+    KnowledgeModule,
   ],
 })
 export class AppModule {}
