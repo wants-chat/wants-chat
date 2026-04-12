@@ -44,6 +44,7 @@ import { ToolsApiModule } from './modules/tools-api/tools-api.module';
 import { ToolsModule } from './modules/tools/tools.module';
 import { AgentsModule } from './modules/agents/agents.module';
 import { PluginsModule } from './modules/plugins/plugins.module';
+import { CollaborationModule } from './modules/collaboration/collaboration.module';
 
 @Module({
   imports: [
@@ -97,6 +98,7 @@ import { PluginsModule } from './modules/plugins/plugins.module';
     ToolsModule,
     AgentsModule,
     PluginsModule,
+    CollaborationModule,
   ],
 })
 export class AppModule {}
