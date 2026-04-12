@@ -190,6 +190,7 @@ export class ChatService {
     userId: string,
     content: string,
     model?: string,
+    fileContext?: string,
   ): Promise<{ userMessage: Message; assistantMessage: Message }> {
     if (!this.openai) {
       throw new BadRequestException('OpenAI is not configured');
@@ -202,6 +203,9 @@ export class ChatService {
     // Get conversation history
     const history = await this.getMessages(conversationId, userId, { limit: 50 });
 
+    // Build the full user content including any file context
+    const fullContent = fileContext ? `${fileContext}\n\nUser message: ${content}` : content;
+
     // Save user message
     const userMessage = await this.db.insert<Message>('messages', {
       conversation_id: conversationId,
@@ -209,7 +213,7 @@ export class ChatService {
       role: 'user',
       content,
       model: chatModel,
-      metadata: {},
+      metadata: fileContext ? { hasFileContext: true } : {},
       created_at: new Date(),
     });
 
@@ -224,7 +228,7 @@ export class ChatService {
           role: m.role as 'user' | 'assistant' | 'system',
           content: m.content,
         })),
-        { role: 'user', content },
+        { role: 'user', content: fullContent },
       ];
 
       // Call OpenAI
