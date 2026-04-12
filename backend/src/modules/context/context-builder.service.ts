@@ -5,6 +5,7 @@ import { DatabaseService } from '../database/database.service';
 import { ToolSearchService } from '../tool-search/tool-search.service';
 import { ToolIntentExtractionService } from './tool-intent-extraction.service';
 import { ToolIntentResultDto, AttachmentInputDto, FileCategory, getFileCategoryFromMime } from './dto/tool-intent.dto';
+import { DocumentIngestionService } from '../knowledge/document-ingestion.service';
 import * as XLSX from 'xlsx';
 
 interface ChatMessage {
@@ -129,6 +130,7 @@ export class ContextBuilderService {
     private readonly contextService: ContextService,
     private readonly toolSearchService: ToolSearchService,
     private readonly toolIntentExtractionService: ToolIntentExtractionService,
+    private readonly documentIngestionService: DocumentIngestionService,
   ) {}
 
   /**
@@ -187,6 +189,30 @@ export class ContextBuilderService {
     if (toolsResult.content) {
       messages[0].content += toolsResult.content; // Append to system prompt
       totalTokens += toolsResult.estimatedTokens;
+    }
+
+    // 2.7. RAG: Retrieve relevant chunks from user-uploaded documents
+    try {
+      const hasDocuments = await this.documentIngestionService.userHasDocuments(userId);
+      if (hasDocuments) {
+        const ragChunks = await this.documentIngestionService.queryDocuments(
+          userId,
+          currentMessage,
+          5,
+        );
+        if (ragChunks.length > 0) {
+          let ragContext = '\n\n## User Document Context\nThe user has uploaded documents. Here are relevant excerpts:\n\n';
+          ragChunks.forEach((chunk, idx) => {
+            ragContext += `[Source: ${chunk.filename}, chunk ${chunk.chunkIndex + 1}] (relevance: ${(chunk.score * 100).toFixed(0)}%)\n${chunk.content}\n\n`;
+          });
+          ragContext += 'When using information from these documents, cite the source filename.';
+          messages[0].content += ragContext;
+          totalTokens += this.estimateTokens(ragContext);
+          this.logger.debug(`RAG context added: ${ragChunks.length} chunks from user documents`);
+        }
+      }
+    } catch (ragError) {
+      this.logger.warn(`RAG context retrieval failed: ${ragError.message}`);
     }
 
     // 3. Fetch conversation summaries (for older context)
