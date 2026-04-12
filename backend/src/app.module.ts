@@ -42,6 +42,7 @@ import { AppBuilderModule } from './modules/app-builder/app-builder.module';
 // import { AppMakerModule } from './modules/app-maker/app-maker.module';
 import { ToolsApiModule } from './modules/tools-api/tools-api.module';
 import { ToolsModule } from './modules/tools/tools.module';
+import { CodeSandboxModule } from './modules/code-sandbox/code-sandbox.module';
 
 @Module({
   imports: [
@@ -93,6 +94,7 @@ import { ToolsModule } from './modules/tools/tools.module';
     // AppMakerModule excluded from open-source release
     ToolsApiModule,
     ToolsModule,
+    CodeSandboxModule,
   ],
 })
 export class AppModule {}
