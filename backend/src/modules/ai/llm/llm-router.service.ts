@@ -99,10 +99,24 @@ export class LLMRouterService implements OnModuleInit {
   // Direct OpenAI client (fallback only)
   private openaiClient: OpenAI | null = null;
 
+  // Ollama client (local/offline)
+  private ollamaClient: OpenAI | null = null;
+
+  // Active LLM provider: 'openrouter' | 'ollama' | 'openai'
+  private llmProvider: string;
+
+  // Ollama model overrides
+  private ollamaModel: string;
+  private ollamaEmbeddingModel: string;
+
   constructor(
     private configService: ConfigService,
     private dynamicConfig: DynamicLLMConfigService,
-  ) {}
+  ) {
+    this.llmProvider = this.configService.get<string>('LLM_PROVIDER', 'openrouter');
+    this.ollamaModel = this.configService.get<string>('OLLAMA_MODEL', 'llama3.2');
+    this.ollamaEmbeddingModel = this.configService.get<string>('OLLAMA_EMBEDDING_MODEL', 'nomic-embed-text');
+  }
 
   async onModuleInit() {
     // Initialize clients in background to not block app startup
@@ -115,6 +129,22 @@ export class LLMRouterService implements OnModuleInit {
    * Initialize API clients
    */
   private async initializeClients() {
+    // Initialize Ollama if selected as provider
+    if (this.llmProvider === 'ollama') {
+      const ollamaBaseUrl = this.configService.get<string>('OLLAMA_BASE_URL', 'http://localhost:11434/v1');
+      this.ollamaClient = new OpenAI({
+        apiKey: 'ollama', // Dummy key — required by SDK but unused by Ollama
+        baseURL: ollamaBaseUrl,
+        timeout: 120000,
+      });
+      this.logger.log(`Ollama client initialized (${ollamaBaseUrl}, model: ${this.ollamaModel})`);
+
+      // Log available models
+      const models = this.dynamicConfig.getAllModels();
+      this.logger.log(`Available models: ${models.length}`);
+      return; // Skip cloud client init when running locally
+    }
+
     // Initialize OpenRouter (PRIMARY gateway for all models)
     const openRouterApiKey = this.configService.get<string>('OPENROUTER_API_KEY');
     if (openRouterApiKey) {
@@ -156,7 +186,7 @@ export class LLMRouterService implements OnModuleInit {
    * Check if the service is configured
    */
   isConfigured(): boolean {
-    return this.openRouterClient !== null || this.openaiClient !== null;
+    return this.ollamaClient !== null || this.openRouterClient !== null || this.openaiClient !== null;
   }
 
   /**
@@ -164,6 +194,9 @@ export class LLMRouterService implements OnModuleInit {
    */
   getAvailableProviders(): string[] {
     const providers: string[] = [];
+    if (this.ollamaClient) {
+      providers.push('ollama');
+    }
     if (this.openRouterClient) {
       // OpenRouter provides access to all providers
       providers.push('openrouter', 'openai', 'anthropic', 'google', 'deepseek');
@@ -171,6 +204,27 @@ export class LLMRouterService implements OnModuleInit {
       providers.push('openai');
     }
     return providers;
+  }
+
+  /**
+   * Get the active LLM provider
+   */
+  getLLMProvider(): string {
+    return this.llmProvider;
+  }
+
+  /**
+   * Get the Ollama model name (for callers that need to override model IDs)
+   */
+  getOllamaModel(): string {
+    return this.ollamaModel;
+  }
+
+  /**
+   * Get the Ollama embedding model name
+   */
+  getOllamaEmbeddingModel(): string {
+    return this.ollamaEmbeddingModel;
   }
 
   /**
@@ -198,6 +252,7 @@ export class LLMRouterService implements OnModuleInit {
    * Check if provider is available
    */
   isProviderAvailable(provider: string): boolean {
+    if (this.ollamaClient && provider === 'ollama') return true;
     if (this.openRouterClient) return true; // OpenRouter provides all
     if (this.openaiClient && provider === 'openai') return true;
     return false;
@@ -268,8 +323,11 @@ export class LLMRouterService implements OnModuleInit {
         };
       });
 
+      // Resolve model ID for the active provider (Ollama overrides to local model)
+      const resolvedModel = this.resolveModelId(modelId);
+
       const requestOptions: any = {
-        model: modelId,
+        model: resolvedModel,
         messages: formattedMessages,
         temperature: options.temperature ?? 0.7,
         max_tokens: options.maxTokens ?? modelConfig.maxOutput,
@@ -401,8 +459,8 @@ export class LLMRouterService implements OnModuleInit {
       );
     }
 
-    // Fall back to non-streaming if model doesn't support it
-    if (!modelConfig.supportsStreaming) {
+    // Fall back to non-streaming if model doesn't support it (Ollama always streams)
+    if (!modelConfig.supportsStreaming && this.llmProvider !== 'ollama') {
       const response = await this.chat(messages, options);
       yield {
         content: response.content,
@@ -421,18 +479,32 @@ export class LLMRouterService implements OnModuleInit {
     }
 
     try {
-      const stream = await client.chat.completions.create({
-        model: modelId,
-        messages: messages.map(m => ({
-          role: m.role,
-          content: m.content,
-          ...(m.name && { name: m.name }),
-        })),
-        temperature: options.temperature ?? 0.7,
-        max_tokens: options.maxTokens ?? modelConfig.maxOutput,
-        stream: true,
-        stream_options: { include_usage: true },
-      });
+      // Resolve model ID for the active provider
+      const resolvedModel = this.resolveModelId(modelId);
+
+      const baseMessages = messages.map(m => ({
+        role: m.role,
+        content: m.content,
+        ...(m.name && { name: m.name }),
+      }));
+
+      // Ollama may not support stream_options; omit it for ollama
+      const stream = this.llmProvider === 'ollama'
+        ? await client.chat.completions.create({
+            model: resolvedModel,
+            messages: baseMessages,
+            temperature: options.temperature ?? 0.7,
+            max_tokens: options.maxTokens ?? modelConfig.maxOutput,
+            stream: true,
+          })
+        : await client.chat.completions.create({
+            model: resolvedModel,
+            messages: baseMessages,
+            temperature: options.temperature ?? 0.7,
+            max_tokens: options.maxTokens ?? modelConfig.maxOutput,
+            stream: true,
+            stream_options: { include_usage: true },
+          });
 
       for await (const chunk of stream) {
         const delta = chunk.choices[0]?.delta?.content || '';
@@ -478,6 +550,11 @@ export class LLMRouterService implements OnModuleInit {
    * OpenRouter is the primary gateway for ALL models
    */
   private getClientForModel(modelId: string): OpenAI | null {
+    // Ollama: local/offline provider
+    if (this.ollamaClient && this.llmProvider === 'ollama') {
+      return this.ollamaClient;
+    }
+
     // Primary: Use OpenRouter for everything (unified gateway)
     if (this.openRouterClient) {
       return this.openRouterClient;
@@ -489,6 +566,18 @@ export class LLMRouterService implements OnModuleInit {
     }
 
     return null;
+  }
+
+  /**
+   * Resolve the actual model ID to send to the provider.
+   * When Ollama is active, any OpenRouter-style model ID (e.g. "openai/gpt-4o")
+   * is replaced with the configured OLLAMA_MODEL.
+   */
+  resolveModelId(modelId: string): string {
+    if (this.llmProvider === 'ollama') {
+      return this.ollamaModel;
+    }
+    return modelId;
   }
 
   /**
