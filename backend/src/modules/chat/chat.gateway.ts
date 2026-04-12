@@ -34,6 +34,7 @@ import { MemoryService } from '../memory/memory.service';
 // import { AppMakerService } from '../app-maker/app-maker.service';
 import { DeploymentService } from '../app-builder/services/deployment.service';
 import { AppFilesService } from '../app-files/app-files.service';
+import { GenerativeUiService } from '../generative-ui/generative-ui.service';
 
 interface AuthContext {
   userId: string;
@@ -139,6 +140,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     private readonly queryEngineAgent: QueryEngineAgent,
     private readonly chartBuilderAgent: ChartBuilderAgent,
     private readonly financeAnalyzerAgent: FinanceAnalyzerAgent,
+    private readonly generativeUiService: GenerativeUiService,
   ) {
     this.logger.log('ChatGateway initialized with namespace: /chat');
   }
@@ -991,6 +993,37 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
       // Fallback to AI - either no match or fallbackToAI was set
       if (!intentResult.intent.matched || intentResult.intent.fallbackToAI) {
+        // Check if we should generate a custom UI instead of a plain AI response
+        if (!assistantResponse && this.generativeUiService.shouldGenerateUi(message, intentResult.intent.confidence)) {
+          try {
+            this.logger.log(`Attempting generative UI for: "${message.substring(0, 50)}..."`);
+            const generatedUi = await this.generativeUiService.generateUi(
+              session.userId,
+              message,
+              { conversationId: session.conversationId },
+            );
+
+            // Emit the generated UI to the client
+            this.server.to(`session:${session.id}`).emit('generative-ui:created', {
+              sessionId: session.id,
+              html: generatedUi.html,
+              title: generatedUi.title,
+              description: generatedUi.description,
+              timestamp: new Date().toISOString(),
+            });
+
+            responseMetadata.generativeUi = {
+              title: generatedUi.title,
+              description: generatedUi.description,
+            };
+
+            assistantResponse = `I've created a custom "${generatedUi.title}" for you. ${generatedUi.description}`;
+          } catch (error) {
+            this.logger.warn('Generative UI creation failed, falling through to AI:', error.message);
+            // Fall through to normal AI response
+          }
+        }
+
         if (!assistantResponse) {
         // Fallback to AI using selected model with STREAMING
         try {
