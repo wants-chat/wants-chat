@@ -46,13 +46,25 @@ export class AiService {
     private creditsService: CreditsService,
     private dynamicConfig: DynamicLLMConfigService,
   ) {
-    const apiKey = this.configService.get<string>('OPENAI_API_KEY');
+    const llmProvider = this.configService.get<string>('LLM_PROVIDER', 'openrouter');
 
-    if (apiKey) {
-      this.openai = new OpenAI({ apiKey, timeout: 120000 });
-      this.logger.log('✅ OpenAI client initialized');
+    if (llmProvider === 'ollama') {
+      // Ollama: create an OpenAI-compatible client pointed at the local server
+      const ollamaBaseUrl = this.configService.get<string>('OLLAMA_BASE_URL', 'http://localhost:11434/v1');
+      this.openai = new OpenAI({
+        apiKey: 'ollama', // Dummy key — required by SDK but unused by Ollama
+        baseURL: ollamaBaseUrl,
+        timeout: 120000,
+      });
+      this.logger.log(`Ollama client initialized for embeddings (${ollamaBaseUrl})`);
     } else {
-      this.logger.warn('OPENAI_API_KEY not configured - AI features disabled');
+      const apiKey = this.configService.get<string>('OPENAI_API_KEY');
+      if (apiKey) {
+        this.openai = new OpenAI({ apiKey, timeout: 120000 });
+        this.logger.log('OpenAI client initialized');
+      } else {
+        this.logger.warn('OPENAI_API_KEY not configured - AI features disabled');
+      }
     }
 
     this.defaultModel = this.configService.get<string>('OPENAI_MODEL', 'gpt-4o-mini');
@@ -81,8 +93,13 @@ export class AiService {
     }
 
     try {
+      // Use Ollama embedding model when provider is ollama
+      const model = this.llmRouter.getLLMProvider() === 'ollama'
+        ? this.llmRouter.getOllamaEmbeddingModel()
+        : this.embeddingModel;
+
       const response = await this.openai.embeddings.create({
-        model: this.embeddingModel,
+        model,
         input: texts,
       });
 
