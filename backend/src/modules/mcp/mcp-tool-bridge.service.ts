@@ -99,6 +99,8 @@ export class McpToolBridgeService {
     try {
       const parsed = JSON.parse(match[1]);
       if (!parsed.server || !parsed.tool) return null;
+      if (typeof parsed.server !== 'string' || typeof parsed.tool !== 'string') return null;
+      if (parsed.arguments && typeof parsed.arguments !== 'object') return null;
 
       const beforeText = response.substring(0, match.index).trim();
       const afterText = response.substring(match.index! + match[0].length).trim();
@@ -126,6 +128,20 @@ export class McpToolBridgeService {
     args: Record<string, any>,
   ): Promise<string> {
     try {
+      // Validate the tool exists and arguments match its schema
+      const tools = await this.getTools();
+      const toolInfo = tools.find(t => t.serverName === server && t.name === tool);
+      if (!toolInfo) {
+        return `Tool "${server}/${tool}" not found`;
+      }
+
+      if (toolInfo.inputSchema?.required && Array.isArray(toolInfo.inputSchema.required)) {
+        const missing = toolInfo.inputSchema.required.filter((key: string) => !(key in args));
+        if (missing.length > 0) {
+          return `Missing required arguments: ${missing.join(', ')}`;
+        }
+      }
+
       const result = await this.mcpClient.callTool(server, tool, args);
 
       // Format MCP result content

@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit, OnModuleDestroy, NotFoundException, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
@@ -190,10 +190,10 @@ export class McpClientService implements OnModuleInit, OnModuleDestroy {
   ): Promise<any> {
     const conn = this.connections.get(serverName);
     if (!conn) {
-      throw new Error(`MCP server "${serverName}" not found`);
+      throw new NotFoundException(`MCP server "${serverName}" not found`);
     }
     if (!conn.connected) {
-      throw new Error(`MCP server "${serverName}" is not connected`);
+      throw new BadRequestException(`MCP server "${serverName}" is not connected`);
     }
 
     try {
@@ -215,10 +215,10 @@ export class McpClientService implements OnModuleInit, OnModuleDestroy {
   async listResources(serverName: string): Promise<McpResourceInfo[]> {
     const conn = this.connections.get(serverName);
     if (!conn) {
-      throw new Error(`MCP server "${serverName}" not found`);
+      throw new NotFoundException(`MCP server "${serverName}" not found`);
     }
     if (!conn.connected) {
-      throw new Error(`MCP server "${serverName}" is not connected`);
+      throw new BadRequestException(`MCP server "${serverName}" is not connected`);
     }
 
     try {
@@ -245,10 +245,10 @@ export class McpClientService implements OnModuleInit, OnModuleDestroy {
   ): Promise<{ contents: Array<{ uri: string; text?: string; mimeType?: string }> }> {
     const conn = this.connections.get(serverName);
     if (!conn) {
-      throw new Error(`MCP server "${serverName}" not found`);
+      throw new NotFoundException(`MCP server "${serverName}" not found`);
     }
     if (!conn.connected) {
-      throw new Error(`MCP server "${serverName}" is not connected`);
+      throw new BadRequestException(`MCP server "${serverName}" is not connected`);
     }
 
     try {
@@ -305,7 +305,7 @@ export class McpClientService implements OnModuleInit, OnModuleDestroy {
   async testConnection(serverName: string): Promise<McpServerStatus> {
     const conn = this.connections.get(serverName);
     if (!conn) {
-      throw new Error(`MCP server "${serverName}" not found in configuration`);
+      throw new NotFoundException(`MCP server "${serverName}" not found in configuration`);
     }
 
     // Try to disconnect and reconnect
@@ -338,28 +338,6 @@ export class McpClientService implements OnModuleInit, OnModuleDestroy {
       toolCount,
       error: updated?.error,
     };
-  }
-
-  /**
-   * Convert MCP tools to OpenAI-compatible function definitions
-   * for inclusion in LLM tool-calling requests.
-   */
-  mcpToolsToFunctionDefs(): Array<{
-    type: 'function';
-    function: {
-      name: string;
-      description: string;
-      parameters: Record<string, any>;
-    };
-  }> {
-    const defs: Array<{
-      type: 'function';
-      function: { name: string; description: string; parameters: Record<string, any> };
-    }> = [];
-
-    // We need to synchronously return cached tools; listTools is async
-    // so callers should call listTools() first and use the result
-    return defs;
   }
 
   /**
