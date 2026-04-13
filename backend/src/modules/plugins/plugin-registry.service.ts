@@ -55,7 +55,7 @@ export class PluginRegistryService implements OnModuleInit {
   /**
    * Register a new plugin with its manifest.
    */
-  async registerPlugin(manifest: PluginManifest): Promise<Plugin> {
+  async registerPlugin(manifest: PluginManifest): Promise<any> {
     if (!manifest.name || !manifest.version || !manifest.tools || manifest.tools.length === 0) {
       throw new BadRequestException(
         'Plugin manifest must include name, version, and at least one tool',
@@ -85,7 +85,7 @@ export class PluginRegistryService implements OnModuleInit {
   /**
    * List registered plugins with optional filtering.
    */
-  async listPlugins(filters?: PluginFilterDto): Promise<Plugin[]> {
+  async listPlugins(filters?: PluginFilterDto): Promise<any[]> {
     const conditions: Record<string, any> = {};
     if (filters?.is_active !== undefined) {
       conditions.is_active = filters.is_active;
@@ -122,7 +122,7 @@ export class PluginRegistryService implements OnModuleInit {
   /**
    * Get a single plugin by ID.
    */
-  async getPlugin(pluginId: string): Promise<Plugin> {
+  async getPlugin(pluginId: string): Promise<any> {
     const plugin = await this.db.findOne<Plugin>('plugins', { id: pluginId });
     if (!plugin) {
       throw new NotFoundException('Plugin not found');
@@ -192,7 +192,17 @@ export class PluginRegistryService implements OnModuleInit {
     pluginId: string,
     toolName: string,
     input: Record<string, any>,
+    userId: string,
   ): Promise<any> {
+    // Verify user has this plugin enabled
+    const userPlugin = await this.db.findOne<UserPlugin>('user_plugins', {
+      user_id: userId,
+      plugin_id: pluginId,
+    });
+    if (!userPlugin) {
+      throw new BadRequestException('Plugin is not enabled for this user');
+    }
+
     const plugin = await this.getPlugin(pluginId);
     const manifest = plugin.manifest;
 
@@ -202,6 +212,9 @@ export class PluginRegistryService implements OnModuleInit {
         `Tool "${toolName}" not found in plugin "${manifest.name}"`,
       );
     }
+
+    // Validate endpoint URL to prevent SSRF
+    this.validatePluginUrl(tool.apiEndpoint);
 
     try {
       const response = await axios.post(tool.apiEndpoint, input, {
@@ -254,15 +267,50 @@ export class PluginRegistryService implements OnModuleInit {
   }
 
   /**
-   * Transform a plugin row, parsing JSONB manifest if needed.
+   * Validate a plugin endpoint URL to prevent SSRF attacks.
    */
-  private transformPlugin(plugin: Plugin): Plugin {
+  private validatePluginUrl(url: string): void {
+    try {
+      const parsed = new URL(url);
+      if (!['http:', 'https:'].includes(parsed.protocol)) {
+        throw new BadRequestException('Plugin endpoint must use HTTP or HTTPS');
+      }
+      const hostname = parsed.hostname.toLowerCase();
+      const blocked = [
+        'localhost',
+        '127.0.0.1',
+        '0.0.0.0',
+        '::1',
+        '169.254.169.254',
+        'metadata.google.internal',
+      ];
+      if (blocked.includes(hostname) || hostname.endsWith('.internal') || hostname.startsWith('10.') || hostname.startsWith('192.168.') || hostname.startsWith('172.')) {
+        throw new BadRequestException('Plugin endpoint cannot target internal or private networks');
+      }
+    } catch (error) {
+      if (error instanceof BadRequestException) throw error;
+      throw new BadRequestException(`Invalid plugin endpoint URL: ${url}`);
+    }
+  }
+
+  /**
+   * Transform a plugin row, parsing JSONB manifest if needed and converting to camelCase.
+   */
+  private transformPlugin(plugin: any) {
+    const manifest =
+      typeof plugin.manifest === 'string'
+        ? JSON.parse(plugin.manifest)
+        : plugin.manifest;
     return {
-      ...plugin,
-      manifest:
-        typeof plugin.manifest === 'string'
-          ? JSON.parse(plugin.manifest)
-          : plugin.manifest,
+      id: plugin.id,
+      name: plugin.name,
+      version: plugin.version,
+      description: plugin.description,
+      author: plugin.author,
+      manifest,
+      isActive: plugin.is_active,
+      installCount: plugin.install_count,
+      createdAt: plugin.created_at,
     };
   }
 }

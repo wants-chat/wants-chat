@@ -183,7 +183,7 @@ export class AgentCrewService {
       }
     }
 
-    const crew = await this.db.insert<AgentCrew>('agent_crews', {
+    const crew = await this.db.insert<any>('agent_crews', {
       user_id: userId,
       name: dto.name,
       description: dto.description || '',
@@ -196,7 +196,7 @@ export class AgentCrewService {
   }
 
   async listCrews(userId: string): Promise<AgentCrew[]> {
-    const crews = await this.db.findMany<AgentCrew>(
+    const crews = await this.db.findMany<any>(
       'agent_crews',
       { user_id: userId },
       { orderBy: 'created_at', order: 'DESC' },
@@ -205,7 +205,7 @@ export class AgentCrewService {
   }
 
   async getCrewById(userId: string, crewId: string): Promise<AgentCrew> {
-    const crew = await this.db.findOne<AgentCrew>('agent_crews', { id: crewId });
+    const crew = await this.db.findOne<any>('agent_crews', { id: crewId });
     if (!crew) {
       throw new NotFoundException('Crew not found');
     }
@@ -235,7 +235,7 @@ export class AgentCrewService {
     const crew = await this.getCrewById(userId, crewId);
 
     // Create execution record
-    const execution = await this.db.insert<CrewExecution>('crew_executions', {
+    const execution = await this.db.insert<any>('crew_executions', {
       crew_id: crewId,
       user_id: userId,
       input,
@@ -264,7 +264,7 @@ export class AgentCrewService {
   }
 
   async getCrewResult(userId: string, executionId: string): Promise<CrewExecution> {
-    const execution = await this.db.findOne<CrewExecution>('crew_executions', {
+    const execution = await this.db.findOne<any>('crew_executions', {
       id: executionId,
     });
     if (!execution) {
@@ -491,12 +491,12 @@ export class AgentCrewService {
 
     return {
       id: crew.id,
-      user_id: crew.user_id,
+      userId: crew.user_id,
       name: crew.name,
       description: crew.description || '',
       process: crew.process,
       agents,
-      created_at: crew.created_at,
+      createdAt: crew.created_at,
     };
   }
 
@@ -512,14 +512,14 @@ export class AgentCrewService {
 
     return {
       id: execution.id,
-      crew_id: execution.crew_id,
-      user_id: execution.user_id,
+      crewId: execution.crew_id,
+      userId: execution.user_id,
       input: execution.input,
       status: execution.status,
-      agent_outputs: agentOutputs,
-      final_output: execution.final_output,
-      started_at: execution.started_at,
-      completed_at: execution.completed_at,
+      agentOutputs: agentOutputs,
+      finalOutput: execution.final_output,
+      startedAt: execution.started_at,
+      completedAt: execution.completed_at,
     };
   }
 }

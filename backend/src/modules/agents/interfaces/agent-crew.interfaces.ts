@@ -11,12 +11,12 @@ export interface AgentDefinition {
 
 export interface AgentCrew {
   id: string;
-  user_id: string;
+  userId: string;
   name: string;
   description: string;
   process: CrewProcess;
   agents: AgentDefinition[];
-  created_at: Date;
+  createdAt: Date;
 }
 
 export interface AgentOutput {
@@ -30,14 +30,14 @@ export interface AgentOutput {
 
 export interface CrewExecution {
   id: string;
-  crew_id: string;
-  user_id: string;
+  crewId: string;
+  userId: string;
   input: string;
   status: CrewExecutionStatus;
-  agent_outputs: AgentOutput[];
-  final_output: string | null;
-  started_at: Date;
-  completed_at: Date | null;
+  agentOutputs: AgentOutput[];
+  finalOutput: string | null;
+  startedAt: Date;
+  completedAt: Date | null;
 }
 
 export interface CrewTemplate {

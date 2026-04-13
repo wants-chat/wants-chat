@@ -90,7 +90,9 @@ export class PluginsController {
     @Param('id') id: string,
     @Param('toolName') toolName: string,
     @Body() input: Record<string, any>,
+    @Req() req: any,
   ) {
-    return this.pluginRegistry.executePluginTool(id, toolName, input);
+    const userId = req.user.userId || req.user.id || req.user.sub;
+    return this.pluginRegistry.executePluginTool(id, toolName, input, userId);
   }
 }
