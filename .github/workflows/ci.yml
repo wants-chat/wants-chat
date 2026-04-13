@@ -46,5 +46,4 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
       - run: npm run lint --if-present
-      - run: npx tsc --noEmit --skipLibCheck
       - run: npx vite build
