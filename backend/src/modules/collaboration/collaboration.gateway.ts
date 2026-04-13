@@ -13,7 +13,7 @@ import { CollaborationService } from './collaboration.service';
     origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3000'],
     credentials: true,
   },
-  namespace: '/',
+  namespace: '/collab',
   transports: ['websocket', 'polling'],
 })
 export class CollaborationGateway {

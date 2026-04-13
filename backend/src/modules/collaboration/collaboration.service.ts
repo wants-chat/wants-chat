@@ -4,6 +4,7 @@ import {
   NotFoundException,
   BadRequestException,
   ForbiddenException,
+  OnModuleInit,
 } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import { AppGateway } from '../../common/gateways/app.gateway';
@@ -47,7 +48,7 @@ export interface StateUpdateDto {
 // ── Service ─────────────────────────────────────────────────
 
 @Injectable()
-export class CollaborationService {
+export class CollaborationService implements OnModuleInit {
   private readonly logger = new Logger(CollaborationService.name);
 
   constructor(
