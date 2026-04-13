@@ -72,7 +72,7 @@ export class DocumentIngestionService {
         file_size BIGINT NOT NULL DEFAULT 0,
         chunk_count INTEGER NOT NULL DEFAULT 0,
         storage_path TEXT,
-        qdrant_collection VARCHAR(100) NOT NULL DEFAULT '${COLLECTION_NAME}',
+        qdrant_collection VARCHAR(100) NOT NULL DEFAULT 'user_documents',
         status VARCHAR(50) NOT NULL DEFAULT 'processing',
         error_message TEXT,
         created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -475,7 +475,7 @@ export class DocumentIngestionService {
     }
 
     // Delete DB record
-    await this.db.delete('user_documents', { id: documentId, user_id: userId });
+    await this.db.query('DELETE FROM user_documents WHERE id = $1 AND user_id = $2', [documentId, userId]);
 
     this.logger.log(`Deleted document ${documentId} for user ${userId}`);
   }
