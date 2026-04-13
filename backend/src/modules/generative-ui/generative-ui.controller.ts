@@ -8,11 +8,17 @@ import {
   Req,
   BadRequestException,
 } from '@nestjs/common';
+import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { GenerativeUiService } from './generative-ui.service';
 
 class GenerateUiDto {
+  @IsString()
+  @IsNotEmpty()
   prompt: string;
+
+  @IsOptional()
+  @IsString()
   conversationId?: string;
 }
 

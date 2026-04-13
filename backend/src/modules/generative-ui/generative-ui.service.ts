@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { AiService } from '../ai/ai.service';
 import { DatabaseService } from '../database/database.service';
 
@@ -40,13 +40,35 @@ const TITLE_EXTRACTION_PROMPT = `Given this HTML page, extract a short title (3-
 const GENERATIVE_UI_THRESHOLD = 0.3;
 
 @Injectable()
-export class GenerativeUiService {
+export class GenerativeUiService implements OnModuleInit {
   private readonly logger = new Logger(GenerativeUiService.name);
 
   constructor(
     private readonly aiService: AiService,
     private readonly db: DatabaseService,
   ) {}
+
+  async onModuleInit(): Promise<void> {
+    try {
+      await this.db.query(`
+        CREATE TABLE IF NOT EXISTS generated_uis (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          user_id VARCHAR(255) NOT NULL,
+          conversation_id UUID,
+          prompt TEXT NOT NULL,
+          html TEXT NOT NULL,
+          title VARCHAR(255) NOT NULL DEFAULT 'Generated UI',
+          description TEXT DEFAULT '',
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        )
+      `);
+      await this.db.query(`CREATE INDEX IF NOT EXISTS idx_generated_uis_user_id ON generated_uis(user_id)`);
+      await this.db.query(`CREATE INDEX IF NOT EXISTS idx_generated_uis_conversation ON generated_uis(conversation_id)`);
+      this.logger.log('Generated UIs table ensured');
+    } catch (error) {
+      this.logger.warn(`Failed to ensure generated_uis table: ${error.message}`);
+    }
+  }
 
   /**
    * Decide whether to generate a custom UI based on the best tool-match score.
@@ -111,13 +133,23 @@ export class GenerativeUiService {
   async getHistory(
     conversationId: string,
     userId: string,
-  ): Promise<GeneratedUi[]> {
+  ) {
     try {
-      return await this.db.findMany<GeneratedUi>(
+      const rows = await this.db.findMany<any>(
         'generated_uis',
         { conversation_id: conversationId, user_id: userId },
         { orderBy: 'created_at', order: 'DESC' },
       );
+      return rows.map((r: any) => ({
+        id: r.id,
+        userId: r.user_id,
+        conversationId: r.conversation_id,
+        prompt: r.prompt,
+        html: r.html,
+        title: r.title,
+        description: r.description,
+        createdAt: r.created_at,
+      }));
     } catch (error) {
       this.logger.warn('Failed to query generated UI history:', error.message);
       return [];
