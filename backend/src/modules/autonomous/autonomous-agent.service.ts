@@ -291,12 +291,12 @@ Respond with ONLY valid JSON matching this schema:
     try {
       parsed = JSON.parse(response);
     } catch {
-      throw new Error('AI returned invalid JSON for plan');
+      throw new BadRequestException('AI returned invalid JSON for plan');
     }
 
     // Validate and cap steps
     if (!parsed.steps || !Array.isArray(parsed.steps)) {
-      throw new Error('Plan missing steps array');
+      throw new BadRequestException('Plan missing steps array');
     }
 
     if (parsed.steps.length > MAX_STEPS) {
@@ -537,7 +537,7 @@ Respond with ONLY valid JSON matching this schema:
     const withoutPrefix = action.replace('mcp:', '');
     const slashIdx = withoutPrefix.indexOf('/');
     if (slashIdx === -1) {
-      throw new Error(`Invalid MCP action format: ${action}. Expected mcp:server/tool`);
+      throw new BadRequestException(`Invalid MCP action format: ${action}. Expected mcp:server/tool`);
     }
     const serverName = withoutPrefix.slice(0, slashIdx);
     const toolName = withoutPrefix.slice(slashIdx + 1);

@@ -1,5 +1,11 @@
+import { IsString, IsOptional, IsNumber } from 'class-validator';
+
 export class QueryDocumentsDto {
+  @IsString()
   query: string;
+
+  @IsOptional()
+  @IsNumber()
   topK?: number;
 }
 

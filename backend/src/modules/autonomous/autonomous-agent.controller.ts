@@ -9,10 +9,13 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
+import { IsString, IsNotEmpty } from 'class-validator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AutonomousAgentService } from './autonomous-agent.service';
 
-interface CreateTaskDto {
+class CreateTaskDto {
+  @IsString()
+  @IsNotEmpty()
   goal: string;
 }
 
