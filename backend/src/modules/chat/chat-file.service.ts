@@ -177,7 +177,7 @@ export class ChatFileService {
       if (lines.length === 0) return '[Empty CSV]';
 
       const header = lines[0];
-      const columns = header.split(',').map((c) => c.trim());
+      const columns = this.parseCsvRow(header);
       const previewRows = lines.slice(1, 11); // first 10 data rows
 
       let summary = `CSV file with ${columns.length} columns and ${lines.length - 1} rows.\n`;
@@ -236,6 +236,34 @@ export class ChatFileService {
       this.logger.warn('Image description failed:', error.message);
       return `[Image: ${file.originalname} - could not generate description]`;
     }
+  }
+
+  private parseCsvRow(row: string): string[] {
+    const result: string[] = [];
+    let current = '';
+    let inQuotes = false;
+    for (let i = 0; i < row.length; i++) {
+      const ch = row[i];
+      if (inQuotes) {
+        if (ch === '"' && row[i + 1] === '"') {
+          current += '"';
+          i++;
+        } else if (ch === '"') {
+          inQuotes = false;
+        } else {
+          current += ch;
+        }
+      } else if (ch === '"') {
+        inQuotes = true;
+      } else if (ch === ',') {
+        result.push(current.trim());
+        current = '';
+      } else {
+        current += ch;
+      }
+    }
+    result.push(current.trim());
+    return result;
   }
 
   private formatSize(bytes: number): string {

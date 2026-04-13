@@ -14,6 +14,7 @@ import {
   HttpStatus,
   UploadedFile,
   UseInterceptors,
+  BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
@@ -66,6 +67,10 @@ class SendMessageDto {
   @IsOptional()
   @IsString()
   model?: string;
+
+  @IsOptional()
+  @IsString()
+  fileContext?: string;
 }
 
 @ApiTags('Chat')
@@ -176,7 +181,7 @@ export class ChatController {
     @Param('id') id: string,
     @Body() dto: SendMessageDto,
   ) {
-    return this.chatService.sendMessage(id, req.user.sub, dto.content, dto.model);
+    return this.chatService.sendMessage(id, req.user.sub, dto.content, dto.model, dto.fileContext);
   }
 
   @Post('conversations/:id/messages/stream')
@@ -252,13 +257,14 @@ export class ChatController {
     const userId = req.user.userId || req.user.id || req.user.sub;
 
     if (!conversationId) {
-      throw new Error('conversationId is required');
+      throw new BadRequestException('conversationId is required');
     }
 
     // Verify conversation ownership
     await this.chatService.getConversation(conversationId, userId);
 
-    return this.chatFileService.uploadAndExtract(userId, conversationId, file);
+    const chatFile = await this.chatFileService.uploadAndExtract(userId, conversationId, file);
+    return this.transformFile(chatFile);
   }
 
   @Get('files/:conversationId')
@@ -274,7 +280,23 @@ export class ChatController {
     // Verify conversation ownership
     await this.chatService.getConversation(conversationId, userId);
 
-    return this.chatFileService.listFiles(conversationId, userId);
+    const files = await this.chatFileService.listFiles(conversationId, userId);
+    return files.map((f) => this.transformFile(f));
+  }
+
+  private transformFile(file: any) {
+    if (!file) return null;
+    return {
+      id: file.id,
+      userId: file.user_id,
+      conversationId: file.conversation_id,
+      filename: file.filename,
+      fileType: file.file_type,
+      fileSize: file.file_size,
+      extractedText: file.extracted_text,
+      storagePath: file.storage_path,
+      createdAt: file.created_at,
+    };
   }
 
   // ============================================
