@@ -42,6 +42,9 @@ import { AppBuilderModule } from './modules/app-builder/app-builder.module';
 // import { AppMakerModule } from './modules/app-maker/app-maker.module';
 import { ToolsApiModule } from './modules/tools-api/tools-api.module';
 import { ToolsModule } from './modules/tools/tools.module';
+import { AgentsModule } from './modules/agents/agents.module';
+import { PluginsModule } from './modules/plugins/plugins.module';
+import { CollaborationModule } from './modules/collaboration/collaboration.module';
 
 @Module({
   imports: [
@@ -93,6 +96,9 @@ import { ToolsModule } from './modules/tools/tools.module';
     // AppMakerModule excluded from open-source release
     ToolsApiModule,
     ToolsModule,
+    AgentsModule,
+    PluginsModule,
+    CollaborationModule,
   ],
 })
 export class AppModule {}
