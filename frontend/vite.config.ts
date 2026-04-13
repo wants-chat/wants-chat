@@ -39,7 +39,7 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
-        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB
+        maximumFileSizeToCacheInBytes: 60 * 1024 * 1024, // 60 MB — main bundle is ~56MB due to 1,100+ tool components
         runtimeCaching: [
           {
             urlPattern: /^https?:\/\/.*\/api\/.*/i,
