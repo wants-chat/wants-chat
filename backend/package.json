@@ -54,7 +54,7 @@
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "pdf-lib": "^1.17.1",
-    "pdf-parse": "^1.1.1",
+    "pdf-parse": "^2.4.5",
     "pluralize": "^8.0.0",
     "pg": "^8.13.0",
     "pptxgenjs": "^3.12.0",
