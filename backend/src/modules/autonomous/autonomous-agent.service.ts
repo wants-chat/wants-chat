@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, BadRequestException, ForbiddenException, ConflictException, OnModuleInit } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import { AiService } from '../ai/ai.service';
 import { McpClientService } from '../mcp/mcp-client.service';
@@ -34,7 +34,7 @@ interface StepResult {
 }
 
 @Injectable()
-export class AutonomousAgentService {
+export class AutonomousAgentService implements OnModuleInit {
   private readonly logger = new Logger(AutonomousAgentService.name);
 
   /** Track running tasks so we can cancel them */
@@ -46,6 +46,27 @@ export class AutonomousAgentService {
     private readonly mcpClient: McpClientService,
     private readonly gateway: AppGateway,
   ) {}
+
+  async onModuleInit(): Promise<void> {
+    // Crash-recovery: any task left in 'executing' belonged to a previous
+    // process that died mid-run. Its in-memory handle is gone, so mark
+    // those tasks 'paused' so the user can explicitly resume them.
+    try {
+      const result = await this.db.query<{ id: string }>(
+        `UPDATE autonomous_tasks
+         SET status = 'paused', updated_at = NOW()
+         WHERE status = 'executing'
+         RETURNING id`,
+      );
+      if (result.rowCount && result.rowCount > 0) {
+        this.logger.warn(
+          `Reset ${result.rowCount} stuck 'executing' task(s) to 'paused' on startup: ${result.rows.map((r) => r.id).join(', ')}`,
+        );
+      }
+    } catch (error: any) {
+      this.logger.warn(`Stuck-task sweep skipped: ${error.message}`);
+    }
+  }
 
   // ================================================================
   // CREATE TASK — parse goal, generate plan via AI
@@ -146,14 +167,24 @@ export class AutonomousAgentService {
       throw new BadRequestException('Task has no plan');
     }
 
-    // Mark running
-    await this.db.update('autonomous_tasks', { id: taskId }, {
-      status: 'executing',
-      started_at: task.started_at || new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    } as UpdateAutonomousTask);
+    // Atomic lock: only transition to 'executing' if still in a valid
+    // start status. Two concurrent executeTask() calls will otherwise
+    // both pass the status check above and fire runSteps twice for the
+    // same task. rowCount === 0 means another caller won the race.
+    const lockResult = await this.db.query(
+      `UPDATE autonomous_tasks
+       SET status = 'executing',
+           started_at = COALESCE(started_at, NOW()),
+           updated_at = NOW()
+       WHERE id = $1 AND status = ANY($2::text[])
+       RETURNING id`,
+      [taskId, validStartStatuses],
+    );
+    if (!lockResult.rowCount) {
+      throw new ConflictException('Task is already executing or its status changed');
+    }
 
-    // Set up control handle
+    // Set up control handle (safe now — we own the task)
     this.runningTasks.set(taskId, { cancelled: false, paused: false });
 
     // Execute asynchronously
