@@ -128,10 +128,18 @@ export class McpToolBridgeService {
     args: Record<string, any>,
   ): Promise<string> {
     try {
-      // Validate the tool exists and arguments match its schema
+      // Validate the tool exists and arguments match its schema.
+      // Force a cache refresh if empty so a newly-connected tool can
+      // be discovered, and a disconnected-but-cached tool can't be
+      // targeted past the cache TTL.
       const tools = await this.getTools();
       const toolInfo = tools.find(t => t.serverName === server && t.name === tool);
       if (!toolInfo) {
+        // Log rejected calls so operators can spot prompt-injection
+        // attempts that try to spoof tool names from LLM output.
+        this.logger.warn(
+          `Rejected MCP tool call for unknown tool "${server}/${tool}" (known: ${tools.length})`,
+        );
         return `Tool "${server}/${tool}" not found`;
       }
 
@@ -142,6 +150,7 @@ export class McpToolBridgeService {
         }
       }
 
+      this.logger.log(`MCP tool call: ${server}/${tool} args=${JSON.stringify(args)}`);
       const result = await this.mcpClient.callTool(server, tool, args);
 
       // Format MCP result content
