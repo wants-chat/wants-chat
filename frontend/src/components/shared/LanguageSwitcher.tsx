@@ -1,5 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import { ChevronDown, Globe, Check } from 'lucide-react';
 import { languages } from '../../i18n';
 
@@ -18,20 +20,67 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
 }) => {
   const { i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [menuPos, setMenuPos] = useState<{ top: number; left: number; width: number } | null>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
 
   const currentLanguage = languages.find((lang) => lang.code === i18n.language) || languages[0];
 
+  const updatePosition = () => {
+    if (!buttonRef.current) return;
+    const rect = buttonRef.current.getBoundingClientRect();
+    const menuWidth = 240;
+    const menuHeight = 320;
+    let top: number;
+    let left: number;
+
+    if (variant === 'footer') {
+      top = rect.top - menuHeight - 8;
+      left = rect.right - menuWidth;
+    } else {
+      top = rect.bottom + 8;
+      left = rect.right - menuWidth;
+    }
+    left = Math.max(8, Math.min(left, window.innerWidth - menuWidth - 8));
+    setMenuPos({ top, left, width: menuWidth });
+  };
+
+  useLayoutEffect(() => {
+    if (isOpen) updatePosition();
+  }, [isOpen]);
+
   useEffect(() => {
+    if (!isOpen) return;
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      if (
+        buttonRef.current && !buttonRef.current.contains(target) &&
+        menuRef.current && !menuRef.current.contains(target)
+      ) {
         setIsOpen(false);
       }
     };
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsOpen(false);
+    };
+    const handleViewportChange = () => updatePosition();
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    document.addEventListener('keydown', handleEscape);
+    window.addEventListener('scroll', handleViewportChange, true);
+    window.addEventListener('resize', handleViewportChange);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+      window.removeEventListener('scroll', handleViewportChange, true);
+      window.removeEventListener('resize', handleViewportChange);
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
 
   const handleLanguageChange = (langCode: string) => {
     i18n.changeLanguage(langCode);
@@ -54,15 +103,10 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
     mobile: 'w-full px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 justify-between',
   };
 
-  const dropdownPosition = {
-    header: 'right-0 mt-2',
-    footer: 'bottom-full mb-2 right-0',
-    mobile: 'left-0 right-0 mt-1',
-  };
-
   return (
-    <div ref={dropdownRef} className={`relative ${className}`}>
+    <div className={`relative ${className}`}>
       <button
+        ref={buttonRef}
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={`${baseButtonStyles} ${variantStyles[variant]}`}
@@ -73,23 +117,24 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
         <Globe className="w-5 h-5" />
         {showFlag && <span className="text-lg">{currentLanguage.flag}</span>}
         {showLabel && (
-          <span className="text-sm font-medium">
-            {currentLanguage.name}
-          </span>
+          <span className="text-sm font-medium">{currentLanguage.name}</span>
         )}
         <ChevronDown
           className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
         />
       </button>
 
-      {isOpen && (
+      {isOpen && menuPos && createPortal(
         <div
-          className={`
-            absolute z-50 ${dropdownPosition[variant]}
-            min-w-[200px] py-2 bg-white dark:bg-[#2a2a2a] rounded-lg shadow-lg
-            border border-gray-200 dark:border-[#3a3a3a]
-            max-h-[320px] overflow-y-auto
-          `}
+          ref={menuRef}
+          style={{
+            position: 'fixed',
+            top: menuPos.top,
+            left: menuPos.left,
+            width: menuPos.width,
+            zIndex: 9999,
+          }}
+          className="py-2 bg-white dark:bg-[#2a2a2a] rounded-lg shadow-2xl border border-gray-200 dark:border-[#3a3a3a] max-h-[320px] overflow-y-auto"
           role="listbox"
           aria-label="Available languages"
         >
@@ -120,7 +165,8 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
               )}
             </button>
           ))}
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

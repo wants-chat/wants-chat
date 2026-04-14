@@ -436,6 +436,19 @@ const ChatPage: React.FC = () => {
     }
   }, [selectedModelId]);
 
+  // Pre-fill chat input from ?prompt= URL param (e.g. "New App" button → /chat?prompt=...)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const prompt = params.get('prompt');
+    if (prompt) {
+      setInputValue(prompt);
+      params.delete('prompt');
+      const qs = params.toString();
+      const newUrl = window.location.pathname + (qs ? `?${qs}` : '');
+      window.history.replaceState({}, '', newUrl);
+    }
+  }, []);
+
   // Handle GitHub OAuth callback - restore app context after redirect
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);

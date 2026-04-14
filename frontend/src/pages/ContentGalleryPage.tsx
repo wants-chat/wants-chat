@@ -31,6 +31,7 @@ import {
   Edit3,
   Copy,
   Check,
+  Plus,
 } from 'lucide-react';
 import { AppSidebar } from '../components/AppSidebar';
 import { SettingsSubmenu } from '../components/layout/SettingsSubmenu';
@@ -502,6 +503,17 @@ const ContentGalleryPage: React.FC = () => {
                   <span>{appStats.withGitHub} synced</span>
                 </div>
               </div>
+            )}
+
+            {/* Create App button - only on Apps tab */}
+            {mainTab === 'apps' && (
+              <button
+                onClick={() => navigate('/chat?prompt=Create+a+new+app%3A+')}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-500 text-white text-sm font-semibold hover:opacity-90 transition shadow-sm shadow-emerald-500/20"
+              >
+                <Plus className="w-4 h-4" />
+                New App
+              </button>
             )}
 
             {/* View Toggle */}
