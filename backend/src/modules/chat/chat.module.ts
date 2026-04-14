@@ -14,6 +14,7 @@ import { AppBuilderModule } from '../app-builder/app-builder.module';
 import { AppFilesModule } from '../app-files/app-files.module';
 import { LearningModule } from '../learning/learning.module';
 import { DataAnalysisModule } from '../data-analysis/data-analysis.module';
+import { CodeSandboxModule } from '../code-sandbox/code-sandbox.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { DataAnalysisModule } from '../data-analysis/data-analysis.module';
     AppFilesModule,
     forwardRef(() => LearningModule),
     forwardRef(() => DataAnalysisModule),
+    CodeSandboxModule,
   ],
   controllers: [ChatController],
   providers: [ChatService, ChatGateway],

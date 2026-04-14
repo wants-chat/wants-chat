@@ -34,6 +34,7 @@ import { MemoryService } from '../memory/memory.service';
 // import { AppMakerService } from '../app-maker/app-maker.service';
 import { DeploymentService } from '../app-builder/services/deployment.service';
 import { AppFilesService } from '../app-files/app-files.service';
+import { CodeSandboxService } from '../code-sandbox/code-sandbox.service';
 import { McpToolBridgeService } from '../mcp/mcp-tool-bridge.service';
 
 interface AuthContext {
@@ -140,6 +141,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     private readonly queryEngineAgent: QueryEngineAgent,
     private readonly chartBuilderAgent: ChartBuilderAgent,
     private readonly financeAnalyzerAgent: FinanceAnalyzerAgent,
+    private readonly codeSandboxService: CodeSandboxService,
     private readonly mcpToolBridge: McpToolBridgeService,
   ) {
     this.logger.log('ChatGateway initialized with namespace: /chat');
@@ -2008,6 +2010,59 @@ Return the complete modified file content:`;
       this.logger.error('Code update error:', error);
       client.emit('code:error', {
         message: error.message || 'Failed to update code',
+      });
+    }
+  }
+
+  // ============================================
+  // Sandboxed Code Execution
+  // ============================================
+
+  @SubscribeMessage('code:execute')
+  async handleCodeExecute(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: {
+      language: 'javascript' | 'python' | 'typescript';
+      code: string;
+      stdin?: string;
+      sessionId?: string;
+    },
+  ) {
+    try {
+      const authContext = client.data.authContext as AuthContext;
+      if (!authContext) {
+        client.emit('code:error', { message: 'Not authenticated' });
+        return;
+      }
+
+      this.logger.log(
+        `Code execution requested: ${data.language} (${data.code?.length || 0} chars)`,
+      );
+
+      client.emit('code:execute:status', {
+        status: 'running',
+        language: data.language,
+        timestamp: new Date().toISOString(),
+      });
+
+      const result = await this.codeSandboxService.executeCode(
+        authContext.userId,
+        data.language,
+        data.code,
+        data.stdin,
+      );
+
+      client.emit('code:execute:result', {
+        ...result,
+        language: data.language,
+        sessionId: data.sessionId,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      this.logger.error('Code execution error:', error);
+      client.emit('code:execute:error', {
+        message: error.message || 'Failed to execute code',
+        statusCode: error.status || 500,
       });
     }
   }
