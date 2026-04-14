@@ -65,7 +65,7 @@ The more we can reproduce on first read, the faster we can ship a fix.
 - The hosted commercial instance at `wants.chat` (please report
   hosted-service issues to **support@infoinlet.com** with subject
   prefix `[SECURITY] wants.chat`)
-- Third-party services we integrate with (OpenRouter, Stripe,
+- Third-party services we integrate with (OpenRouter,
   Cloudflare R2, AWS SES, etc.) — report those upstream
 - Social engineering, physical attacks, and attacks requiring
   privileged local access to a victim's machine

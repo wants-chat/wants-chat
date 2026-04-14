@@ -7,12 +7,12 @@
 
 ## Que es wants.chat?
 
-Plataforma AI que entiende tus intenciones y genera interfaces contextuales. 200+ apps AI, constructor de apps y automatizacion de flujos de trabajo.
+Plataforma AI que entiende tus intenciones y genera interfaces contextuales. 1100+ apps AI, constructor de apps y automatizacion de flujos de trabajo.
 
 ## Funciones principales
 
 - **Deteccion de intenciones** — Comprende lo que necesitas del lenguaje natural
-- **200+ Apps AI** — Convertidores, generadores, herramientas de analisis
+- **1100+ Apps AI** — Convertidores, generadores, herramientas de analisis
 - **Constructor de Apps** — Crea apps AI personalizadas sin codigo
 - **Automatizacion** — Cadenas de automatizacion AI multi-paso
 - **Extension de navegador** — Acceso desde cualquier sitio web

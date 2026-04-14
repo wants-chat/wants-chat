@@ -1,5 +1,5 @@
 /**
- * Life OS Test Data Seeding Script
+ * Wants Test Data Seeding Script
  * Populates the database with realistic test data for development and testing
  */
 
@@ -524,7 +524,7 @@ class TestDataSeeder {
 
   async seedAll() {
     try {
-      console.log('🌱 Starting Life OS test data seeding...\n');
+      console.log('🌱 Starting Wants test data seeding...\n');
       
       await this.seedUsers();
       await this.seedHealthData();
@@ -606,7 +606,7 @@ async function main() {
       await seeder.seedAll();
       break;
     default:
-      console.log('Life OS Test Data Seeder');
+      console.log('Wants Test Data Seeder');
       console.log('');
       console.log('Usage: node seed-test-data.js [command]');
       console.log('');

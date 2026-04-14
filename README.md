@@ -398,7 +398,6 @@ _Typical standard-tier pricing as of December 2025; actual figures vary by plan 
 - [x] Tool data sync to backend
 - [x] Export (PDF, Excel, CSV, JSON)
 - [x] User onboarding flow
-- [x] Stripe billing integration
 - [x] Browser extension (Chrome/Firefox)
 - [x] Organization/team support
 - [x] Vector search for tools (Qdrant)

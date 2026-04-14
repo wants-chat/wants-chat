@@ -53,7 +53,8 @@ Connect to Wants.chat API for AI features:
 ```javascript
 // In popup.js, update callAI function:
 async function callAI(endpoint, data) {
-  const response = await fetch(`https://api.wants.chat/api/v1/devtools/${endpoint}`, {
+  // Set API_BASE_URL to your self-hosted backend (e.g., http://localhost:3001)
+  const response = await fetch(`${API_BASE_URL}/api/v1/devtools/${endpoint}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -65,7 +65,7 @@
 | `AWS_ACCESS_KEY_ID` | - | AWS access key for SES |
 | `AWS_SECRET_ACCESS_KEY` | - | AWS secret key for SES |
 | `AWS_REGION` | `us-east-1` | AWS region |
-| `EMAIL_DEFAULT_FROM` | `noreply@wants.chat` | Default sender email |
+| `EMAIL_DEFAULT_FROM` | `noreply@localhost` | Default sender email (set to your own domain) |
 
 ### OAuth (Optional)
 

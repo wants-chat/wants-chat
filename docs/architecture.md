@@ -19,7 +19,6 @@
                     │  Auth Module       │ JWT, OAuth (Google, GitHub, Apple)
                     │  Chat Module       │ Real-time messaging, AI streaming
                     │  AI Module         │ Multi-provider LLM routing
-                    │  Stripe Module     │ Billing, subscriptions
                     │  Storage Module    │ File uploads (Cloudflare R2)
                     │  Research Module   │ Web research, autonomous tasks
                     │  App Builder       │ No-code app generation
@@ -65,12 +64,13 @@ wants/
 │   │   │   ├── tools/     # 1100+ tool components (the core of the platform)
 │   │   │   ├── chat/      # Chat interface components
 │   │   │   ├── landing/   # Landing page sections
+│   │   │   ├── oss/       # Open-source landing page sections
 │   │   │   └── ui/        # shadcn/ui base components
 │   │   ├── pages/         # Route pages
 │   │   ├── contexts/      # React context providers
 │   │   ├── hooks/         # Custom React hooks
 │   │   ├── services/      # API service layer
-│   │   ├── i18n/          # Internationalization (en, ja)
+│   │   ├── i18n/          # Internationalization (17 locales)
 │   │   └── lib/           # Utilities and API client
 │   └── public/            # Static assets
 │
@@ -81,7 +81,6 @@ wants/
 │   │   │   ├── chat/      # Chat and AI conversation
 │   │   │   ├── ai/        # AI service (multi-provider)
 │   │   │   ├── database/  # PostgreSQL connection + query builder
-│   │   │   ├── stripe/    # Billing and subscriptions
 │   │   │   └── ...        # 36+ more modules
 │   │   ├── common/        # Guards, interceptors, decorators
 │   │   └── data/          # Tool registry

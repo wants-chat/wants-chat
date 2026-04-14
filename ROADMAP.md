@@ -9,11 +9,9 @@
 - [x] No-code app builder
 - [x] Real-time chat (WebSocket)
 - [x] JWT + OAuth authentication
-- [x] Stripe billing
-- [x] Mobile apps (iOS + Android)
 - [x] Export (PDF, Excel, CSV, JSON)
 - [x] Dark/Light theme
-- [x] i18n (English, Japanese)
+- [x] i18n (17 locales)
 - [x] Docker support
 - [x] Self-hosting documentation
 

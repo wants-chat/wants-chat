@@ -1,4 +1,4 @@
-# Life OS Frontend Dockerfile
+# Wants Frontend Dockerfile
 # Multi-stage build for different environments
 
 # =============================================
@@ -70,7 +70,7 @@ COPY . .
 # Build the application
 ARG VITE_API_URL=http://localhost:3000
 ARG VITE_WS_URL=ws://localhost:3000
-ARG VITE_APP_NAME="Life OS"
+ARG VITE_APP_NAME="Wants"
 ARG VITE_ENVIRONMENT=production
 
 ENV VITE_API_URL=$VITE_API_URL

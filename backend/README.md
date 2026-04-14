@@ -1,6 +1,6 @@
-# Life OS Backend - NestJS API Server
+# Wants Backend - NestJS API Server
 
-The backend API server for Life OS, built with NestJS, TypeScript, and Fluxez SDK for comprehensive personal management features.
+The backend API server for Wants, built with NestJS, TypeScript, raw `pg` (PostgreSQL), and Redis.
 
 ## 🚀 Features
 
@@ -78,8 +78,7 @@ src/
 │   ├── 📂 meditation/          # Meditation & mental health
 │   ├── 📂 ai/                  # AI services
 │   ├── 📂 notifications/       # Notification system
-│   ├── 📂 fluxez/           # Fluxez SDK wrapper
-│   └── 📂 edge-functions/      # Serverless functions
+│   └── 📂 database/            # PostgreSQL connection + query helpers
 ├── 📂 utils/                    # Utility functions
 ├── app.module.ts               # Main application module
 └── main.ts                     # Application entry point
@@ -144,7 +143,7 @@ src/
 
 ## 📊 Database Schema
 
-The database schema is defined in `src/database/schema.ts` using Fluxez SDK format:
+The database schema is managed via SQL migrations in `backend/scripts/migrations/` and accessed through raw `pg` queries via `DatabaseService`:
 
 ### Main Tables
 - **users**: User accounts and profiles
