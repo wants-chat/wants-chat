@@ -4,12 +4,13 @@ import { McpClientService } from './mcp-client.service';
 import { McpToolBridgeService } from './mcp-tool-bridge.service';
 import { McpController } from './mcp.controller';
 import { AuthModule } from '../auth/auth.module';
+import { McpAdminGuard } from './guards/mcp-admin.guard';
 
 @Global()
 @Module({
   imports: [ConfigModule, AuthModule],
   controllers: [McpController],
-  providers: [McpClientService, McpToolBridgeService],
+  providers: [McpClientService, McpToolBridgeService, McpAdminGuard],
   exports: [McpClientService, McpToolBridgeService],
 })
 export class McpModule {}

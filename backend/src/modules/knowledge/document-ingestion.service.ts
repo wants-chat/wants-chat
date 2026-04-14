@@ -9,6 +9,7 @@ import { QdrantService } from '../qdrant/qdrant.service';
 import { AiService } from '../ai/ai.service';
 import { R2Service } from '../storage/r2.service';
 import { v4 as uuidv4 } from 'uuid';
+import * as path from 'path';
 import {
   DocumentChunkDto,
   DocumentListItemDto,
@@ -27,7 +28,16 @@ const CHARS_PER_TOKEN = 4;
 const MAX_CHUNK_CHARS = MAX_CHUNK_TOKENS * CHARS_PER_TOKEN;
 const OVERLAP_CHARS = CHUNK_OVERLAP_TOKENS * CHARS_PER_TOKEN;
 
-const SUPPORTED_TYPES = ['pdf', 'txt', 'md', 'csv', 'docx'];
+export const SUPPORTED_TYPES = ['pdf', 'txt', 'md', 'csv', 'docx'];
+
+const MAX_FILENAME_LENGTH = 200;
+
+function sanitizeFilename(raw: string): string {
+  const base = path.basename(raw || '').replace(/\x00/g, '');
+  const cleaned = base.replace(/[^a-zA-Z0-9._-]/g, '_').replace(/^\.+/, '');
+  const fallback = cleaned.length > 0 ? cleaned : 'upload';
+  return fallback.slice(0, MAX_FILENAME_LENGTH);
+}
 
 interface UserDocument {
   id: string;
@@ -111,7 +121,8 @@ export class DocumentIngestionService {
   ): Promise<UploadDocumentResponseDto> {
     await this.ensureInfrastructure();
 
-    const ext = this.getFileExtension(file.originalname);
+    const safeFilename = sanitizeFilename(file.originalname);
+    const ext = this.getFileExtension(safeFilename);
     if (!SUPPORTED_TYPES.includes(ext)) {
       throw new BadRequestException(
         `Unsupported file type: .${ext}. Supported: ${SUPPORTED_TYPES.join(', ')}`,
@@ -123,7 +134,7 @@ export class DocumentIngestionService {
     const doc = await this.db.insert<UserDocument>('user_documents', {
       id: docId,
       user_id: userId,
-      filename: file.originalname,
+      filename: safeFilename,
       file_type: ext,
       file_size: file.size,
       chunk_count: 0,
@@ -135,7 +146,7 @@ export class DocumentIngestionService {
     });
 
     // Process asynchronously so upload returns immediately
-    this.processDocumentAsync(userId, docId, file, ext).catch((err) => {
+    this.processDocumentAsync(userId, docId, file, ext, safeFilename).catch((err) => {
       this.logger.error(
         `Failed to process document ${docId}: ${err.message}`,
       );
@@ -159,6 +170,7 @@ export class DocumentIngestionService {
     docId: string,
     file: Express.Multer.File,
     ext: string,
+    safeFilename: string,
   ): Promise<void> {
     try {
       // 1. Upload raw file to R2
@@ -173,7 +185,7 @@ export class DocumentIngestionService {
       }
 
       // 2. Extract text
-      const text = await this.extractText(file.buffer, ext, file.originalname);
+      const text = await this.extractText(file.buffer, ext, safeFilename);
       if (!text || text.trim().length === 0) {
         await this.markDocumentError(docId, 'No text content could be extracted');
         return;
@@ -207,7 +219,7 @@ export class DocumentIngestionService {
               document_id: docId,
               user_id: userId,
               chunk_index: chunkIndex,
-              source_filename: file.originalname,
+              source_filename: safeFilename,
               content: batch[j],
             },
           });

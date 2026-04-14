@@ -9,9 +9,10 @@ import {
 } from '@nestjs/common';
 import { McpClientService } from './mcp-client.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { McpAdminGuard } from './guards/mcp-admin.guard';
 
 @Controller('api/v1/mcp')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, McpAdminGuard)
 export class McpController {
   private readonly logger = new Logger(McpController.name);
 

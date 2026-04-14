@@ -13,10 +13,19 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { DocumentIngestionService } from './document-ingestion.service';
+import { DocumentIngestionService, SUPPORTED_TYPES } from './document-ingestion.service';
 import { QueryDocumentsDto } from './dto/knowledge.dto';
+import * as path from 'path';
 
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20 MB
+
+const ALLOWED_MIME_TYPES = new Set([
+  'application/pdf',
+  'text/plain',
+  'text/markdown',
+  'text/csv',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+]);
 
 @Controller('api/v1/documents')
 @UseGuards(JwtAuthGuard)
@@ -29,6 +38,27 @@ export class KnowledgeController {
   @UseInterceptors(
     FileInterceptor('file', {
       limits: { fileSize: MAX_FILE_SIZE },
+      fileFilter: (_req, file, cb) => {
+        const ext = path
+          .extname(path.basename(file.originalname || ''))
+          .slice(1)
+          .toLowerCase();
+        if (!SUPPORTED_TYPES.includes(ext)) {
+          return cb(
+            new BadRequestException(
+              `Unsupported file type: .${ext}. Supported: ${SUPPORTED_TYPES.join(', ')}`,
+            ),
+            false,
+          );
+        }
+        if (file.mimetype && !ALLOWED_MIME_TYPES.has(file.mimetype)) {
+          return cb(
+            new BadRequestException(`Unsupported MIME type: ${file.mimetype}`),
+            false,
+          );
+        }
+        cb(null, true);
+      },
     }),
   )
   async uploadDocument(
