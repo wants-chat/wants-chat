@@ -1,11 +1,11 @@
 <p align="center">
-  <h1 align="center">wants.chat</h1>
+  <h1 align="center">WantsChat</h1>
   <p align="center"><strong>Die weltweit erste absichtsgesteuerte KI-Plattform</strong></p>
 </p>
 
 ---
 
-## Was ist wants.chat?
+## Was ist WantsChat?
 
 KI-Plattform die Ihre Absichten versteht und kontextbezogene Benutzeroberflaechen generiert. 1100+ KI-Apps, App-Builder und Workflow-Automatisierung.
 

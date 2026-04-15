@@ -1,11 +1,11 @@
 <p align="center">
-  <h1 align="center">wants.chat</h1>
+  <h1 align="center">WantsChat</h1>
   <p align="center"><strong>A primeira plataforma AI do mundo orientada por intencoes</strong></p>
 </p>
 
 ---
 
-## O que e wants.chat?
+## O que e WantsChat?
 
 Plataforma AI que entende suas intencoes e gera interfaces contextuais. 1100+ apps AI, construtor de apps e automacao de fluxos de trabalho.
 

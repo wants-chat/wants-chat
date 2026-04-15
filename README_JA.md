@@ -1,6 +1,6 @@
 <p align="center">
-  <img src="docs/images/banner.png" alt="wants.chat" width="100%" />
-  <h1 align="center">wants.chat</h1>
+  <img src="docs/images/banner.png" alt="WantsChat" width="100%" />
+  <h1 align="center">WantsChat</h1>
   <p align="center"><strong>世界初のインテント駆動型AIプラットフォーム</strong></p>
   <p align="center">あなたの意図を理解し、適切なツール、アプリ、自動化を即座に提供するAIプラットフォーム。</p>
 </p>
@@ -11,9 +11,9 @@
 
 ---
 
-## wants.chatとは？
+## WantsChatとは？
 
-wants.chatは、あなたの欲求を理解し、適切なUIを動的に生成するAIプラットフォームです。テキストで応答するだけの従来のチャットボットとは異なり、インテントを検出してコンテキストに合ったインターフェースを提供します。
+WantsChatは、あなたの欲求を理解し、適切なUIを動的に生成するAIプラットフォームです。テキストで応答するだけの従来のチャットボットとは異なり、インテントを検出してコンテキストに合ったインターフェースを提供します。
 
 ## 主な機能
 

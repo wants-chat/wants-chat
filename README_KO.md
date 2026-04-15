@@ -1,12 +1,12 @@
 <p align="center">
-  <h1 align="center">wants.chat</h1>
+  <h1 align="center">WantsChat</h1>
   <p align="center"><strong>세계 최초의 의도 기반 AI 플랫폼</strong></p>
   <p align="center">당신이 원하는 것을 이해하고 적합한 도구를 즉시 제공하는 AI 플랫폼.</p>
 </p>
 
 ---
 
-## wants.chat이란?
+## WantsChat이란?
 
 의도를 감지하고 상황에 맞는 UI를 동적으로 렌더링하는 AI 플랫폼입니다. 1100+ AI 앱, 앱 빌더, 워크플로 자동화를 지원합니다.
 

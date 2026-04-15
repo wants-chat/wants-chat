@@ -1,4 +1,4 @@
-# OSS Issue Backlog — wants.chat
+# OSS Issue Backlog — WantsChat
 
 Master index of 30 issues to file on GitHub for the OSS release. Each issue has its own body file in this directory (e.g., `01-silent-catches.md`) which you can copy to your clipboard with:
 

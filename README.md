@@ -1,16 +1,18 @@
 <div align="center">
   <a href="https://wants.chat">
-    <img src="frontend/public/assets/logo.png" alt="wants.chat" width="80">
+    <img src="frontend/public/assets/logo.png" alt="WantsChat" width="80">
   </a>
 
-  # wants.chat
+  # WantsChat
 
   [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-wants.chat-00D4AA?style=for-the-badge)](https://wants.chat)
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue?style=for-the-badge)](LICENSE)
   [![GitHub Stars](https://img.shields.io/github/stars/wants-chat/wants-chat?style=for-the-badge)](https://github.com/wants-chat/wants-chat/stargazers)
   [![Contributors](https://img.shields.io/github/contributors/wants-chat/wants-chat?style=for-the-badge)](https://github.com/wants-chat/wants-chat/graphs/contributors)
 
-  *One platform that replaces 100+ apps you use daily*
+  **Don't just chat. Build what you need.**
+
+  *WantsChat is where your ideas, tasks, and errands all get done — in one friendly place, with one simple ask.*
 
   <p>
     <a href="./README.md">English</a> |
@@ -28,19 +30,19 @@
 
 ---
 
-## 🎯 What is wants.chat?
+## 🎯 What is WantsChat?
 
-**wants.chat** is a revolutionary AI-powered platform that understands what you want and instantly provides the right tool, app, or automation to get it done. Unlike traditional chatbots that only respond with text, wants.chat detects your intent and renders **contextual user interfaces** tailored to your exact needs.
+**WantsChat** is a revolutionary AI-powered platform that understands what you want and instantly provides the right tool, app, or automation to get it done. Unlike traditional chatbots that only respond with text, WantsChat detects your intent and renders **contextual user interfaces** tailored to your exact needs.
 
 ```
 💬 You say: "I want to convert 500 USD to EUR"
-✨ wants.chat: Instantly shows a beautiful currency converter UI with live rates
+✨ WantsChat: Instantly shows a beautiful currency converter UI with live rates
 
 💬 You say: "I want to generate a logo for my startup"
-✨ wants.chat: Opens AI image generator with logo templates pre-loaded
+✨ WantsChat: Opens AI image generator with logo templates pre-loaded
 
 💬 You say: "I want to track my project expenses"
-✨ wants.chat: Displays expense tracker with your currency, categories, and export options
+✨ WantsChat: Displays expense tracker with your currency, categories, and export options
 ```
 
 ### 🚀 The Problem We Solve
@@ -53,7 +55,7 @@ In 2025, the average knowledge worker uses **50+ different apps** daily:
 - Health apps
 - And dozens more...
 
-**wants.chat combines them ALL into one intelligent platform.**
+**WantsChat combines them ALL into one intelligent platform.**
 
 ---
 
@@ -63,7 +65,7 @@ We believe AI should not just talk — it should **DO**.
 
 ---
 
-## 🏆 What Makes wants.chat UNIQUE
+## 🏆 What Makes WantsChat UNIQUE
 
 <table>
 <tr>
@@ -79,7 +81,7 @@ We believe AI should not just talk — it should **DO**.
 </td>
 <td width="50%">
 
-### ✅ wants.chat
+### ✅ WantsChat
 - **Intent Detection** → Shows relevant UI
 - **1,100+ Contextual Tools** → Ready to use
 - **No-Code App Builder** → Full-stack apps
@@ -102,7 +104,7 @@ We believe AI should not just talk — it should **DO**.
 └─────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────┐
-│                        wants.chat                               │
+│                        WantsChat                                │
 ├─────────────────────────────────────────────────────────────────┤
 │   User: "Calculate my BMI"                                      │
 │                                                                 │
@@ -357,7 +359,7 @@ Every tool supports comprehensive export:
 
 ## 📊 Competitive Analysis
 
-### What wants.chat Replaces
+### What WantsChat Replaces
 
 _Typical standard-tier pricing as of December 2025; actual figures vary by plan and seat count._
 
@@ -374,7 +376,7 @@ _Typical standard-tier pricing as of December 2025; actual figures vary by plan 
 
 ### Feature Comparison (December 2025)
 
-| Feature | ChatGPT | Claude | Poe | 1min.AI | Manus | **wants.chat** |
+| Feature | ChatGPT | Claude | Poe | 1min.AI | Manus | **WantsChat** |
 |---------|---------|--------|-----|---------|-------|----------------|
 | Multi-Model AI | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ **30+ models** |
 | AI Image Generation | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ **FLUX + SDXL** |
@@ -478,7 +480,7 @@ For prerequisites, env vars, the no-Docker path, optional features, and troubles
 
 ## 🧩 Browser Extension
 
-A Manifest V3 browser extension lives in [`extension/`](extension/) and brings wants.chat into any tab — invoke tools on highlighted text, save snippets, and chat without leaving the page.
+A Manifest V3 browser extension lives in [`extension/`](extension/) and brings WantsChat into any tab — invoke tools on highlighted text, save snippets, and chat without leaving the page.
 
 ```bash
 cd extension
@@ -503,7 +505,7 @@ We welcome contributions! Start with the [Contributing Guide](CONTRIBUTING.md) a
 
 ## Contributors
 
-Thank you to all the amazing people who have contributed to wants.chat! 🎉
+Thank you to all the amazing people who have contributed to WantsChat! 🎉
 
 <a href="https://github.com/wants-chat/wants-chat/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=wants-chat/wants-chat&anon=1&max=100&columns=10" />
@@ -541,7 +543,7 @@ This means you can freely use, modify, and distribute this software, but any mod
 
 ---
 
-**Built with ❤️ by the wants.chat community**
+**Built with ❤️ by the WantsChat community**
 
 *If you find this project useful, please consider giving it a star!*
 
