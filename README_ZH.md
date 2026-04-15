@@ -34,6 +34,8 @@
     <a href="./README_NL.md">Nederlands</a> |
     <a href="./README_UK.md">Українська</a>
   </p>
+  <img src="docs/images/banner.png" alt="WantsChat — intent-driven AI platform" width="100%" />
+
 
 </div>
 
@@ -136,6 +138,10 @@
 ## 🌟 核心功能
 
 ### 1️⃣ **超过 1,100 个上下文工具**(每日增长)
+
+<div align="center">
+  <img src="docs/images/tools-panel.png" alt="WantsChat tools panel — 1,102 tools across 20+ categories" width="100%" />
+</div>
 
 <details>
 <summary><b>📊 计算器和转换器 (80+)</b></summary>
@@ -291,6 +297,10 @@
 </details>
 
 ### 2️⃣ **无代码应用构建器**
+
+<div align="center">
+  <img src="docs/images/app-builder.png" alt="WantsChat generating a full app spec from a single prompt" width="100%" />
+</div>
 
 无需编写代码即可构建完整的全栈应用程序:
 

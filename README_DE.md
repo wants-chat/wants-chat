@@ -34,6 +34,8 @@
     <a href="./README_NL.md">Nederlands</a> |
     <a href="./README_UK.md">Українська</a>
   </p>
+  <img src="docs/images/banner.png" alt="WantsChat — intent-driven AI platform" width="100%" />
+
 
 </div>
 
@@ -136,6 +138,10 @@ Wir glauben, KI sollte nicht nur reden — sie sollte **HANDELN**.
 ## 🌟 Kernfunktionen
 
 ### 1️⃣ **1.100+ kontextbezogene Tools** (täglich wachsend)
+
+<div align="center">
+  <img src="docs/images/tools-panel.png" alt="WantsChat tools panel — 1,102 tools across 20+ categories" width="100%" />
+</div>
 
 <details>
 <summary><b>📊 Rechner & Konverter (80+)</b></summary>
@@ -291,6 +297,10 @@ Wir glauben, KI sollte nicht nur reden — sie sollte **HANDELN**.
 </details>
 
 ### 2️⃣ **No-Code-App-Builder**
+
+<div align="center">
+  <img src="docs/images/app-builder.png" alt="WantsChat generating a full app spec from a single prompt" width="100%" />
+</div>
 
 Baue komplette Full-Stack-Anwendungen, ohne Code zu schreiben:
 

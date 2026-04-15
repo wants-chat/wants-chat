@@ -34,6 +34,8 @@
     <a href="./README_NL.md">Nederlands</a> |
     <a href="./README_UK.md">Українська</a>
   </p>
+  <img src="docs/images/banner.png" alt="WantsChat — intent-driven AI platform" width="100%" />
+
 
 </div>
 
@@ -138,6 +140,10 @@
 ## 🌟 الميزات الأساسية
 
 ### 1️⃣ **أكثر من 1,100 أداة سياقية** (في تزايد يومي)
+
+<div align="center">
+  <img src="docs/images/tools-panel.png" alt="WantsChat tools panel — 1,102 tools across 20+ categories" width="100%" />
+</div>
 
 <details>
 <summary><b>📊 آلات حاسبة ومحوّلات (80+)</b></summary>
@@ -293,6 +299,10 @@
 </details>
 
 ### 2️⃣ **منشئ تطبيقات بدون كود**
+
+<div align="center">
+  <img src="docs/images/app-builder.png" alt="WantsChat generating a full app spec from a single prompt" width="100%" />
+</div>
 
 ابنِ تطبيقات متكاملة الطبقات دون كتابة أي كود:
 

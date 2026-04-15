@@ -34,6 +34,8 @@
     <a href="./README_NL.md">Nederlands</a> |
     <a href="./README_UK.md">Українська</a>
   </p>
+  <img src="docs/images/banner.png" alt="WantsChat — intent-driven AI platform" width="100%" />
+
 
 </div>
 
@@ -136,6 +138,10 @@ Chúng tôi tin rằng AI không nên chỉ nói — nó nên **HÀNH ĐỘNG**.
 ## 🌟 Tính năng cốt lõi
 
 ### 1️⃣ **Hơn 1.100 công cụ theo ngữ cảnh** (Tăng mỗi ngày)
+
+<div align="center">
+  <img src="docs/images/tools-panel.png" alt="WantsChat tools panel — 1,102 tools across 20+ categories" width="100%" />
+</div>
 
 <details>
 <summary><b>📊 Máy tính & Công cụ chuyển đổi (80+)</b></summary>
@@ -291,6 +297,10 @@ Chúng tôi tin rằng AI không nên chỉ nói — nó nên **HÀNH ĐỘNG**.
 </details>
 
 ### 2️⃣ **Trình xây dựng ứng dụng không cần code**
+
+<div align="center">
+  <img src="docs/images/app-builder.png" alt="WantsChat generating a full app spec from a single prompt" width="100%" />
+</div>
 
 Xây dựng ứng dụng full-stack hoàn chỉnh mà không cần viết code:
 

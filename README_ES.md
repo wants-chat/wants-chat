@@ -34,6 +34,8 @@
     <a href="./README_NL.md">Nederlands</a> |
     <a href="./README_UK.md">Українська</a>
   </p>
+  <img src="docs/images/banner.png" alt="WantsChat — intent-driven AI platform" width="100%" />
+
 
 </div>
 
@@ -136,6 +138,10 @@ Creemos que la IA no debería solo hablar — debería **HACER**.
 ## 🌟 Características principales
 
 ### 1️⃣ **Más de 1.100 herramientas contextuales** (creciendo a diario)
+
+<div align="center">
+  <img src="docs/images/tools-panel.png" alt="WantsChat tools panel — 1,102 tools across 20+ categories" width="100%" />
+</div>
 
 <details>
 <summary><b>📊 Calculadoras y conversores (más de 80)</b></summary>
@@ -291,6 +297,10 @@ Creemos que la IA no debería solo hablar — debería **HACER**.
 </details>
 
 ### 2️⃣ **Constructor de apps sin código**
+
+<div align="center">
+  <img src="docs/images/app-builder.png" alt="WantsChat generating a full app spec from a single prompt" width="100%" />
+</div>
 
 Construye aplicaciones full-stack completas sin escribir código:
 

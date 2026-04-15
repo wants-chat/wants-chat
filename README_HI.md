@@ -34,6 +34,8 @@
     <a href="./README_NL.md">Nederlands</a> |
     <a href="./README_UK.md">Українська</a>
   </p>
+  <img src="docs/images/banner.png" alt="WantsChat — intent-driven AI platform" width="100%" />
+
 
 </div>
 
@@ -136,6 +138,10 @@
 ## 🌟 मुख्य विशेषताएँ
 
 ### 1️⃣ **1,100+ कॉन्टेक्स्चुअल टूल** (दैनिक बढ़ रहे हैं)
+
+<div align="center">
+  <img src="docs/images/tools-panel.png" alt="WantsChat tools panel — 1,102 tools across 20+ categories" width="100%" />
+</div>
 
 <details>
 <summary><b>📊 कैलकुलेटर और कन्वर्टर (80+)</b></summary>
@@ -291,6 +297,10 @@
 </details>
 
 ### 2️⃣ **नो-कोड ऐप बिल्डर**
+
+<div align="center">
+  <img src="docs/images/app-builder.png" alt="WantsChat generating a full app spec from a single prompt" width="100%" />
+</div>
 
 बिना कोड लिखे संपूर्ण फ़ुल-स्टैक एप्लीकेशन बनाएँ:
 

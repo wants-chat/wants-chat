@@ -34,6 +34,8 @@
     <a href="./README_NL.md">Nederlands</a> |
     <a href="./README_UK.md">Українська</a>
   </p>
+  <img src="docs/images/banner.png" alt="WantsChat — intent-driven AI platform" width="100%" />
+
 
 </div>
 
@@ -136,6 +138,10 @@
 ## 🌟 핵심 기능
 
 ### 1️⃣ **1,100개 이상의 컨텍스트 도구** (매일 증가 중)
+
+<div align="center">
+  <img src="docs/images/tools-panel.png" alt="WantsChat tools panel — 1,102 tools across 20+ categories" width="100%" />
+</div>
 
 <details>
 <summary><b>📊 계산기 및 변환기 (80+)</b></summary>
@@ -291,6 +297,10 @@
 </details>
 
 ### 2️⃣ **노코드 앱 빌더**
+
+<div align="center">
+  <img src="docs/images/app-builder.png" alt="WantsChat generating a full app spec from a single prompt" width="100%" />
+</div>
 
 코드를 작성하지 않고 완전한 풀스택 애플리케이션을 구축:
 
