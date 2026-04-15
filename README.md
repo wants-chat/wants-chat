@@ -8,6 +8,7 @@
   [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-wants.chat-00D4AA?style=for-the-badge)](https://wants.chat)
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue?style=for-the-badge)](LICENSE)
   [![GitHub Stars](https://img.shields.io/github/stars/wants-chat/wants-chat?style=for-the-badge)](https://github.com/wants-chat/wants-chat/stargazers)
+  [![GitHub Forks](https://img.shields.io/github/forks/wants-chat/wants-chat?style=for-the-badge)](https://github.com/wants-chat/wants-chat/network/members)
   [![Contributors](https://img.shields.io/github/contributors/wants-chat/wants-chat?style=for-the-badge)](https://github.com/wants-chat/wants-chat/graphs/contributors)
 
   **Don't just chat. Build what you need.**
