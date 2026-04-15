@@ -2732,7 +2732,7 @@ Please respond helpfully to continue this branch conversation.`;
                         </div>
                         <div className={cn(
                           "flex-1 pt-1 min-w-0",
-                          theme === 'dark' ? 'text-slate-200' : 'text-slate-700'
+                          theme === 'dark' ? 'text-slate-50' : 'text-slate-700'
                         )}>
                           <MessageContent
                             content={message.content}
