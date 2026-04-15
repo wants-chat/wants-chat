@@ -848,7 +848,7 @@ export const MessageContent: React.FC<MessageContentProps> = ({
   );
 
   return (
-    <div className={cn('prose prose-sm max-w-none', className)}>
+    <div className={cn('prose prose-sm max-w-none dark:prose-invert dark:text-slate-100', className)}>
       {parseContentWithCharts.map((part, index) => {
         if (part.type === 'chart' && part.config) {
           return <ChartBlock key={`chart-${index}`} config={part.config} />;
