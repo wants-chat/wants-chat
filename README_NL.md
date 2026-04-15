@@ -556,9 +556,9 @@ Dit betekent dat je deze software vrij kunt gebruiken, wijzigen en distribueren,
 ### 💬 Neem contact met ons op
 
 [![Website](https://img.shields.io/badge/Website-wants.chat-00D4AA?style=for-the-badge)](https://wants.chat)
-[![Twitter](https://img.shields.io/badge/Twitter-@wantschat-1DA1F2?style=for-the-badge&logo=twitter)](https://twitter.com/wantschat)
-[![Discord](https://img.shields.io/badge/Discord-Join_Community-5865F2?style=for-the-badge&logo=discord)](https://discord.gg/wantschat)
-[![Email](https://img.shields.io/badge/Email-hello@wants.chat-EA4335?style=for-the-badge&logo=gmail)](mailto:hello@wants.chat)
+[![X](https://img.shields.io/badge/X-@infoinletcom-000000?style=for-the-badge&logo=x)](https://x.com/infoinletcom)
+[![Discord](https://img.shields.io/badge/Discord-Join_Community-5865F2?style=for-the-badge&logo=discord)](https://discord.com/invite/wantschat)
+[![Email](https://img.shields.io/badge/Email-support@wants.chat-EA4335?style=for-the-badge&logo=gmail)](mailto:support@wants.chat)
 
 ---
 
