@@ -257,6 +257,24 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
       await this.query(`CREATE INDEX IF NOT EXISTS idx_app_maker_pages_user_id ON app_maker_pages(user_id)`);
       await this.query(`CREATE INDEX IF NOT EXISTS idx_app_maker_pages_created_at ON app_maker_pages(created_at DESC)`);
 
+      // Chat file uploads table
+      await this.query(`
+        CREATE TABLE IF NOT EXISTS chat_file_uploads (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          user_id VARCHAR(255) NOT NULL,
+          conversation_id UUID NOT NULL,
+          filename VARCHAR(500) NOT NULL,
+          file_type VARCHAR(100) NOT NULL,
+          file_size INTEGER NOT NULL,
+          extracted_text TEXT,
+          storage_path TEXT NOT NULL,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        )
+      `);
+
+      await this.query(`CREATE INDEX IF NOT EXISTS idx_chat_file_uploads_conversation ON chat_file_uploads(conversation_id)`);
+      await this.query(`CREATE INDEX IF NOT EXISTS idx_chat_file_uploads_user ON chat_file_uploads(user_id)`);
+
       this.logger.log('✅ All required database tables ready');
     } catch (error) {
       this.logger.warn(`Failed to ensure required tables: ${error.message}`);

@@ -12,17 +12,24 @@ import {
   Res,
   HttpCode,
   HttpStatus,
+  UploadedFile,
+  UseInterceptors,
+  BadRequestException,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiTags,
   ApiOperation,
   ApiResponse,
   ApiBearerAuth,
   ApiQuery,
+  ApiConsumes,
+  ApiBody,
 } from '@nestjs/swagger';
 import { IsOptional, IsString, IsBoolean } from 'class-validator';
 import { Response } from 'express';
 import { ChatService } from './chat.service';
+import { ChatFileService } from './chat-file.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 class CreateConversationDto {
@@ -60,6 +67,10 @@ class SendMessageDto {
   @IsOptional()
   @IsString()
   model?: string;
+
+  @IsOptional()
+  @IsString()
+  fileContext?: string;
 }
 
 @ApiTags('Chat')
@@ -67,7 +78,10 @@ class SendMessageDto {
 @UseGuards(JwtAuthGuard)
 @Controller('chat')
 export class ChatController {
-  constructor(private readonly chatService: ChatService) {}
+  constructor(
+    private readonly chatService: ChatService,
+    private readonly chatFileService: ChatFileService,
+  ) {}
 
   // ============================================
   // Conversations
@@ -167,7 +181,7 @@ export class ChatController {
     @Param('id') id: string,
     @Body() dto: SendMessageDto,
   ) {
-    return this.chatService.sendMessage(id, req.user.sub, dto.content, dto.model);
+    return this.chatService.sendMessage(id, req.user.sub, dto.content, dto.model, dto.fileContext);
   }
 
   @Post('conversations/:id/messages/stream')
@@ -213,6 +227,76 @@ export class ChatController {
   @ApiResponse({ status: 201, description: 'Conversation created and message sent' })
   async quickChat(@Request() req, @Body() dto: SendMessageDto) {
     return this.chatService.quickChat(req.user.sub, dto.content, dto.model);
+  }
+
+  // ============================================
+  // File Upload
+  // ============================================
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['file', 'conversationId'],
+      properties: {
+        file: { type: 'string', format: 'binary' },
+        conversationId: { type: 'string' },
+      },
+    },
+  })
+  @ApiOperation({ summary: 'Upload a file for chat context' })
+  @ApiResponse({ status: 201, description: 'File uploaded and text extracted' })
+  @ApiResponse({ status: 400, description: 'Invalid file or missing conversation ID' })
+  async uploadFile(
+    @Request() req,
+    @UploadedFile() file: Express.Multer.File,
+    @Body('conversationId') conversationId: string,
+  ) {
+    const userId = req.user.userId || req.user.id || req.user.sub;
+
+    if (!conversationId) {
+      throw new BadRequestException('conversationId is required');
+    }
+
+    // Verify conversation ownership
+    await this.chatService.getConversation(conversationId, userId);
+
+    const chatFile = await this.chatFileService.uploadAndExtract(userId, conversationId, file);
+    return this.transformFile(chatFile);
+  }
+
+  @Get('files/:conversationId')
+  @ApiOperation({ summary: 'List files uploaded in a conversation' })
+  @ApiResponse({ status: 200, description: 'Files listed' })
+  @ApiResponse({ status: 404, description: 'Conversation not found' })
+  async listFiles(
+    @Request() req,
+    @Param('conversationId') conversationId: string,
+  ) {
+    const userId = req.user.userId || req.user.id || req.user.sub;
+
+    // Verify conversation ownership
+    await this.chatService.getConversation(conversationId, userId);
+
+    const files = await this.chatFileService.listFiles(conversationId, userId);
+    return files.map((f) => this.transformFile(f));
+  }
+
+  private transformFile(file: any) {
+    if (!file) return null;
+    return {
+      id: file.id,
+      userId: file.user_id,
+      conversationId: file.conversation_id,
+      filename: file.filename,
+      fileType: file.file_type,
+      fileSize: file.file_size,
+      extractedText: file.extracted_text,
+      storagePath: file.storage_path,
+      createdAt: file.created_at,
+    };
   }
 
   // ============================================
