@@ -87,6 +87,6 @@
     "@types/qrcode": "^1.5.5",
     "@types/uuid": "^10.0.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^6.0.3"
   }
 }
