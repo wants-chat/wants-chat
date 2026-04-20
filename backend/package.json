@@ -28,7 +28,7 @@
     "@nestjs/serve-static": "^4.0.2",
     "@nestjs/swagger": "^7.4.2",
     "@nestjs/websockets": "^10.4.4",
-    "@nuintun/qrcode": "^4.1.6",
+    "@nuintun/qrcode": "^5.0.3",
     "@qdrant/js-client-rest": "^1.12.0",
     "ajv": "^8.17.1",
     "archiver": "^7.0.1",
