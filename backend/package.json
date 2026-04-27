@@ -10,7 +10,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.658.1",
     "@aws-sdk/client-ses": "^3.658.1",
-    "@aws-sdk/s3-request-presigner": "^3.658.1",
+    "@aws-sdk/s3-request-presigner": "^3.1037.0",
     "@faker-js/faker": "^9.0.3",
     "@langchain/core": "^0.3.18",
     "@langchain/openai": "^0.3.14",
